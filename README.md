@@ -69,9 +69,24 @@ npm install
 npm run dev                  # http://localhost:3000
 ```
 
+## Deploy
+
+The app runs on Vercel's free plan. Every merge to `main` deploys to production through
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml), using the Vercel CLI
+(Vercel's GitHub app can't connect to organization-owned repos on the free plan).
+
+To set it up on a new Vercel account:
+1. `npm i -g vercel`, then `vercel login` and `vercel link` in this folder.
+2. Copy `orgId` and `projectId` from `.vercel/project.json` into repo variables
+   `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` (GitHub → Settings → Secrets and variables → Actions → Variables).
+3. Create a token at vercel.com/account/tokens and save it as the repo secret `VERCEL_TOKEN`.
+4. Add the app's environment variables (see `.env.example`) in Vercel → Project → Settings → Environment Variables.
+
+To deploy by hand instead: `vercel deploy --prod`.
+
 ## Links
 
-- Live demo:
+- Live demo: https://cic-launchpad.vercel.app
 - Demo video:
 - Design / docs:
 
