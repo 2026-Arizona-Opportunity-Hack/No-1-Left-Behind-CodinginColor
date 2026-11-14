@@ -49,22 +49,24 @@ Judges score **Scope, Documentation, Polish and Security**, plus a separate **Ac
 
 ## What we built
 
-<!-- Two or three sentences: the problem, who it helps, what the nonprofit can do now that they couldn't before -->
+**CIC Launchpad** turns Coding in Color's existing slide decks (or a YouTube link) into interactive coding lessons. Students learn in a friendly split screen with quick quizzes and Python that runs in the browser. Teachers see who's stuck and get a "Help me teach this" guide, students who miss a week get a catch-up path, and CIC sees learning gain per topic through a dashboard and a key-protected read API.
 
 ## Tech stack
 
-- Frontend:
-- Backend:
-- Database:
-- APIs / services:
+- Frontend: Next.js (App Router) + TypeScript, Tailwind CSS, shadcn/ui
+- Backend: Next.js server routes on Vercel
+- Database: Supabase (Postgres + Row Level Security, auth for staff and teachers)
+- In-browser Python: Pyodide in a Web Worker (no server-side code execution)
+- AI (lesson drafting only, never student data): any OpenAI-compatible endpoint
 
 ## Run it locally
 
 ```bash
-git clone https://github.com/2026-Arizona-Opportunity-Hack/No 1 Left Behind-CodinginColor.git
-cd No 1 Left Behind-CodinginColor
-cp .env.example .env   # fill in your own values — never commit .env
-# install + start commands here
+git clone https://github.com/2026-Arizona-Opportunity-Hack/No-1-Left-Behind-CodinginColor.git
+cd No-1-Left-Behind-CodinginColor
+cp .env.example .env.local   # fill in your own values; never commit it
+npm install
+npm run dev                  # http://localhost:3000
 ```
 
 ## Links

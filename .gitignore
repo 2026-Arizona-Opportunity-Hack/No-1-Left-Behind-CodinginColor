@@ -27,3 +27,9 @@ target/
 .DS_Store
 Thumbs.db
 *.log
+
+# Next.js / Vercel
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+/coverage
