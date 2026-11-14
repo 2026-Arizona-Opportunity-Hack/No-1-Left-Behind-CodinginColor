@@ -1,0 +1,40 @@
+name: Deploy to Vercel
+
+# Deploys main to production on every merge. Vercel's free plan can't connect
+# to repos owned by a GitHub organization, so we deploy with the Vercel CLI
+# instead of Vercel's GitHub app.
+# Setup (once): repo variables VERCEL_ORG_ID + VERCEL_PROJECT_ID (from
+# .vercel/project.json after `vercel link`) and repo secret VERCEL_TOKEN
+# (vercel.com/account/tokens). See README "Deploy".
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: vercel-production
+  cancel-in-progress: false
+
+env:
+  VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Vercel CLI
+        run: npm install --global vercel@65.16.0
+      - name: Pull project settings and environment variables
+        run: vercel pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
+      - name: Build
+        run: vercel build --prod --token="${{ secrets.VERCEL_TOKEN }}"
+      - name: Deploy
+        run: vercel deploy --prebuilt --prod --token="${{ secrets.VERCEL_TOKEN }}"
