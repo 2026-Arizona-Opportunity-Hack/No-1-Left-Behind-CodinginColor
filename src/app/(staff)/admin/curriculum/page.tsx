@@ -22,7 +22,7 @@ export default async function CurriculumEditorPage() {
         <h1 className="text-4xl font-bold tracking-tight">Edit curriculum</h1>
         <p className="text-muted-foreground">Students go through units in this order. They only see the units and lessons you choose to show them.</p>
       </div>
-      <Link href="/admin/curriculum/import" className={buttonVariants({ size: "lg" })}>Make a lesson from a YouTube video</Link>
+      <Link href="/admin/curriculum/import" className={buttonVariants({ size: "lg" })}>Make a lesson from slides or a video</Link>
       </div>
       {modules.ok ? <ModuleList modules={modules.data} /> : <p role="alert">{modules.error}</p>}
     </div>
