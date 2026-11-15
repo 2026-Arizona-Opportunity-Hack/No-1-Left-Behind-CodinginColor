@@ -18,8 +18,8 @@ export const metadata: Metadata = { title: "Live classroom · CIC Launchpad" };
 type Props = { params: Promise<{ classId: string }>; searchParams: Promise<{ show?: string }> };
 type CatchUp = "assigned" | "caught_up" | undefined;
 
-// The live classroom (Calm Mint design): three columns a teacher reads at a glance:
-// Needs help · Behind (+ not started) · On track. Every status has a symbol and a word.
+// The live classroom: one plain sentence, then one line per student, most urgent first
+// (needs help, behind, not started). Students doing fine are folded away until asked for.
 export default async function LiveClassroom({ params, searchParams }: Props) {
   await connection(); // per-user, live data: render at request time
   const { classId } = await params;
@@ -38,10 +38,12 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
   }
   const { class: cls, today, attendance, students, counts } = room.data;
   const now = Date.parse(new Date().toISOString());
-  const by = (s: ClassroomStudent["status"]) => students.filter((x) => x.status === s);
-  const onTrack = by("on_track");
-  const shownOnTrack = showAll ? onTrack : onTrack.slice(0, 4);
-  const card = (s: ClassroomStudent) => <StudentCard key={s.id} s={s} classId={cls.id} sessionId={today?.session_id} now={now} catchUp={catchUp.get(s.id)} />;
+  const by = (st: ClassroomStudent["status"]) => students.filter((x) => x.status === st);
+  const fine = by("on_track");
+  const behindWithout = by("behind").filter((x) => !catchUp.get(x.id));
+  const hardest = mastery.ok ? mastery.data.find((m) => m.percent_struggling > 0) : undefined;
+  const row = (x: ClassroomStudent) => <StudentRow key={x.id} s={x} classId={cls.id} sessionId={today?.session_id} now={now} catchUp={catchUp.get(x.id)} />;
+  const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
   return (
     <div className="flex flex-col gap-6">
@@ -58,108 +60,87 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
         </p>
       </div>
 
-      <div className="grid items-stretch gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-        <dl className="m-0 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {(Object.keys(COUNT_TILE) as (keyof typeof COUNT_TILE)[]).map((k) => (
-            <div key={k} className={`flex flex-col-reverse justify-end gap-1 rounded-[22px] px-5 py-4 ${COUNT_TILE[k].tone}`}>
-              <dt className="text-base font-medium">{COUNT_TILE[k].label}</dt>
-              <dd className="m-0 text-4xl leading-none font-bold tabular-nums">{counts[k]}</dd>
-            </div>
-          ))}
-        </dl>
-        <section aria-labelledby="topics-h" className="flex flex-col gap-2.5 rounded-[22px] bg-card px-5 py-4 text-[15px]">
-          <h2 id="topics-h" className="text-base font-semibold">Where the class is stuck</h2>
-          {mastery.ok && mastery.data.length ? mastery.data.slice(0, 3).map((m) => (
-            <div key={m.concept_tag}>
-              <div className="flex justify-between gap-3"><span className="font-medium capitalize">{m.concept_tag}</span><span className="tabular-nums">{m.percent_struggling}% stuck</span></div>
-              <div aria-hidden="true" className="mt-1 h-2 rounded-full bg-background"><div className="h-full rounded-full bg-[#C2452F]" style={{ width: `${m.percent_struggling ? Math.max(m.percent_struggling, 3) : 0}%` }} /></div>
-            </div>
-          )) : <p className="text-muted-foreground">Topic results appear once students start answering.</p>}
-        </section>
-      </div>
+      {!students.length ? (
+        <p className="rounded-3xl bg-card p-10 text-center text-lg">No students in this class yet. Add them from <Link href="/teach/new">Set up a class</Link>.</p>
+      ) : (
+        <>
+          {/* One plain sentence first: the whole class at a glance. */}
+          <p className="text-2xl leading-snug">
+            {counts.needs_help
+              ? <b className="font-semibold text-[#B3261E]">{plural(counts.needs_help, "student needs", "students need")} help.</b>
+              : <b className="font-semibold">Nobody needs help right now.</b>}
+            {counts.behind ? ` ${plural(counts.behind, "is", "are")} behind.` : ""}
+            {counts.not_started ? ` ${counts.not_started} ${counts.not_started === 1 ? "hasn't" : "haven't"} started.` : ""}
+            {` ${counts.on_track} ${counts.on_track === 1 ? "is" : "are"} doing fine.`}
+          </p>
 
-      {!students.length && <p className="rounded-3xl bg-card p-10 text-center text-lg">No students in this class yet. Add them from <Link href="/teach/new">Set up a class</Link>.</p>}
+          <section aria-label="Students who need your attention" className="flex flex-col gap-2.5">
+            {by("needs_help").map(row)}
+            {by("behind").map(row)}
+            {by("not_started").map(row)}
+            {behindWithout.length > 1 && (
+              <form action={assignCatchUpAction} className="self-start">
+                <input type="hidden" name="classId" value={cls.id} />
+                <input type="hidden" name="studentIds" value={behindWithout.map((x) => x.id).join(",")} />
+                <button type="submit" className="h-11 cursor-pointer rounded-full border-2 border-primary bg-card px-5 font-semibold hover:bg-secondary">Give a catch-up to all {behindWithout.length} who are behind</button>
+              </form>
+            )}
+            {fine.length > 0 && (
+              <details open={showAll} className="group rounded-[22px] bg-card">
+                <summary className="flex min-h-12 cursor-pointer items-center px-5 font-semibold text-[#047D13]">
+                  <span className="group-open:hidden">Show the {plural(fine.length, "student", "students")} doing fine</span>
+                  <span className="hidden group-open:inline">Hide the {plural(fine.length, "student", "students")} doing fine</span>
+                </summary>
+                <div className="flex flex-col gap-2 px-2.5 pb-2.5">{fine.map(row)}</div>
+              </details>
+            )}
+          </section>
 
-      <div className="grid items-start gap-5 lg:grid-cols-3">
-        <section aria-labelledby="help-col" className="flex flex-col gap-2.5">
-          <h2 id="help-col" className={COL_HEAD + " bg-help text-help-ink"}>! Needs help · {counts.needs_help}</h2>
-          {by("needs_help").map(card)}
-          {!counts.needs_help && <p className="rounded-[22px] bg-card px-5 py-4 text-muted-foreground">Nobody is stuck right now.</p>}
-        </section>
-        <section aria-labelledby="behind-col" className="flex flex-col gap-2.5">
-          <h2 id="behind-col" className={COL_HEAD + " bg-behind text-behind-ink"}>◷ Behind · {counts.behind}</h2>
-          {by("behind").map(card)}
-          {counts.behind > 1 && !by("behind").every((s) => catchUp.get(s.id)) && (
-            <form action={assignCatchUpAction}>
-              <input type="hidden" name="classId" value={cls.id} />
-              <input type="hidden" name="studentIds" value={by("behind").filter((s) => !catchUp.get(s.id)).map((s) => s.id).join(",")} />
-              <button type="submit" className="h-11 cursor-pointer rounded-full border-2 border-primary bg-card px-5 font-semibold hover:bg-secondary">Assign catch-up to everyone behind</button>
-            </form>
-          )}
-          {counts.not_started > 0 && (
-            <details className="rounded-[22px] border-2 border-dashed border-[#7FA08B] px-5 py-3.5">
-              <summary className="cursor-pointer">○ {counts.not_started} student{counts.not_started === 1 ? " hasn't" : "s haven't"} started</summary>
-              <div className="mt-3 flex flex-col gap-2.5">{by("not_started").map(card)}</div>
-            </details>
-          )}
-        </section>
-        <section aria-labelledby="ok-col" className="flex flex-col gap-2.5">
-          <h2 id="ok-col" className={COL_HEAD + " bg-ontrack text-ontrack-ink"}>✓ On track · {counts.on_track}</h2>
-          {shownOnTrack.map(card)}
-          {onTrack.length > shownOnTrack.length && <Link href={`/teach/${cls.id}?show=all`} className="px-5 py-1.5">Show {onTrack.length - shownOnTrack.length} more on track</Link>}
-        </section>
-      </div>
+          {hardest && <p className="text-muted-foreground">Hardest topic right now: <b className="font-semibold text-foreground capitalize">{hardest.concept_tag}</b> ({hardest.percent_struggling}% of the class is stuck on it)</p>}
+        </>
+      )}
     </div>
   );
 }
 
-const COL_HEAD = "self-start rounded-full px-4 py-1.5 text-lg font-semibold";
-
-const COUNT_TILE = {
-  needs_help: { label: "! Needs help", tone: "bg-help text-help-ink" },
-  behind: { label: "◷ Behind", tone: "bg-behind text-behind-ink" },
-  not_started: { label: "○ Not started", tone: "border-2 border-dashed border-[#7FA08B] bg-card" },
-  on_track: { label: "✓ On track", tone: "bg-ontrack text-ontrack-ink" },
+// One line per student. The colour matches the status (red needs help, yellow behind, green doing fine),
+// and the word and symbol say it too, so colour is never the only signal.
+const LOOK = {
+  needs_help: { row: "bg-help text-help-ink", word: "! Needs help" },
+  behind: { row: "bg-sun text-sun-ink", word: "◷ Behind" },
+  not_started: { row: "bg-card text-foreground border-2 border-dashed border-[#7FA08B]", word: "○ Not started" },
+  on_track: { row: "bg-ontrack text-ontrack-ink", word: "✓ Doing fine" },
 };
 
-// Tinted card + a coloured left edge, so the status reads at a glance (the words say it too).
-const TONE = {
-  needs_help: "bg-help text-help-ink border-l-[6px] border-[#C2452F]",
-  behind: "bg-behind text-behind-ink border-l-[6px] border-[#C77700]",
-  not_started: "bg-card text-foreground border-l-[6px] border-[#7FA08B]",
-  on_track: "bg-card text-foreground border-l-[6px] border-[#0DB031]",
-};
-
-function StudentCard({ s, classId, sessionId, now, catchUp }: { s: ClassroomStudent; classId: string; sessionId?: string; now: number; catchUp: CatchUp }) {
-  const muted = s.status === "on_track" || s.status === "not_started" ? "text-muted-foreground" : "";
+function StudentRow({ s, classId, sessionId, now, catchUp }: { s: ClassroomStudent; classId: string; sessionId?: string; now: number; catchUp: CatchUp }) {
+  const look = LOOK[s.status];
+  const where = s.current ? `${s.current.lesson_title}, step ${s.current.step}` : "No activity yet";
+  const why = s.status === "on_track" || !s.reasons.length ? where : s.reasons[0];
   return (
-    <article className={`rounded-[22px] px-5 py-4 ${TONE[s.status]}`}>
-      <div className="flex items-baseline justify-between gap-3">
-        <Link href={`/teach/${classId}/students/${s.id}`} className="text-xl font-semibold text-inherit">{s.label}</Link>
-        <span className="text-[15px] tabular-nums">{s.percent_complete}% done</span>
-      </div>
-      <p className={`text-[15px] ${muted}`}>
-        {[
-          s.current ? `${s.current.lesson_title} · step ${s.current.step}` : null,
-          s.time_on_task_ms ? `working for ${formatDuration(s.time_on_task_ms)}` : null,
-          s.last_active_at ? `active ${timeAgo(s.last_active_at, now)}` : "No activity yet",
-        ].filter(Boolean).join(" · ")}
+    <article className={`grid items-center gap-x-5 gap-y-2 rounded-[20px] px-5 py-3.5 sm:grid-cols-[minmax(0,13rem)_minmax(0,1fr)_auto] ${look.row}`}>
+      <Link href={`/teach/${classId}/students/${s.id}`} className="text-lg font-semibold text-inherit">{s.label}</Link>
+      <p className="m-0 min-w-0">
+        <span className="font-semibold">{look.word}</span>
+        <span> · {why}</span>
+        <span className="block text-sm opacity-80">
+          {[`${s.percent_complete}% done`, s.time_on_task_ms ? `working for ${formatDuration(s.time_on_task_ms)}` : null,
+            s.last_active_at ? `active ${timeAgo(s.last_active_at, now)}` : null].filter(Boolean).join(" · ")}
+        </span>
       </p>
-      {s.reasons.length > 0 && s.status !== "on_track" && <p className="mt-1.5 font-semibold">{s.reasons.join(" · ")}</p>}
-      {catchUp === "caught_up" && <p className="mt-1.5 font-semibold text-[#047D13]">✓ Caught up</p>}
-      {catchUp === "assigned" && <p className="mt-1.5 font-semibold">Catch-up assigned</p>}
-      <div className="mt-2.5 flex flex-wrap items-center gap-2.5">
+      <div className="flex flex-wrap items-center gap-3 sm:justify-end">
         {s.status === "needs_help" && (
           <Link href={`/teach/${classId}/students/${s.id}#help`} className="inline-flex h-11 items-center rounded-full bg-primary px-5 text-base font-semibold text-primary-foreground no-underline hover:bg-[#047D13]">Help me teach this</Link>
         )}
         {s.status === "behind" && !catchUp && (
           <form action={assignCatchUpAction}>
             <input type="hidden" name="classId" value={classId} /><input type="hidden" name="studentIds" value={s.id} />
-            <button type="submit" className="h-11 cursor-pointer rounded-full border-2 border-primary bg-card px-5 text-base font-semibold text-foreground hover:bg-secondary">Assign catch-up</button>
+            <button type="submit" className="h-11 cursor-pointer rounded-full border-2 border-primary bg-card px-5 text-base font-semibold text-foreground hover:bg-secondary">Give catch-up</button>
           </form>
         )}
+        {catchUp === "assigned" && <span className="font-semibold">✓ Catch-up given</span>}
+        {catchUp === "caught_up" && <span className="font-semibold">✓ Caught up</span>}
         {sessionId && (
-          <form action={markAttendance} className="ml-auto">
+          <form action={markAttendance}>
             <input type="hidden" name="classId" value={classId} />
             <input type="hidden" name="sessionId" value={sessionId} />
             <input type="hidden" name="studentId" value={s.id} />
