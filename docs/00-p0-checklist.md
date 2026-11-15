@@ -45,3 +45,15 @@ _Last audited: Sat Nov 14, ~11 PM. Every P0 is built and live at https://cic-lau
 ## Judge "fail" tests: rehearse both before recording
 1. ⏱️ A new instructor sets up a class, imports a roster and assigns a module in **< 10 minutes**.
 2. 🧑‍🎓 A student follows a whole module **without instructor help**.
+
+
+### Mentor-feedback follow-up (Nov 15)
+
+- 🟡 Configurable staff roles and permissions: implemented with database enforcement;
+  shared migrations and authenticated live rehearsal pending.
+- 🟡 Slide/video import into a new curriculum unit with paired pre/post drafts:
+  implemented and tested with source/AI fixtures; live AI credentials and rehearsal pending.
+- 🟡 Full assigned student course view: pre-test, materials and post-test always
+  visible; server-enforced progression and saved quiz results implemented and tested.
+- Current Calm Mint theme preserved. Existing student history is protected during
+  edits/deletions. See README for the exact rollout steps and local verification.
