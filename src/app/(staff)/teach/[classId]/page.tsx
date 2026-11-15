@@ -69,29 +69,29 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
             {counts.needs_help
               ? <b className="font-semibold text-[#B3261E]">{plural(counts.needs_help, "student needs", "students need")} help.</b>
               : <b className="font-semibold">Nobody needs help right now.</b>}
-            {counts.behind ? ` ${plural(counts.behind, "is", "are")} behind.` : ""}
-            {counts.not_started ? ` ${counts.not_started} ${counts.not_started === 1 ? "hasn't" : "haven't"} started.` : ""}
-            {` ${counts.on_track} ${counts.on_track === 1 ? "is" : "are"} doing fine.`}
+            {counts.behind ? <> <b className="font-semibold text-[#9A6700]">{plural(counts.behind, "is", "are")} behind.</b></> : null}
+            {counts.not_started ? ` ${counts.not_started} ${counts.not_started === 1 ? "hasn't" : "haven't"} started.` : null}
+            {" "}<b className="font-semibold text-[#047D13]">{counts.on_track} {counts.on_track === 1 ? "is" : "are"} doing fine.</b>
           </p>
 
-          <section aria-label="Students who need your attention" className="flex flex-col gap-2.5">
+          <section aria-label="Students" className="flex flex-col divide-y divide-border rounded-[24px] bg-card px-5">
             {by("needs_help").map(row)}
             {by("behind").map(row)}
             {by("not_started").map(row)}
             {behindWithout.length > 1 && (
-              <form action={assignCatchUpAction} className="self-start">
+              <form action={assignCatchUpAction} className="py-3.5">
                 <input type="hidden" name="classId" value={cls.id} />
                 <input type="hidden" name="studentIds" value={behindWithout.map((x) => x.id).join(",")} />
                 <button type="submit" className="h-11 cursor-pointer rounded-full border-2 border-primary bg-card px-5 font-semibold hover:bg-secondary">Give a catch-up to all {behindWithout.length} who are behind</button>
               </form>
             )}
             {fine.length > 0 && (
-              <details open={showAll} className="group rounded-[22px] bg-card">
-                <summary className="flex min-h-12 cursor-pointer items-center px-5 font-semibold text-[#047D13]">
+              <details open={showAll} className="group">
+                <summary className="flex min-h-14 cursor-pointer items-center font-semibold text-[#047D13]">
                   <span className="group-open:hidden">Show the {plural(fine.length, "student", "students")} doing fine</span>
                   <span className="hidden group-open:inline">Hide the {plural(fine.length, "student", "students")} doing fine</span>
                 </summary>
-                <div className="flex flex-col gap-2 px-2.5 pb-2.5">{fine.map(row)}</div>
+                <div className="flex flex-col divide-y divide-border border-t border-border">{fine.map(row)}</div>
               </details>
             )}
           </section>
@@ -103,13 +103,13 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
   );
 }
 
-// One line per student. The colour matches the status (red needs help, yellow behind, green doing fine),
-// and the word and symbol say it too, so colour is never the only signal.
+// One line per student. Only the status word is coloured (red needs help, yellow behind, green doing fine);
+// the word and symbol say it too, so colour is never the only signal.
 const LOOK = {
-  needs_help: { row: "bg-help text-help-ink", word: "! Needs help" },
-  behind: { row: "bg-sun text-sun-ink", word: "◷ Behind" },
-  not_started: { row: "bg-card text-foreground border-2 border-dashed border-[#7FA08B]", word: "○ Not started" },
-  on_track: { row: "bg-ontrack text-ontrack-ink", word: "✓ Doing fine" },
+  needs_help: { word: "! Needs help", color: "text-[#B3261E]" },
+  behind: { word: "◷ Behind", color: "text-[#9A6700]" },
+  not_started: { word: "○ Not started", color: "text-muted-foreground" },
+  on_track: { word: "✓ Doing fine", color: "text-[#047D13]" },
 };
 
 function StudentRow({ s, classId, sessionId, now, catchUp }: { s: ClassroomStudent; classId: string; sessionId?: string; now: number; catchUp: CatchUp }) {
@@ -117,12 +117,12 @@ function StudentRow({ s, classId, sessionId, now, catchUp }: { s: ClassroomStude
   const where = s.current ? `${s.current.lesson_title}, step ${s.current.step}` : "No activity yet";
   const why = s.status === "on_track" || !s.reasons.length ? where : s.reasons[0];
   return (
-    <article className={`grid items-center gap-x-5 gap-y-2 rounded-[20px] px-5 py-3.5 sm:grid-cols-[minmax(0,13rem)_minmax(0,1fr)_auto] ${look.row}`}>
-      <Link href={`/teach/${classId}/students/${s.id}`} className="text-lg font-semibold text-inherit">{s.label}</Link>
+    <article className="grid items-center gap-x-5 gap-y-2 py-3.5 sm:grid-cols-[minmax(0,13rem)_minmax(0,1fr)_auto]">
+      <Link href={`/teach/${classId}/students/${s.id}`} className="text-lg font-semibold text-foreground">{s.label}</Link>
       <p className="m-0 min-w-0">
-        <span className="font-semibold">{look.word}</span>
+        <span className={`font-semibold ${look.color}`}>{look.word}</span>
         <span> · {why}</span>
-        <span className="block text-sm opacity-80">
+        <span className="block text-sm text-muted-foreground">
           {[`${s.percent_complete}% done`, s.time_on_task_ms ? `working for ${formatDuration(s.time_on_task_ms)}` : null,
             s.last_active_at ? `active ${timeAgo(s.last_active_at, now)}` : null].filter(Boolean).join(" · ")}
         </span>
@@ -146,7 +146,7 @@ function StudentRow({ s, classId, sessionId, now, catchUp }: { s: ClassroomStude
             <input type="hidden" name="studentId" value={s.id} />
             <input type="hidden" name="status" value={s.present_today === false ? "present" : "absent"} />
             <button type="submit" aria-label={`${s.label}: ${s.present_today === false ? "absent, mark present" : "here, mark absent"}`}
-              className="cursor-pointer border-0 bg-transparent p-0 text-[15px] font-medium text-inherit underline underline-offset-2">
+              className="cursor-pointer border-0 bg-transparent p-0 text-[15px] font-medium text-foreground underline underline-offset-2">
               {s.present_today === false ? "✗ Absent" : "✓ Here"}
             </button>
           </form>
