@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { requireStaff } from "@/server/auth";
 
@@ -17,11 +18,14 @@ export default async function TeachHome() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-semibold tracking-tight">{staff.role === "admin" ? "All classes" : "My classes"}</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-3xl font-semibold tracking-tight">{staff.role === "admin" ? "All classes" : "My classes"}</h1>
+        <Link href="/teach/new" className={buttonVariants({ size: "lg" })}>+ Set up a class</Link>
+      </div>
       {!classes?.length ? (
         <div className="rounded-xl border border-dashed p-8 text-center">
           <p className="font-medium">You don&apos;t have any classes yet.</p>
-          <p className="mt-1 text-muted-foreground">Once a class is set up for you, it will show here.</p>
+          <p className="mt-1 text-muted-foreground">Set one up in a few minutes: add your roster, pick units, print join cards.</p>
         </div>
       ) : (
         <ul className="grid gap-4 sm:grid-cols-2">
