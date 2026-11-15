@@ -1,6 +1,6 @@
 "use server";
 
-import { checkAnswer, getOpenActivity, recordEvent } from "@/server/lesson-player";
+import { checkAnswer, checkPausePoint, getOpenActivity, recordEvent } from "@/server/lesson-player";
 import { getStudent } from "@/server/student-session";
 import type { AnswerResult } from "@/types/student-lesson";
 
@@ -65,4 +65,13 @@ export async function reportCodeCheck(activityId: string, passed: number, total:
 export async function logHint(activityId: string) {
   const { student, activity } = await load(activityId);
   await recordEvent(student, activity, { event_type: "hint" });
+}
+
+/** A question that pops up when the video pauses. Logged as an attempt on the video step. */
+export async function answerPausePoint(activityId: string, atSeconds: number, answer: number): Promise<AnswerResult> {
+  const { student, activity } = await load(activityId);
+  if (activity.type !== "video") throw new Error(NOT_ALLOWED);
+  const result = checkPausePoint(activity, Number(atSeconds), Number(answer));
+  await recordEvent(student, activity, { event_type: "attempt", correct: result.correct, payload: { pause_at: Number(atSeconds), answer: Number(answer) } });
+  return result;
 }

@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { checkCode, friendlyError, type CheckSummary, type PythonRunner, type RunResult } from "@/lib/python/runner";
 import type { AnswerResult } from "@/types/student-lesson";
-import { CodeBlock, Feedback } from "./feedback";
+import { Feedback } from "./feedback";
 import type { StepProps } from "./simple-steps";
 
 export function CodeStep({ activity, onDone, elapsed, runner }: StepProps<"code"> & { runner: PythonRunner | null }) {
@@ -105,23 +105,6 @@ export function ParsonsStep({ activity, onDone, elapsed }: StepProps<"parsons">)
         })}>{pending ? "Checking…" : "Check my order"}</Button>
       )}
       <Feedback result={activity.done && !result ? { correct: true, message: "You already got this one." } : result} />
-    </div>
-  );
-}
-
-export function VideoStep({ activity }: StepProps<"video">) {
-  const s = activity.step;
-  return (
-    <div className="space-y-4">
-      {s.youtube_id ? (
-        <div className="aspect-video overflow-hidden rounded-lg border">
-          <iframe className="size-full" src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(s.youtube_id)}`}
-            title={activity.title || "Lesson video"} allow="encrypted-media; picture-in-picture" allowFullScreen />
-        </div>
-      ) : <CodeBlock code="(No video added yet.)" />}
-      {s.key_points.length > 0 && (
-        <div><p className="font-medium">Key points</p><ul className="list-disc space-y-1 pl-5">{s.key_points.map((k) => <li key={k}>{k}</li>)}</ul></div>
-      )}
     </div>
   );
 }
