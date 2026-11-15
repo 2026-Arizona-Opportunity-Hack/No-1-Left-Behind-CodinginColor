@@ -10,7 +10,9 @@ import type { PlayerActivity, PlayerLesson } from "@/types/student-lesson";
 import { CodeStep, ParsonsStep, VideoStep } from "./rich-steps";
 import { ChoiceStep, FillBlankStep, PredictStep, SlideStep, WorksheetStep, type StepProps } from "./simple-steps";
 
-export function LessonPlayer({ lesson }: { lesson: PlayerLesson }) {
+export type CatchUp = { todayLesson: { id: string; title: string } | null; onFinish: () => Promise<boolean> };
+
+export function LessonPlayer({ lesson, catchUp }: { lesson: PlayerLesson; catchUp?: CatchUp }) {
   const steps = lesson.activities;
   const [done, setDone] = useState(() => new Set(steps.filter((a) => a.done).map((a) => a.id)));
   const firstOpen = steps.findIndex((a) => !a.done);
@@ -53,6 +55,7 @@ export function LessonPlayer({ lesson }: { lesson: PlayerLesson }) {
     });
   }
 
+  if ((finished || !current) && catchUp) return <CaughtUp lessonTitle={lesson.title} catchUp={catchUp} />;
   if (finished || !current) {
     return (
       <section aria-labelledby="done-heading" className="mx-auto max-w-xl space-y-4 rounded-2xl border p-8 text-center">
@@ -120,6 +123,35 @@ export function LessonPlayer({ lesson }: { lesson: PlayerLesson }) {
       </div>
       {!canContinue && <p className="text-right text-sm text-muted-foreground">Finish this step to unlock the next one.</p>}
     </div>
+  );
+}
+
+function CaughtUp({ lessonTitle, catchUp }: { lessonTitle: string; catchUp: CatchUp }) {
+  const [state, setState] = useState<"saving" | "done" | "not_yet">("saving");
+  const sent = useRef(false);
+  useEffect(() => {
+    if (sent.current) return; // run once, even when React re-runs effects
+    sent.current = true;
+    catchUp.onFinish().then((ok) => setState(ok ? "done" : "not_yet"), () => setState("not_yet"));
+  }, [catchUp]);
+  return (
+    <section aria-labelledby="caught-up-heading" aria-live="polite" className="mx-auto max-w-xl space-y-4 rounded-2xl border p-8 text-center">
+      {state === "saving" && <p role="status">Saving…</p>}
+      {state === "done" && <>
+        <p aria-hidden="true" className="text-5xl">🎉</p>
+        <h1 id="caught-up-heading" className="text-3xl font-semibold">You&apos;re caught up!</h1>
+        <p className="text-muted-foreground">You finished the catch-up for {lessonTitle}. Your teacher can see it.</p>
+        <div className="flex flex-wrap justify-center gap-3">
+          {catchUp.todayLesson && <Link href={`/learn/${catchUp.todayLesson.id}`} className={buttonVariants({ size: "lg" })}>Rejoin your class: {catchUp.todayLesson.title}</Link>}
+          <Link href="/learn" className={buttonVariants({ size: "lg", variant: "outline" })}>Back to my course</Link>
+        </div>
+      </>}
+      {state === "not_yet" && <>
+        <h1 id="caught-up-heading" className="text-2xl font-semibold">Almost there</h1>
+        <p className="text-muted-foreground">A few steps still need finishing. Go back and complete each one.</p>
+        <Link href="/learn" className={buttonVariants({ variant: "outline" })}>Back to my course</Link>
+      </>}
+    </section>
   );
 }
 
