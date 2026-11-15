@@ -23,7 +23,7 @@ export default function JoinPage({ searchParams }: Props) {
           <div aria-hidden="true" className="mt-11 hidden w-80 -rotate-3 rounded-2xl border-2 border-dashed border-primary bg-card px-6 py-5 sm:block">
             <p className="font-semibold">Your name</p>
             <p className="mt-3 flex justify-between text-sm text-muted-foreground"><span>Class code</span><span>Your personal code</span></p>
-            <p className="flex justify-between font-mono text-xl font-bold"><span>MARY-P3</span><span>K7Q2MX</span></p>
+            <p className="flex justify-between font-mono text-xl font-bold"><span>MARY-P3</span><span>7KQ2MX</span></p>
           </div>
         </div>
         <div className="rounded-[28px] bg-card p-8 sm:p-11">

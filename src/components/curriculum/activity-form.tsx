@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { updateActivityAction } from "@/app/(staff)/admin/curriculum/actions";
+import { CodeEditor } from "@/components/code/code-editor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -104,7 +105,10 @@ export function ActivityForm({ activity }: { activity: Activity }) {
           <p className="text-xs text-muted-foreground">One line of code per line, with its indentation. Students get them shuffled.</p></div></>}
       {(t === "code_exercise" || t === "fix_bug") && <>
         {text("prompt", "Instructions", { area: true })}
-        {text("starter_code", t === "fix_bug" ? "Code with the mistake in it" : "Code students start with", { code: true })}
+        <div className="space-y-1">
+          <Label>{t === "fix_bug" ? "Code with the mistake in it" : "Code students start with"}</Label>
+          <CodeEditor value={str("starter_code")} onChange={(v) => set("starter_code", v)} label="Starter code" minLines={6} />
+        </div>
         <fieldset className="space-y-2"><legend className="font-semibold">How we check the student&apos;s code (when they press &quot;Check my code&quot;)</legend>
           {checks.length > 0 && (
             <div aria-hidden="true" className="hidden grid-cols-[1fr_1.2fr_1.4fr_auto] gap-2 px-3 text-sm font-semibold text-muted-foreground sm:grid">
@@ -113,8 +117,19 @@ export function ActivityForm({ activity }: { activity: Activity }) {
           )}
           {checks.map((c, i) => (
             <div key={i} className="grid items-start gap-2 rounded-2xl border-2 border-border p-3 sm:grid-cols-[1fr_1.2fr_1.4fr_auto]">
-              <Input aria-label={`Check ${i + 1} name`} value={c.label} placeholder="What it checks, e.g. Stops at 5"
-                onChange={(e) => set("tests", checks.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
+              <div className="space-y-2">
+                <Input aria-label={`Check ${i + 1} name`} value={c.label} placeholder="What it checks, e.g. Stops at 5"
+                  onChange={(e) => set("tests", checks.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
+                <select aria-label={`Check ${i + 1} type`} value={c.assert !== undefined ? "assert" : "output"} className="h-9 w-full rounded-md border bg-background px-2 text-sm"
+                  onChange={(e) => set("tests", checks.map((x, j) => {
+                    if (j !== i) return x;
+                    const base: Check = { label: x.label, stdin: x.stdin, hint: x.hint };
+                    return e.target.value === "assert" ? { ...base, assert: "assert True" } : { ...base, expectedOutput: "" };
+                  }))}>
+                  <option value="output">It must print exactly…</option>
+                  <option value="assert">Custom Python test (advanced)</option>
+                </select>
+              </div>
               {c.assert !== undefined
                 ? <Textarea aria-label={`Check ${i + 1} Python test`} value={c.assert} className="min-h-12 font-mono text-[15px]"
                     onChange={(e) => set("tests", checks.map((x, j) => (j === i ? { ...x, assert: e.target.value } : x)))} />
