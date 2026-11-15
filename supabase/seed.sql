@@ -84,9 +84,26 @@ from (values
   ('20000000-0000-0000-0000-000000000008', 'functions', 'Put it all together: build a tiny quiz game.', 'score = 0\nanswer = input("2 + 2? ")\nif answer == "4":\n    score = score + 1\nprint("Score:", score)', 'What does score = score + 1 do?', '["Adds one point", "Resets the score", "Prints the score"]', 0)
 ) as l(id, concept, body, code, q, options, answer)
 cross join lateral (values
-  (1, 'slide', 'Key idea', jsonb_build_object('heading', 'Key idea', 'body', l.body, 'code', l.code)),
+  (1, 'slide', 'Key idea', jsonb_build_object('heading', 'Key idea', 'body', l.body, 'code', replace(l.code, '\n', chr(10)))),
   (2, 'exit_question', 'Exit question', jsonb_build_object('prompt', l.q, 'options', l.options::jsonb, 'answer', l.answer))
 ) as s(position, type, title, content);
+
+-- "Lists" follows CIC's full module template: slides → quick check → digital worksheet → exit question.
+-- The worksheet is a printed CIC worksheet turned into an on-screen form (P0: digital worksheets).
+update public.activities set position = 4
+where lesson_id = '20000000-0000-0000-0000-000000000006' and type = 'exit_question';
+insert into public.activities (id, lesson_id, position, type, title, concept_tag, is_core, content, hints) values
+('30000000-0000-0000-0000-000000000061', '20000000-0000-0000-0000-000000000006', 2, 'quiz_mcq', 'Quick check', 'lists', true,
+ $j${"prompt": "pets = [\"cat\", \"dog\", \"fish\"]\nHow many items are in pets?", "options": ["2", "3", "4"], "answer": 1, "explanation": "Count the values between the square brackets: cat, dog, fish."}$j$,
+ $j$["Count the words inside the square brackets."]$j$),
+('30000000-0000-0000-0000-000000000062', '20000000-0000-0000-0000-000000000006', 3, 'worksheet', 'Worksheet: my playlist', 'lists', true,
+ $j${"instructions": "Plan a Python list for your favorite playlist. There are no wrong answers: your teacher will read these.",
+     "fields": [
+       {"id": "songs", "label": "Write a Python list with 3 of your favorite songs", "kind": "long", "required": true},
+       {"id": "first", "label": "What would playlist[0] give you?", "kind": "short", "required": true},
+       {"id": "count", "label": "How many songs are in your list?", "kind": "number", "required": true},
+       {"id": "question", "label": "Anything about lists you're still unsure about?", "kind": "long"}]}$j$,
+ null);
 
 -- ---------- Pre/post test for "Making decisions" (equivalent questions, not identical) ----------
 insert into public.assessments (id, module_id, kind) values
@@ -108,9 +125,12 @@ insert into public.assessment_questions (assessment_id, position, concept_tag, c
   ('a0000000-0000-0000-0000-000000000002', 6, 'lists', $j${"prompt": "nums = [4, 8, 15]\nWhat is nums[0]?", "options": ["4", "8", "15"], "answer": 0}$j$);
 
 -- ---------- Classes and students ----------
-insert into public.classes (id, name, school, class_code) values
-  ('c0000000-0000-0000-0000-000000000003', 'Period 3', 'Maryvale High', 'MARY-P3'),
-  ('c0000000-0000-0000-0000-000000000005', 'Period 5', 'Desert Edge High', 'DESERT-P5');
+-- Taught by the demo teacher account if it exists (teacher@launchpad.test); otherwise unassigned.
+insert into public.classes (id, name, school, class_code, instructor_id) values
+  ('c0000000-0000-0000-0000-000000000003', 'Period 3', 'Maryvale High', 'MARY-P3',
+   (select id from auth.users where email = 'teacher@launchpad.test')),
+  ('c0000000-0000-0000-0000-000000000005', 'Period 5', 'Desert Edge High', 'DESERT-P5',
+   (select id from auth.users where email = 'teacher@launchpad.test'));
 
 -- Join codes: 6 characters, no look-alikes (0/O, 1/I/L). Hash = sha256(class_id || ':' || code).
 -- In each list: name, demo code, Unit 2 progress for "If statements" / "Loops" / "Lists",
