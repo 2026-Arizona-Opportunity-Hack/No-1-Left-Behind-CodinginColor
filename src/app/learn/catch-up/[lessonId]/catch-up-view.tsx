@@ -14,22 +14,28 @@ export function CatchUpView({ lesson, recap, missedOn, todayLesson }: {
   const catchUp = useMemo(() => ({ todayLesson, onFinish: () => finishCatchUp(lesson.id) }), [lesson.id, todayLesson]);
   if (started) return <LessonPlayer lesson={lesson} catchUp={catchUp} />;
   return (
-    <section aria-labelledby="cu-h" className="mx-auto max-w-2xl space-y-5 rounded-2xl border p-8">
-      <p className="text-sm font-medium text-muted-foreground">Catch-up{missedOn ? ` · you missed this on ${missedOn}` : ""}</p>
-      <h1 id="cu-h" className="text-3xl font-semibold">Let&apos;s catch you up on {lesson.title}</h1>
-      <ol className="flex flex-wrap gap-2 text-sm" aria-label="Catch-up steps">
-        <li className="rounded-full border-2 border-primary px-3 py-1 font-medium">1. {recap?.minutes ?? 2}-minute recap</li>
-        <li className="rounded-full border-2 border-zinc-300 px-3 py-1">2. {lesson.activities.length} core steps</li>
-        <li className="rounded-full border-2 border-zinc-300 px-3 py-1">3. Caught up!</li>
-      </ol>
-      <div className="space-y-3 rounded-xl bg-muted/50 p-5">
-        <h2 className="font-semibold">The key ideas</h2>
-        {recap ? (
-          <ul className="list-disc space-y-2 pl-5 text-lg leading-8">{recap.key_points.map((k) => <li key={k}>{k}</li>)}</ul>
-        ) : <p>Read each step carefully. Use &quot;Need a hint?&quot; whenever you&apos;re stuck.</p>}
+    <div className="grid gap-10 lg:grid-cols-[minmax(0,480px)_1fr] lg:gap-14">
+      <div>
+        <p className="text-base text-muted-foreground">{missedOn ? `You missed this on ${missedOn}` : "Catch-up"} · about 15 minutes</p>
+        <h1 className="mt-2 text-5xl leading-[1.04] font-bold tracking-tight sm:text-6xl">Let&apos;s catch you up on {lesson.title}</h1>
+        <ol aria-label="Catch-up steps" className="mt-10 flex list-none flex-col gap-2.5 p-0 text-lg">
+          <li className="flex items-center gap-3.5 rounded-2xl bg-[#FFD75E] px-4.5 py-3.5 font-semibold"><span className="font-mono font-extrabold">1</span><span className="flex-1">{recap?.minutes ?? 2}-minute recap</span><span className="text-[15px] font-medium">You are here</span></li>
+          <li className="flex items-center gap-3.5 px-4.5 py-3.5"><span className="font-mono font-extrabold">2</span><span className="flex-1">Core exercises</span><span className="text-[15px] text-muted-foreground">{lesson.activities.length} steps</span></li>
+          <li className="flex items-center gap-3.5 px-4.5 py-3.5"><span className="font-mono font-extrabold">3</span><span className="flex-1">You&apos;re caught up</span></li>
+        </ol>
       </div>
-      <p className="text-muted-foreground">We skipped the slides and the extra steps. You&apos;ll only do what you need to catch up.</p>
-      <Button size="lg" onClick={() => setStarted(true)}>I&apos;ve read it: start the exercises</Button>
-    </section>
+      <section aria-labelledby="cu-h" className="flex flex-col gap-5 rounded-[28px] bg-card p-8 sm:px-10 sm:py-9">
+        <h2 id="cu-h" className="text-2xl font-semibold">The key ideas</h2>
+        {recap ? recap.key_points.map((k) => (
+          <div key={k} className="grid grid-cols-[36px_1fr] gap-4">
+            <b aria-hidden="true" className="font-mono text-xl font-extrabold text-[#0DB031]">&gt;</b>
+            <p className="text-lg">{k}</p>
+          </div>
+        )) : <p>Read each step carefully. Use &quot;Need a hint?&quot; whenever you&apos;re stuck.</p>}
+        <p className="text-muted-foreground">We skipped the slides and the extra steps. You&apos;ll only do what you need to catch up.</p>
+        <div className="flex-1" />
+        <Button size="lg" className="self-start" onClick={() => setStarted(true)}>Start the exercises</Button>
+      </section>
+    </div>
   );
 }

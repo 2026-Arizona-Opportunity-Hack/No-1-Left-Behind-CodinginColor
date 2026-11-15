@@ -53,7 +53,7 @@ export function ChoiceStep({ activity, onDone, elapsed }: StepProps<"choice">) {
       <fieldset className="space-y-3">
         <legend className="mb-3 text-lg font-medium whitespace-pre-wrap">{activity.step.prompt}</legend>
         {activity.step.options.map((opt, i) => (
-          <label key={i} className="flex cursor-pointer items-center gap-3 rounded-lg border p-4 has-checked:border-primary has-checked:bg-muted has-focus-visible:outline-2">
+          <label key={i} className="flex min-h-16 cursor-pointer items-center gap-4 rounded-[20px] border-2 border-border bg-card px-6 text-lg has-checked:border-[3px] has-checked:border-primary has-checked:font-semibold has-focus-visible:outline-2">
             <input type="radio" name={activity.id} value={i} checked={choice === i} disabled={locked}
               onChange={() => setChoice(i)} className="size-5" />
             <span className="font-mono">{opt}</span>
@@ -91,11 +91,11 @@ export function FillBlankStep({ activity, onDone, elapsed }: StepProps<"fill_bla
   return (
     <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); submit(answer); }}>
       <p className="text-lg font-medium">{activity.step.prompt}</p>
-      <div className="rounded-lg bg-zinc-950 p-4 font-mono text-sm leading-7 text-zinc-100">
+      <div className="rounded-lg bg-[#0F2E1C] p-4 font-mono text-sm leading-7 text-[#E6F4EA]">
         <span className="whitespace-pre-wrap">{before}</span>
         <input aria-label="Fill in the blank" value={answer} onChange={(e) => setAnswer(e.target.value)} disabled={locked}
           spellCheck={false} autoCapitalize="off"
-          className="mx-1 w-32 rounded border-2 border-amber-400 bg-zinc-800 px-2 font-mono text-zinc-50 focus:outline-2 focus:outline-amber-300" />
+          className="mx-1 w-32 rounded border-2 border-amber-400 bg-zinc-800 px-2 font-mono text-[#E6F4EA] focus:outline-2 focus:outline-amber-300" />
         <span className="whitespace-pre-wrap">{after}</span>
       </div>
       {!locked && <Button type="submit" size="lg" disabled={!answer.trim() || pending}>{pending ? "Checking…" : "Check my answer"}</Button>}

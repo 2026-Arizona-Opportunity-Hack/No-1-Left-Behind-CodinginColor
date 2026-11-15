@@ -234,8 +234,8 @@ Without a key, AI features switch off and manual authoring works as normal.
 ## Team: No 1 Left Behind
 
 - Shrey Bishnoi ([@shrey-Bish](https://github.com/shrey-Bish)): student experience, teacher and admin screens, deployment
-- Maulik Jadav ([@maulik-jadav](https://github.com/maulik-jadav)): curriculum authoring and class setup logic
-- Dhanush ([@dkoyi](https://github.com/dkoyi)): teacher dashboard rules, learning gain, read API
+- Maulik Kalpesh Jadav ([@maulik-jadav](https://github.com/maulik-jadav)): curriculum authoring and class setup logic
+- Dhanush Koyi ([@dkoyi](https://github.com/dkoyi)): teacher dashboard rules, learning gain, read API
 - Poulami: design, documentation, demo
 - Greg
 

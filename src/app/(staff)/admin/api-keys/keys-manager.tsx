@@ -17,7 +17,7 @@ export function KeysManager({ keys }: { keys: ApiKeyRow[] }) {
 
   return (
     <div className="space-y-6">
-      <form className="flex flex-wrap items-end gap-3 rounded-xl border p-4"
+      <form className="flex flex-wrap items-end gap-3 rounded-2xl bg-card p-4"
         onSubmit={(e) => { e.preventDefault(); save(() => createKeyAction(name), "Key created", (d) => { setFresh(d.key); setName(""); setCopied(false); }); }}>
         <div className="flex-1 space-y-1">
           <Label htmlFor="key-name">Name the new key (who will use it)</Label>

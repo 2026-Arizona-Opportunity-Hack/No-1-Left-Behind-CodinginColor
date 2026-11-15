@@ -81,7 +81,7 @@ export default async function StudentPage({ params }: Props) {
           guideFrom={!stuck.teaching_guide?.about && fallbackGuide ? fallbackGuide.title || ACTIVITY_LABEL[fallbackGuide.type] : null} />
       )}
 
-      <section aria-labelledby="pace-heading" className="grid gap-4 rounded-2xl border p-5 md:grid-cols-2">
+      <section aria-labelledby="pace-heading" className="grid gap-4 rounded-3xl bg-card p-5 md:grid-cols-2">
         <h2 id="pace-heading" className="sr-only">Where this student works</h2>
         <form action={saveStartModule} className="space-y-2">
           {ids}
@@ -122,7 +122,7 @@ export default async function StudentPage({ params }: Props) {
           const touched = steps.some((x) => x.s.status !== "not_started");
           const doneCount = steps.filter((x) => x.s.status === "done").length;
           return (
-            <details key={lesson.id} open={touched && doneCount < steps.length} className="rounded-xl border p-4">
+            <details key={lesson.id} open={touched && doneCount < steps.length} className="rounded-2xl bg-card p-4">
               <summary className="cursor-pointer font-medium">
                 Unit {m.position} · {lesson.title}
                 <span className="ml-2 text-sm font-normal text-muted-foreground">{doneCount} of {steps.length} steps done</span>
@@ -146,7 +146,7 @@ export default async function StudentPage({ params }: Props) {
                       </p>
                       {s.last_code && (
                         <details className="mt-2"><summary className="cursor-pointer text-sm font-medium">Their latest code</summary>
-                          <pre className="mt-2 overflow-auto rounded-md bg-zinc-950 p-3 font-mono text-sm text-zinc-100">{s.last_code}</pre></details>
+                          <pre className="mt-2 overflow-auto rounded-md bg-[#0F2E1C] p-3 font-mono text-sm text-[#E6F4EA]">{s.last_code}</pre></details>
                       )}
                       {s.worksheet_answers && (
                         <dl className="mt-2 space-y-1 rounded-md border bg-background p-3 text-sm">

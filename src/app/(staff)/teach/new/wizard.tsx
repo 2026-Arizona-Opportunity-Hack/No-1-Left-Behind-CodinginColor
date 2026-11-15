@@ -54,7 +54,7 @@ export function ClassWizard({ modules }: { modules: WizardModule[] }) {
           </li>
         ))}
       </ol>
-      <section aria-live="polite" className="rounded-2xl border p-6">
+      <section aria-live="polite" className="rounded-3xl bg-card p-6">
         {step === 0 && (
           <ClassStep pending={pending} onSave={(name, school) =>
             save(() => createClassStep(name, school), (d) => { setCls({ ...d, name, school }); setStep(1); })} />

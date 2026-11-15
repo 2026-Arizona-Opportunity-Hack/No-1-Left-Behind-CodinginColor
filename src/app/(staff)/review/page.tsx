@@ -42,7 +42,7 @@ export default async function CurriculumPage() {
           <ol className="space-y-2">
             {m.lessons.map((l) => (
               <li key={l.id}>
-                <details className="rounded-xl border p-4">
+                <details className="rounded-2xl bg-card p-4">
                   <summary className="cursor-pointer font-medium">
                     {l.title}
                     <span className="ml-2 text-sm font-normal text-muted-foreground">
@@ -70,7 +70,7 @@ export default async function CurriculumPage() {
                                   <ul className="list-disc pl-5">{a.teaching_guide.mistakes.map((x) => <li key={x}>{x}</li>)}</ul></div>
                               )}
                               {a.teaching_guide.example && (
-                                <pre className="overflow-auto rounded-md bg-zinc-950 p-3 font-mono text-zinc-100">{a.teaching_guide.example}</pre>
+                                <pre className="overflow-auto rounded-md bg-[#0F2E1C] p-3 font-mono text-[#E6F4EA]">{a.teaching_guide.example}</pre>
                               )}
                               {!!a.teaching_guide.ask?.length && (
                                 <div><p className="font-medium">Questions to ask</p>

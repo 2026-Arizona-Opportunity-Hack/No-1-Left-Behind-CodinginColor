@@ -18,7 +18,7 @@ export function ModuleList({ modules }: { modules: Row[] }) {
     <div className="space-y-6">
       <ol className="space-y-3">
         {modules.map((m, i) => (
-          <li key={m.id} className="flex flex-wrap items-center gap-3 rounded-xl border p-4">
+          <li key={m.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-card p-4">
             <div className="min-w-0 flex-1">
               <Link href={`/admin/curriculum/${m.id}`} className="text-lg font-semibold underline-offset-4 hover:underline">Unit {i + 1}: {m.title}</Link>
               <p className="text-sm text-muted-foreground">{m.lesson_count} lessons{m.description ? ` · ${m.description}` : ""}</p>

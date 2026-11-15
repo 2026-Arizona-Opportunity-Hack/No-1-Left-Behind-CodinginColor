@@ -41,7 +41,7 @@ export function HelpPanel(p: HelpPanelProps) {
         <div className="space-y-3">
           <h3 className="font-semibold">Their work</h3>
           <p className="text-sm text-muted-foreground">{p.attempts} {p.attempts === 1 ? "try" : "tries"} · {p.hints} hint{p.hints === 1 ? "" : "s"} used · {p.timeLabel}</p>
-          {p.code ? <pre aria-label="Their latest code" className="overflow-auto rounded-lg bg-zinc-950 p-4 font-mono text-sm leading-6 text-zinc-100">{p.code}</pre>
+          {p.code ? <pre aria-label="Their latest code" className="overflow-auto rounded-lg bg-[#0F2E1C] p-4 font-mono text-sm leading-6 text-[#E6F4EA]">{p.code}</pre>
             : <p className="rounded-lg bg-muted p-3 text-sm">No code yet: this step is a question, so start with the guide.</p>}
           {status && <p role="status" className="text-sm text-muted-foreground">{status}</p>}
           {summary && (
@@ -67,7 +67,7 @@ export function HelpPanel(p: HelpPanelProps) {
               {p.guide.mistakes.length > 0 && <div><p className="text-sm font-semibold text-muted-foreground">Common mistakes</p>
                 <ul className="list-disc space-y-1 pl-5">{p.guide.mistakes.map((m) => <li key={m}>{m}</li>)}</ul></div>}
               {p.guide.example && <div><p className="text-sm font-semibold text-muted-foreground">A worked example</p>
-                <pre className="overflow-auto rounded-lg bg-zinc-950 p-3 font-mono text-sm text-zinc-100">{p.guide.example}</pre></div>}
+                <pre className="overflow-auto rounded-lg bg-[#0F2E1C] p-3 font-mono text-sm text-[#E6F4EA]">{p.guide.example}</pre></div>}
               {p.guide.ask.length > 0 && <div><p className="text-sm font-semibold text-muted-foreground">Questions to ask (don&apos;t give the answer)</p>
                 <ul className="space-y-2">{p.guide.ask.map((q) => <li key={q} className="rounded-xl rounded-bl-sm bg-muted p-3">“{q}”</li>)}</ul></div>}
             </>

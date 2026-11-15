@@ -31,7 +31,7 @@ export default async function TeachHome() {
         <ul className="grid gap-4 sm:grid-cols-2">
           {classes.map((c) => (
             <li key={c.id}>
-              <Link href={`/teach/${c.id}`} className="block rounded-xl border p-5 hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2">
+              <Link href={`/teach/${c.id}`} className="block rounded-2xl bg-card p-5 hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2">
               <p className="text-sm text-muted-foreground">{c.school}</p>
               <p className="text-xl font-semibold">{c.name}</p>
               <p className="mt-2 text-sm">

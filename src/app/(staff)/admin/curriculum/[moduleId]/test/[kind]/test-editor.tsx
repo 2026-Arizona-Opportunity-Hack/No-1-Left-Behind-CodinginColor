@@ -32,7 +32,7 @@ export function TestEditor({ moduleId, unitTitle, kind, questions }: { moduleId:
       </div>
       <ol className="space-y-4">
         {drafts.map((q, i) => (
-          <li key={i} className="space-y-3 rounded-xl border p-4">
+          <li key={i} className="space-y-3 rounded-2xl bg-card p-4">
             <div className="flex items-center justify-between"><p className="font-medium">Question {i + 1}</p>
               <Button size="sm" variant="ghost" onClick={() => setDrafts(drafts.filter((_, j) => j !== i))} aria-label={`Remove question ${i + 1}`}>Remove</Button></div>
             <div className="space-y-1"><Label htmlFor={`t-${i}`}>Topic</Label>

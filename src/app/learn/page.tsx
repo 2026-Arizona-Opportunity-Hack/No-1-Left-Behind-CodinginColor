@@ -1,24 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import { buttonVariants } from "@/components/ui/button";
 import { StudentHeader } from "@/components/student-header";
 import type { LessonStatus, MapModule } from "@/lib/course-map";
-import { getCourseMap } from "@/server/student-learning";
-import { getTestStatus, type TestStatus } from "@/server/student-tests";
-import { getMissedLessons } from "@/server/catch-up";
 import { weekdayName } from "@/lib/school-date";
+import { getMissedLessons } from "@/server/catch-up";
+import { getCourseMap } from "@/server/student-learning";
 import { requireStudent } from "@/server/student-session";
+import { getTestStatus, type TestStatus } from "@/server/student-tests";
 
 export const metadata: Metadata = { title: "My course · CIC Launchpad" };
 
-// Status is never shown by color alone: every state has an icon and a word.
-const STATUS: Record<LessonStatus | "locked", { icon: string; word: string; className: string }> = {
-  completed: { icon: "✓", word: "Done", className: "border-green-700 bg-green-50 text-green-800" },
-  in_progress: { icon: "◐", word: "Started", className: "border-amber-600 bg-amber-50 text-amber-800" },
-  not_started: { icon: "○", word: "Not started", className: "border-zinc-400 bg-white text-zinc-700" },
-  exempt: { icon: "–", word: "Skipped by your teacher", className: "border-zinc-300 bg-zinc-50 text-zinc-600" },
-  locked: { icon: "🔒", word: "Locked", className: "border-zinc-300 bg-zinc-100 text-zinc-600" },
+// Status is never shown by color alone: every state has a symbol and a word.
+const STATUS: Record<LessonStatus, { icon: string; word: string }> = {
+  completed: { icon: "✓", word: "Done" },
+  in_progress: { icon: "◐", word: "Started" },
+  not_started: { icon: "○", word: "Not started" },
+  exempt: { icon: "–", word: "Skipped by your teacher" },
 };
 
 export default function LearnPage() {
@@ -32,84 +30,102 @@ export default function LearnPage() {
 async function CourseMapPage() {
   const student = await requireStudent();
   const [map, tests, missed] = await Promise.all([getCourseMap(student), getTestStatus(student), getMissedLessons(student)]);
-  const firstName = student.displayName.split(" ")[0];
+  const lessons = map.modules.flatMap((m) => m.lessons);
+  const done = lessons.filter((l) => l.status === "completed").length;
+  const pre = map.modules.map((m) => ({ m, t: tests[m.id] })).find((x) => x.t?.pre === "todo");
+  const post = map.modules.map((m) => ({ m, t: tests[m.id] })).find((x) => x.t?.post === "todo");
 
   return (
     <>
       <StudentHeader student={student} />
-      <main className="mx-auto w-full max-w-5xl flex-1 space-y-8 px-4 py-8 sm:px-6">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+      <main className="mx-auto grid w-full max-w-6xl flex-1 gap-10 px-6 pt-4 pb-12 sm:px-12 lg:grid-cols-[minmax(0,500px)_1fr] lg:gap-14">
+        <div className="flex flex-col gap-5">
           <div>
-            <p className="text-muted-foreground">Hi {firstName}! Your course</p>
-            <h1 className="text-3xl font-semibold tracking-tight">Python Basics</h1>
+            <h1 className="text-5xl leading-none font-bold tracking-tight sm:text-6xl">Python Basics</h1>
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <span aria-hidden="true" className="flex gap-1 font-mono text-2xl leading-none font-extrabold">
+                {lessons.map((l) => (
+                  <span key={l.id} className={l.id === map.next?.lessonId ? "rounded-md bg-[#FFD75E] px-0.5" : l.status === "completed" ? "text-[#0DB031]" : "text-[#B5CDBD]"}>&gt;</span>
+                ))}
+              </span>
+              <span className="text-muted-foreground">{done} of {lessons.length} lessons done</span>
+            </div>
           </div>
+
           {map.next ? (
-            <Link href={`/learn/${map.next.lessonId}`} className={buttonVariants({ size: "lg", className: "h-auto flex-col items-start px-5 py-3 text-left" })}>
-              <span className="text-base">{map.next.resume ? "Continue where you left off" : "Start here"}</span>
-              <span className="text-sm font-normal opacity-90">{map.next.title}</span>
+            <Link href={`/learn/${map.next.lessonId}`} className="flex items-center justify-between rounded-[28px] bg-primary px-8 py-6 text-primary-foreground no-underline hover:bg-[#047D13]">
+              <span><span className="block text-base">{map.next.resume ? "Continue where you left off" : "Start here"}</span>
+                <span className="block text-3xl leading-tight font-semibold">{map.next.title}</span></span>
+              <span aria-hidden="true" className="font-mono text-4xl font-extrabold">&gt;</span>
             </Link>
           ) : (
-            <p className="rounded-lg border border-green-700 bg-green-50 px-4 py-3 font-medium text-green-800">✓ You finished everything open to you. Nice work!</p>
+            <p className="rounded-[28px] bg-card px-8 py-6 text-xl font-semibold">✓ You finished everything open to you. Nice work!</p>
+          )}
+
+          {missed.map((m) => (
+            <div key={m.lessonId} role="status" className="flex flex-wrap items-center gap-4 rounded-3xl bg-card px-6 py-5">
+              <p className="flex-1"><b className="font-semibold">You missed {m.title} on {weekdayName(m.date)}.</b><br />
+                {m.assigned ? "Your teacher set up a catch-up for you. " : ""}Catch up in about 15 minutes.</p>
+              <Link href={`/learn/catch-up/${m.lessonId}`} className="inline-flex h-12 items-center rounded-full border-2 border-primary px-6 font-semibold text-foreground no-underline hover:bg-secondary">Catch up</Link>
+            </div>
+          ))}
+
+          {pre && (
+            <div className="flex flex-wrap items-center gap-4 rounded-3xl border-2 border-dashed border-[#7FA08B] px-6 py-4">
+              <p className="flex-1"><b className="font-semibold">Take the pre-test first.</b> A few questions, not graded.</p>
+              <Link href={`/learn/test/${pre.m.id}/pre`}>Start pre-test</Link>
+            </div>
+          )}
+          {post && (
+            <div className="flex flex-wrap items-center gap-4 rounded-3xl bg-card px-6 py-4">
+              <p className="flex-1"><b className="font-semibold">You finished {post.m.title}!</b> See how much you grew.</p>
+              <Link href={`/learn/test/${post.m.id}/post`}>Take the post-test</Link>
+            </div>
           )}
         </div>
-        {missed.map((m) => (
-          <div key={m.lessonId} role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-orange-700 bg-orange-50 p-4 text-orange-950">
-            <p><span aria-hidden="true">⏱ </span><strong>You missed {m.title} on {weekdayName(m.date)}.</strong>{" "}
-              {m.assigned ? "Your teacher set up a catch-up for you." : "No worries:"} catch up in about 15 minutes.</p>
-            <Link href={`/learn/catch-up/${m.lessonId}`} className={buttonVariants({ size: "lg" })}>Catch up now</Link>
-          </div>
-        ))}
-        {map.modules.map((m) => <UnitSection key={m.id} unit={m} tests={tests[m.id]} />)}
+
+        <div className="flex flex-col gap-4">
+          {map.modules.map((m) => <UnitCard key={m.id} unit={m} nextId={map.next?.lessonId} tests={tests[m.id]} />)}
+        </div>
       </main>
     </>
   );
 }
 
-function UnitSection({ unit, tests }: { unit: MapModule; tests?: TestStatus[string] }) {
-  const total = unit.lessons.length;
-  const pct = total ? Math.round((unit.doneCount / total) * 100) : 0;
+function UnitCard({ unit, nextId, tests }: { unit: MapModule; nextId?: string; tests?: TestStatus[string] }) {
+  if (!unit.unlocked) {
+    return (
+      <section aria-labelledby={`unit-${unit.id}`} className="flex items-center gap-5 rounded-3xl border-2 border-border px-7 py-5">
+        <svg aria-hidden="true" width="22" height="26" viewBox="0 0 22 26"><path d="M5 11V7a6 6 0 0 1 12 0v4" fill="none" stroke="#0B3D1E" strokeWidth="3" /><rect x="1" y="11" width="20" height="14" rx="4" fill="#0B3D1E" /></svg>
+        <div className="flex-1">
+          <h2 id={`unit-${unit.id}`} className="text-xl font-semibold">{unit.position} · {unit.title}</h2>
+          <p className="text-base text-muted-foreground">Locked · {unit.lockedReason}</p>
+        </div>
+        <span className="text-[15px] text-muted-foreground">{unit.lessons.length} lessons</span>
+      </section>
+    );
+  }
   return (
-    <section aria-labelledby={`unit-${unit.id}`} className="rounded-2xl border p-5">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <h2 id={`unit-${unit.id}`} className="text-xl font-semibold">Unit {unit.position}: {unit.title}</h2>
-        {unit.isStart && <span className="rounded-full bg-primary px-2.5 py-0.5 text-sm text-primary-foreground">Your teacher says start here</span>}
-        <div className="ml-auto flex min-w-48 items-center gap-3">
-          <div className="h-2 flex-1 rounded-full bg-muted" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}
-            aria-label={`Unit ${unit.position} progress`}>
-            <div className="h-2 rounded-full bg-green-700" style={{ width: `${pct}%` }} />
-          </div>
-          <span className="text-sm tabular-nums">{unit.doneCount} of {total} done</span>
-        </div>
+    <section aria-labelledby={`unit-${unit.id}`} className="rounded-3xl bg-card px-3.5 pt-4 pb-3">
+      <div className="flex flex-wrap justify-between gap-2 px-3.5 pb-2">
+        <h2 id={`unit-${unit.id}`} className="text-xl font-semibold">{unit.position} · {unit.title}</h2>
+        <span className="text-[15px] text-muted-foreground">
+          {unit.isStart ? "Your teacher says start here · " : ""}{unit.doneCount} of {unit.lessons.length} done
+          {tests?.pre === "done" ? " · ✓ Pre-test" : ""}{tests?.post === "done" ? " · ✓ Post-test" : ""}
+        </span>
       </div>
-      {!unit.unlocked && <p className="mt-2 text-sm text-muted-foreground">🔒 {unit.lockedReason}</p>}
-      {tests && (tests.pre !== "none" || tests.post !== "none") && (
-        <div className="mt-3 flex flex-wrap gap-3 text-sm">
-          {tests.pre === "todo" && <Link href={`/learn/test/${unit.id}/pre`} className={buttonVariants({ variant: "outline" })}>Take the pre-test first (5 min)</Link>}
-          {tests.pre === "done" && <span className="text-green-800">✓ Pre-test done</span>}
-          {tests.post === "todo" && <Link href={`/learn/test/${unit.id}/post`} className={buttonVariants()}>Take the post-test: see how much you grew</Link>}
-          {tests.post === "locked" && <span className="text-muted-foreground">Post-test opens when you finish this unit</span>}
-          {tests.post === "done" && <span className="text-green-800">✓ Post-test done</span>}
-        </div>
-      )}
-      <ol className="mt-4 grid gap-3 sm:grid-cols-3">
+      <ol className="m-0 list-none p-0">
         {unit.lessons.map((l) => {
-          const s = STATUS[unit.unlocked ? l.status : "locked"];
-          const body = (
-            <>
-              <span aria-hidden="true" className={`flex size-10 shrink-0 items-center justify-center rounded-full border-2 text-lg ${s.className}`}>{s.icon}</span>
-              <span>
-                <span className="block font-medium">{l.title}</span>
-                <span className="block text-sm text-muted-foreground">{s.word}</span>
-              </span>
-            </>
-          );
+          const s = STATUS[l.status];
+          const current = l.id === nextId;
           return (
             <li key={l.id}>
-              {unit.unlocked ? (
-                <Link href={`/learn/${l.id}`} className="flex items-center gap-3 rounded-xl border p-4 hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2">{body}</Link>
-              ) : (
-                <div className="flex items-center gap-3 rounded-xl border border-dashed bg-muted/40 p-4">{body}</div>
-              )}
+              <Link href={`/learn/${l.id}`}
+                className={`flex min-h-11 items-center gap-3.5 rounded-2xl px-3.5 text-foreground no-underline hover:bg-secondary ${current ? "min-h-13 bg-[#FFD75E] font-semibold hover:bg-[#FFD75E]" : ""}`}>
+                <span aria-hidden="true" className={`w-6 text-center font-bold ${l.status === "completed" ? "text-[#047D13]" : ""}`}>{s.icon}</span>
+                <span className="flex-1">{l.title}</span>
+                <span className={`text-[15px] ${current ? "font-medium" : "text-muted-foreground"}`}>{current && l.status === "in_progress" ? "Started · keep going" : s.word}</span>
+              </Link>
             </li>
           );
         })}

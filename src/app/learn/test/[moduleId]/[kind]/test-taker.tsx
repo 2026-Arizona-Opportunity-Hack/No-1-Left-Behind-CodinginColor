@@ -21,7 +21,7 @@ export function TestTaker({ moduleId, test }: { moduleId: string; test: StudentT
 
   if (scores) {
     return (
-      <section aria-labelledby="done-h" className="mx-auto max-w-xl space-y-5 rounded-2xl border p-8">
+      <section aria-labelledby="done-h" className="mx-auto max-w-xl space-y-5 rounded-3xl bg-card p-8">
         <h1 id="done-h" className="text-3xl font-semibold">✓ {name} done!</h1>
         <p className="text-muted-foreground">{test.kind === "pre"
           ? "Thanks! This shows what you already know, so we can see how much you learn."
@@ -52,7 +52,7 @@ export function TestTaker({ moduleId, test }: { moduleId: string; test: StudentT
           <span className="text-sm tabular-nums">Question {index + 1} of {test.questions.length}</span>
         </div>
       </div>
-      <form className="space-y-4 rounded-2xl border p-6" onSubmit={(e) => {
+      <form className="space-y-4 rounded-3xl bg-card p-6" onSubmit={(e) => {
         e.preventDefault();
         if (!last) return go(index + 1);
         setError(null);
@@ -66,7 +66,7 @@ export function TestTaker({ moduleId, test }: { moduleId: string; test: StudentT
             {/* Questions with code ("x = 3\nif x > 5: …") show the code in a code font, the last line as the question. */}
             {q.prompt.includes("\n") ? (
               <>
-                <pre className="mb-3 overflow-auto rounded-lg bg-zinc-950 p-4 font-mono text-sm leading-6 text-zinc-100">{q.prompt.split("\n").slice(0, -1).join("\n")}</pre>
+                <pre className="mb-3 overflow-auto rounded-lg bg-[#0F2E1C] p-4 font-mono text-sm leading-6 text-[#E6F4EA]">{q.prompt.split("\n").slice(0, -1).join("\n")}</pre>
                 <h1 ref={headingRef} tabIndex={-1} className="mb-3 text-xl font-semibold outline-none">{q.prompt.split("\n").at(-1)}</h1>
               </>
             ) : <h1 ref={headingRef} tabIndex={-1} className="mb-3 text-xl font-semibold outline-none">{q.prompt}</h1>}

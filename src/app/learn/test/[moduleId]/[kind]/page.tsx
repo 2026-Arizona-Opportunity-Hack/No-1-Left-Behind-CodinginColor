@@ -27,7 +27,7 @@ async function Test({ params }: Props) {
       <StudentHeader student={student} />
       <main className="w-full flex-1 px-4 py-8 sm:px-6">
         {test ? <TestTaker moduleId={moduleId} test={test} /> : (
-          <div className="mx-auto max-w-md space-y-3 rounded-2xl border p-8 text-center">
+          <div className="mx-auto max-w-md space-y-3 rounded-3xl bg-card p-8 text-center">
             <h1 className="text-2xl font-semibold">This test isn&apos;t open right now</h1>
             <p className="text-muted-foreground">You may have finished it already, or need to finish the unit first.</p>
             <Link href="/learn" className="font-medium underline underline-offset-4">Back to my course</Link>

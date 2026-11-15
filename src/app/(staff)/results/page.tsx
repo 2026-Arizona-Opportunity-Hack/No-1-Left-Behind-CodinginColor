@@ -40,14 +40,14 @@ export default async function ResultsPage({ searchParams }: { searchParams: Prom
       {!r.unitId ? <p className="rounded-xl border border-dashed p-8 text-center text-muted-foreground">No test results yet. They appear once students take a pre-test and a post-test.</p> : (
         <>
           <section aria-label="Headline" className="grid gap-4 md:grid-cols-[2fr_1fr]">
-            <div className="rounded-2xl border p-6">
+            <div className="rounded-3xl bg-card p-6">
               <p className="text-sm text-muted-foreground">{unitTitle}</p>
               <p className="text-5xl font-semibold tracking-tight tabular-nums">
                 {top ? <>{signed(top.avg_gain)} points <span className="text-3xl">on <span className="capitalize">{top.concept_tag}</span></span></> : "Not enough data yet"}
               </p>
               {top && <p className="mt-2 text-muted-foreground">Based on {top.n} students · {pct(top.avg_pre_pct)} → {pct(top.avg_post_pct)}</p>}
             </div>
-            <div className="space-y-2 rounded-2xl border p-6">
+            <div className="space-y-2 rounded-3xl bg-card p-6">
               <p className="text-sm text-muted-foreground">Whole unit</p>
               <p className="text-3xl font-semibold tabular-nums">{signed(r.overall.avg_gain)} points</p>
               <p className="text-sm">{pct(r.overall.avg_pre_pct)} → {pct(r.overall.avg_post_pct)} · {r.overall.n} students</p>
@@ -55,7 +55,7 @@ export default async function ResultsPage({ searchParams }: { searchParams: Prom
             </div>
           </section>
 
-          <section aria-labelledby="topic-h" className="space-y-3 rounded-2xl border p-6">
+          <section aria-labelledby="topic-h" className="space-y-3 rounded-3xl bg-card p-6">
             <h2 id="topic-h" className="text-xl font-semibold">By topic</h2>
             <ul className="space-y-4">
               {r.byTopic.map((t) => (
@@ -91,7 +91,7 @@ export default async function ResultsPage({ searchParams }: { searchParams: Prom
             </div>
           </section>
 
-          <details className="rounded-2xl border p-5">
+          <details className="rounded-3xl bg-card p-5">
             <summary className="cursor-pointer text-xl font-semibold">By student ({r.students.length})</summary>
             <table className="mt-3 w-full text-left text-sm">
               <thead className="border-b"><tr>{["Student", "Pre-test", "Post-test", "Gain"].map((h) => <th key={h} scope="col" className="p-2 font-medium">{h}</th>)}</tr></thead>

@@ -37,7 +37,7 @@ export function ImportForm({ units, aiOn }: { units: { id: string; title: string
   }
 
   return (
-    <form className="space-y-5 rounded-2xl border p-6" onSubmit={(e) => {
+    <form className="space-y-5 rounded-3xl bg-card p-6" onSubmit={(e) => {
       e.preventDefault();
       setResult(null); setStage(0);
       start(async () => {

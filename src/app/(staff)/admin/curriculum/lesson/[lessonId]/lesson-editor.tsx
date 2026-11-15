@@ -44,7 +44,7 @@ export function LessonEditor({ lesson, unit, activities }: { lesson: Lesson; uni
       <ol className="space-y-3">
         {activities.map((a, i) => (
           <li key={a.id}>
-            <details className="rounded-xl border p-4" open={a.ai_suggested}>
+            <details className="rounded-2xl bg-card p-4" open={a.ai_suggested}>
               <summary className="flex cursor-pointer flex-wrap items-center gap-2">
                 <span className="font-medium">{i + 1}. {a.title || ACTIVITY_LABEL[a.type]}</span>
                 <span className="text-sm text-muted-foreground">{ACTIVITY_LABEL[a.type]}{a.concept_tag ? ` · ${a.concept_tag}` : ""}{a.is_core ? "" : " · Extra"}</span>
