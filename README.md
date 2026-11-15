@@ -69,6 +69,30 @@ npm install
 npm run dev                  # http://localhost:3000
 ```
 
+## Database (Supabase)
+
+The schema lives in [`supabase/migrations/`](supabase/migrations/) and is applied with the Supabase CLI:
+
+```bash
+supabase login
+supabase link --project-ref <your-project-ref>   # leave the password blank
+supabase db push
+```
+
+**Roles.** Staff sign in with Supabase Auth; students never get accounts (they join with a class code +
+personal code through the app's server). Row Level Security limits each role:
+
+| Role | Can see and do |
+|---|---|
+| CIC admin | Everything: curriculum, all classes, results, API keys |
+| Instructor | Published curriculum; only their own classes, students, attendance and progress |
+| External reviewer | Published curriculum and teaching guides, read-only |
+| Anyone not signed in | Nothing |
+
+**First admin.** New staff accounts start as reviewers. Create your account (Supabase → Authentication →
+Add user), then in the SQL editor run:
+`update profiles set role = 'admin' where id = (select id from auth.users where email = 'you@example.org');`
+
 ## Deploy
 
 The app runs on Vercel's free plan. Every merge to `main` deploys to production through
