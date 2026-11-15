@@ -21,6 +21,7 @@ export const STAFF_NAV: Record<StaffRole, { href: string; label: string }[]> = {
     { href: "/results", label: "Results" },
     { href: "/admin/curriculum", label: "Edit curriculum" },
     { href: "/review", label: "Browse curriculum" },
+    { href: "/admin/api-keys", label: "API keys" },
   ],
   instructor: [
     { href: "/teach", label: "My classes" },
