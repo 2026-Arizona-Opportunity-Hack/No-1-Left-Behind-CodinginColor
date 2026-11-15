@@ -306,3 +306,15 @@ tested; the upgrade preserved student, activity, response and progress counts.
 Screenshots in `docs/screenshots/` show the real components rendered with synthetic
 fixtures and production CSS for layout review; they are not a live authenticated
 Supabase rehearsal.
+
+### Deployment readiness
+
+The production workflow checks the required role and assessment/import schema
+using only the public Supabase configuration pulled by Vercel. If it is missing
+or unreachable, the workflow holds the build/deploy steps and leaves the current
+live site unchanged. The job summary names the missing capabilities. The database
+owner must apply `20261115170812_configurable_roles.sql` and
+`20261115171150_curriculum_assessment_import.sql`, then rerun **Deploy to Vercel**.
+No migration is applied by CI. The anonymous checks deliberately expect permission
+denial for staff-only RPCs; they never perform an authorised mutation.
+Run the guard's tests with `node --test scripts/check-deployment-schema.test.mjs`.
