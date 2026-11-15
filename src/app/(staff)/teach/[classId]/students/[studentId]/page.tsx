@@ -11,6 +11,9 @@ import { getClassroom, getStudentDetail } from "@/server/dashboard";
 import type { StudentActivityDetail } from "@/types/dashboard";
 import { saveStartModule, skipLesson, toggleUnlock } from "./actions";
 
+// Live, per-user data: navigations wait for it rather than showing a prerendered shell.
+export const instant = false;
+
 export const metadata: Metadata = { title: "Student · CIC Launchpad" };
 
 type Props = { params: Promise<{ classId: string; studentId: string }> };

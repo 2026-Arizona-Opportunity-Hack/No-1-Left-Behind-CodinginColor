@@ -4,6 +4,9 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireStaff } from "@/server/auth";
 
+// Live, per-user data: navigations wait for it rather than showing a prerendered shell.
+export const instant = false;
+
 export const metadata: Metadata = { title: "CIC staff · CIC Launchpad" };
 
 export default async function AdminHome() {

@@ -10,6 +10,9 @@ import { getClassroom, getTopicMastery } from "@/server/dashboard";
 import type { ClassroomStudent } from "@/types/dashboard";
 import { assignCatchUpAction, markAttendance } from "./actions";
 
+// Live, per-user data: navigations wait for it rather than showing a prerendered shell.
+export const instant = false;
+
 export const metadata: Metadata = { title: "Live classroom · CIC Launchpad" };
 
 type Props = { params: Promise<{ classId: string }>; searchParams: Promise<{ show?: string }> };

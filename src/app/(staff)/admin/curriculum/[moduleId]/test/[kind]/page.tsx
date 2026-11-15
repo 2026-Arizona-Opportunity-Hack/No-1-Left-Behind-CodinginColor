@@ -5,6 +5,9 @@ import { requireStaff } from "@/server/auth";
 import { getAssessment, getModuleTree } from "@/server/curriculum";
 import { TestEditor } from "./test-editor";
 
+// Live, per-user data: navigations wait for it rather than showing a prerendered shell.
+export const instant = false;
+
 export const metadata: Metadata = { title: "Edit test · CIC Launchpad" };
 
 export default async function TestPage({ params }: { params: Promise<{ moduleId: string; kind: string }> }) {

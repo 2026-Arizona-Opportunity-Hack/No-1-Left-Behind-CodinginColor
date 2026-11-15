@@ -5,6 +5,9 @@ import type { GainSummary } from "@/lib/learning-gain";
 import { requireStaff } from "@/server/auth";
 import { getResults } from "@/server/results";
 
+// Live, per-user data: navigations wait for it rather than showing a prerendered shell.
+export const instant = false;
+
 export const metadata: Metadata = { title: "Learning results · CIC Launchpad" };
 
 const pct = (v: number | null) => (v === null ? "—" : `${Math.round(v)}%`);

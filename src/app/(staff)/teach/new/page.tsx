@@ -4,6 +4,9 @@ import { createClient } from "@/lib/supabase/server";
 import { requireStaff } from "@/server/auth";
 import { ClassWizard, type WizardModule } from "./wizard";
 
+// Live, per-user data: navigations wait for it rather than showing a prerendered shell.
+export const instant = false;
+
 export const metadata: Metadata = { title: "Set up a class · CIC Launchpad" };
 
 export default async function NewClassPage() {

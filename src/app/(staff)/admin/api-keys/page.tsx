@@ -4,6 +4,9 @@ import { requireStaff } from "@/server/auth";
 import { listApiKeys } from "@/server/api-keys";
 import { KeysManager } from "./keys-manager";
 
+// Live, per-user data: navigations wait for it rather than showing a prerendered shell.
+export const instant = false;
+
 export const metadata: Metadata = { title: "API keys · CIC Launchpad" };
 
 const ENDPOINTS = [

@@ -5,6 +5,9 @@ import { requireStaff } from "@/server/auth";
 import { getModuleTree } from "@/server/curriculum";
 import { ModuleEditor } from "./module-editor";
 
+// Live, per-user data: navigations wait for it rather than showing a prerendered shell.
+export const instant = false;
+
 export const metadata: Metadata = { title: "Edit unit · CIC Launchpad" };
 
 export default async function ModulePage({ params }: { params: Promise<{ moduleId: string }> }) {

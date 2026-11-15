@@ -6,6 +6,9 @@ import { requireStaff } from "@/server/auth";
 import { listModules } from "@/server/curriculum";
 import { ModuleList } from "./module-list";
 
+// Live, per-user data: navigations wait for it rather than showing a prerendered shell.
+export const instant = false;
+
 export const metadata: Metadata = { title: "Edit curriculum · CIC Launchpad" };
 
 export default async function CurriculumEditorPage() {
