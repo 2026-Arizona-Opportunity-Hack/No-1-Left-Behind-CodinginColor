@@ -6,9 +6,10 @@ import { CopyLinkButton } from "@/components/teach/copy-link-button";
 import { STATUS_DISPLAY, formatDuration, timeAgo } from "@/lib/status-display";
 import type { Status } from "@/lib/student-status";
 import { requireStaff } from "@/server/auth";
+import { getCatchUpState } from "@/server/catch-up-teacher";
 import { getClassroom, getTopicMastery } from "@/server/dashboard";
 import type { ClassroomStudent } from "@/types/dashboard";
-import { markAttendance } from "./actions";
+import { assignCatchUpAction, markAttendance } from "./actions";
 
 export const metadata: Metadata = { title: "Live classroom · CIC Launchpad" };
 
@@ -27,7 +28,7 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
   await connection(); // always fresh: this page is live
   const show = (await searchParams).show;
   const filter = FILTERS.some((f) => f.key === show) ? (show as "all" | Status) : "all";
-  const [room, mastery] = await Promise.all([getClassroom(classId), getTopicMastery(classId)]);
+  const [room, mastery, catchUp] = await Promise.all([getClassroom(classId), getTopicMastery(classId), getCatchUpState(classId)]);
 
   if (!room.ok) {
     return (
@@ -75,6 +76,14 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
         })}
       </nav>
 
+      {filter === "behind" && counts.behind > 0 && (
+        <form action={assignCatchUpAction} className="flex flex-wrap items-center gap-3 rounded-xl border border-orange-700 bg-orange-50 p-3 text-orange-950">
+          <input type="hidden" name="classId" value={cls.id} />
+          <input type="hidden" name="studentIds" value={students.filter((s) => s.status === "behind").map((s) => s.id).join(",")} />
+          <p className="flex-1">These students missed a lesson. A catch-up gives them a 2-minute recap and only the core exercises.</p>
+          <button type="submit" className="rounded-md bg-orange-800 px-3 py-2 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2">Assign catch-up to everyone behind</button>
+        </form>
+      )}
       <div className="grid gap-6 lg:grid-cols-[1fr_18rem]">
         <section aria-label="Students" className="overflow-x-auto rounded-2xl border">
           <table className="w-full min-w-[44rem] text-left text-sm">
@@ -90,7 +99,7 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
               </tr>
             </thead>
             <tbody>
-              {shown.map((s) => <StudentRow key={s.id} s={s} classId={cls.id} sessionId={today?.session_id} now={now} />)}
+              {shown.map((s) => <StudentRow key={s.id} s={s} classId={cls.id} sessionId={today?.session_id} now={now} catchUp={catchUp.get(s.id)} />)}
               {!shown.length && (
                 <tr><td colSpan={7} className="p-8 text-center text-muted-foreground">
                   {students.length ? "Nobody in this list right now. 🎉" : "No students in this class yet."}
@@ -119,7 +128,7 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
   );
 }
 
-function StudentRow({ s, classId, sessionId, now }: { s: ClassroomStudent; classId: string; sessionId?: string; now: number }) {
+function StudentRow({ s, classId, sessionId, now, catchUp }: { s: ClassroomStudent; classId: string; sessionId?: string; now: number; catchUp?: "assigned" | "caught_up" }) {
   const d = STATUS_DISPLAY[s.status];
   return (
     <tr className="border-b last:border-0 hover:bg-muted/30">
@@ -140,6 +149,14 @@ function StudentRow({ s, classId, sessionId, now }: { s: ClassroomStudent; class
           <span aria-hidden="true">{d.icon}</span>{d.word}
         </span>
         {s.reasons.length > 0 && <span className="mt-1 block text-xs text-muted-foreground">{s.reasons.join(" · ")}</span>}
+        {catchUp === "caught_up" && <span className="mt-1 block text-xs font-semibold text-green-800">✓ Caught up</span>}
+        {catchUp === "assigned" && <span className="mt-1 block text-xs font-semibold text-orange-800">Catch-up assigned</span>}
+        {s.status === "behind" && !catchUp && (
+          <form action={assignCatchUpAction} className="mt-1">
+            <input type="hidden" name="classId" value={classId} /><input type="hidden" name="studentIds" value={s.id} />
+            <button type="submit" className="text-xs font-semibold text-orange-800 underline underline-offset-2 focus-visible:outline-2">Assign catch-up</button>
+          </form>
+        )}
       </td>
       {sessionId && (
         <td className="p-3">

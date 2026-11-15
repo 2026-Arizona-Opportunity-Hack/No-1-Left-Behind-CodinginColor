@@ -6,6 +6,8 @@ import { StudentHeader } from "@/components/student-header";
 import type { LessonStatus, MapModule } from "@/lib/course-map";
 import { getCourseMap } from "@/server/student-learning";
 import { getTestStatus, type TestStatus } from "@/server/student-tests";
+import { getMissedLessons } from "@/server/catch-up";
+import { weekdayName } from "@/lib/school-date";
 import { requireStudent } from "@/server/student-session";
 
 export const metadata: Metadata = { title: "My course · CIC Launchpad" };
@@ -29,7 +31,7 @@ export default function LearnPage() {
 
 async function CourseMapPage() {
   const student = await requireStudent();
-  const [map, tests] = await Promise.all([getCourseMap(student), getTestStatus(student)]);
+  const [map, tests, missed] = await Promise.all([getCourseMap(student), getTestStatus(student), getMissedLessons(student)]);
   const firstName = student.displayName.split(" ")[0];
 
   return (
@@ -50,6 +52,13 @@ async function CourseMapPage() {
             <p className="rounded-lg border border-green-700 bg-green-50 px-4 py-3 font-medium text-green-800">✓ You finished everything open to you. Nice work!</p>
           )}
         </div>
+        {missed.map((m) => (
+          <div key={m.lessonId} role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border-2 border-orange-700 bg-orange-50 p-4 text-orange-950">
+            <p><span aria-hidden="true">⏱ </span><strong>You missed {m.title} on {weekdayName(m.date)}.</strong>{" "}
+              {m.assigned ? "Your teacher set up a catch-up for you." : "No worries:"} catch up in about 15 minutes.</p>
+            <Link href={`/learn/catch-up/${m.lessonId}`} className={buttonVariants({ size: "lg" })}>Catch up now</Link>
+          </div>
+        ))}
         {map.modules.map((m) => <UnitSection key={m.id} unit={m} tests={tests[m.id]} />)}
       </main>
     </>
