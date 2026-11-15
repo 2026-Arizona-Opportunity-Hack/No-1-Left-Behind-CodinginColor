@@ -3,7 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { getStaff } from "@/server/auth";
 import { aiConfigured } from "@/server/ai";
-import { importVideoLesson } from "@/server/lesson-import";
+import { z } from "zod";
+import { MAX_SLIDES } from "@/lib/pptx";
+import { importSlideLesson, importVideoLesson } from "@/server/lesson-import";
 import { fetchTranscript, getVideoTitle, parsePastedTranscript, parseYouTubeId, parseYouTubeStart } from "@/server/youtube";
 
 export type ImportState = { ok: true; lessonId: string; usedAi: boolean; note: string | null } | { ok: false; error: string; needTranscript?: boolean };
@@ -21,6 +23,26 @@ export async function importFromYouTube(moduleId: string, link: string, pastedTr
       return { ok: false, needTranscript: true, error: "We couldn't read what this video says. On YouTube, click ⋯ under the video → Show transcript, copy all of it, and paste it below." };
     }
     const r = await importVideoLesson({ moduleId, videoId, videoTitle: title, transcript, startSeconds: parseYouTubeStart(link) });
+    revalidatePath("/admin/curriculum", "layout");
+    return { ok: true, ...r };
+  } catch (e) {
+    return { ok: false, error: (e as Error).message };
+  }
+}
+
+const slidesSchema = z.array(z.object({
+  heading: z.string().max(300), body: z.string().max(4000), notes: z.string().max(4000),
+})).min(1).max(MAX_SLIDES);
+
+/** The browser reads the .pptx and sends only the slide text (no images, nothing about students). */
+export async function importFromSlides(moduleId: string, deckName: string, slides: unknown): Promise<ImportState> {
+  if ((await getStaff())?.role !== "admin") return { ok: false, error: "Only CIC staff can import lessons." };
+  if (!/^[0-9a-f-]{36}$/i.test(moduleId)) return { ok: false, error: "Pick the unit this lesson belongs to." };
+  const parsed = slidesSchema.safeParse(slides);
+  if (!parsed.success) return { ok: false, error: "We couldn't find any words on those slides. Check it's the right file." };
+  try {
+    const name = deckName.replace(/\.pptx$/i, "").replace(/[_-]+/g, " ").trim().slice(0, 120);
+    const r = await importSlideLesson({ moduleId, deckName: name, slides: parsed.data });
     revalidatePath("/admin/curriculum", "layout");
     return { ok: true, ...r };
   } catch (e) {
