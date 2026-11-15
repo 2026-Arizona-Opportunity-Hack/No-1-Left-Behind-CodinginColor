@@ -59,14 +59,17 @@ const draftSchema = z.object({
 export type ImportResult = { lessonId: string; usedAi: boolean; note: string | null };
 
 export async function importVideoLesson(input: {
-  moduleId: string; videoId: string; videoTitle: string | null; transcript: TranscriptLine[] | null;
+  moduleId: string; videoId: string; videoTitle: string | null; transcript: TranscriptLine[] | null; startSeconds?: number;
 }): Promise<ImportResult> {
   let draft: z.infer<typeof draftSchema> | null = null;
   let note: string | null = null;
   if (!aiConfigured()) note = "AI drafting is off (no AI key), so we built a starter lesson with your video for you to fill in.";
   else if (!input.transcript?.length) note = "We couldn't read this video's captions, so we built a starter lesson with your video to fill in.";
   else {
-    const transcript = input.transcript.map((l) => `[${Math.floor(l.seconds / 60)}:${String(l.seconds % 60).padStart(2, "0")}] ${l.text}`).join("\n").slice(0, 14000);
+    // Long videos: draft from the part the link points at (…&t=…), about the next 15 minutes.
+    const start = input.startSeconds ?? 0;
+    const fromStart = input.transcript.filter((l) => l.seconds >= start);
+    const transcript = (fromStart.length ? fromStart : input.transcript).map((l) => `[${Math.floor(l.seconds / 60)}:${String(l.seconds % 60).padStart(2, "0")}] ${l.text}`).join("\n").slice(0, 14000);
     const parsed = draftSchema.safeParse(tidy(await chatJSON(SYSTEM, `Video title: ${input.videoTitle ?? "(unknown)"}\n\nTranscript:\n${transcript}`)));
     if (parsed.success) draft = parsed.data;
     else note = "The AI's draft was incomplete, so we built a starter lesson instead. Try again or fill it in.";
@@ -78,7 +81,9 @@ export async function importVideoLesson(input: {
     return r.success ? r.data : null;
   };
   const pausePoints = (draft?.pause_points ?? []).map((p) => valid("quiz_mcq", p) && (p as { at_seconds?: number }).at_seconds !== undefined ? p : null).filter(Boolean);
-  const video = valid("video", { youtube_id: input.videoId, key_points: draft?.key_points ?? [], pause_points: pausePoints }) ?? { youtube_id: input.videoId, key_points: [], pause_points: [] };
+  const startAt = input.startSeconds ? { start_seconds: input.startSeconds } : {};
+  const video = valid("video", { youtube_id: input.videoId, key_points: draft?.key_points ?? [], pause_points: pausePoints, ...startAt })
+    ?? { youtube_id: input.videoId, key_points: [], pause_points: [], ...startAt };
   const quiz = draft ? valid("quiz_mcq", draft.quiz) : null;
   const exercise = draft ? valid("code_exercise", draft.exercise) : null;
   const exit = draft ? valid("exit_question", draft.exit_question) : null;

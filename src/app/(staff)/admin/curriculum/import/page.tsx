@@ -8,6 +8,8 @@ import { ImportForm } from "./import-form";
 
 // Live, per-user data: navigations wait for it rather than showing a prerendered shell.
 export const instant = false;
+// Reading captions and drafting with AI can take up to a minute.
+export const maxDuration = 60;
 
 export const metadata: Metadata = { title: "Import a lesson · CIC Launchpad" };
 

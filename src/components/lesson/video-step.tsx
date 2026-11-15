@@ -29,7 +29,7 @@ function loadYouTubeApi(): Promise<YTNamespace> {
 const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
 export function VideoStep({ activity }: StepProps<"video">) {
-  const { youtube_id, key_points, pause_points } = activity.step;
+  const { youtube_id, key_points, pause_points, start_seconds } = activity.step;
   const host = useRef<HTMLDivElement>(null);
   const player = useRef<YTPlayer | null>(null);
   const answered = useRef(new Set<number>());
@@ -49,7 +49,7 @@ export function VideoStep({ activity }: StepProps<"video">) {
       if (cancelled || !host.current) return;
       player.current = new YT.Player(host.current, {
         videoId: youtube_id, host: "https://www.youtube-nocookie.com",
-        playerVars: { rel: 0, modestbranding: 1 },
+        playerVars: { rel: 0, modestbranding: 1, ...(start_seconds ? { start: start_seconds } : {}) },
         events: { onReady: () => setDuration(player.current?.getDuration() ?? 0) },
       });
       timer = setInterval(() => {
@@ -65,7 +65,7 @@ export function VideoStep({ activity }: StepProps<"video">) {
       }, 300);
     });
     return () => { cancelled = true; clearInterval(timer); player.current?.destroy?.(); player.current = null; };
-  }, [youtube_id, pause_points]);
+  }, [youtube_id, pause_points, start_seconds]);
 
   useEffect(() => { if (active) quizRef.current?.focus(); }, [active]);
 

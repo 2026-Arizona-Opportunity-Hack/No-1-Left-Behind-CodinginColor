@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getStaff } from "@/server/auth";
 import { aiConfigured } from "@/server/ai";
 import { importVideoLesson } from "@/server/lesson-import";
-import { fetchTranscript, getVideoTitle, parsePastedTranscript, parseYouTubeId } from "@/server/youtube";
+import { fetchTranscript, getVideoTitle, parsePastedTranscript, parseYouTubeId, parseYouTubeStart } from "@/server/youtube";
 
 export type ImportState = { ok: true; lessonId: string; usedAi: boolean; note: string | null } | { ok: false; error: string; needTranscript?: boolean };
 
@@ -20,7 +20,7 @@ export async function importFromYouTube(moduleId: string, link: string, pastedTr
     if (aiConfigured() && !transcript?.length) {
       return { ok: false, needTranscript: true, error: "We couldn't read this video's captions automatically. On YouTube, click ⋯ under the video → Show transcript, copy it, and paste it below." };
     }
-    const r = await importVideoLesson({ moduleId, videoId, videoTitle: title, transcript });
+    const r = await importVideoLesson({ moduleId, videoId, videoTitle: title, transcript, startSeconds: parseYouTubeStart(link) });
     revalidatePath("/admin/curriculum", "layout");
     return { ok: true, ...r };
   } catch (e) {
