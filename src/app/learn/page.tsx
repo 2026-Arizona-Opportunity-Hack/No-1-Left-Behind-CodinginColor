@@ -5,6 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { StudentHeader } from "@/components/student-header";
 import type { LessonStatus, MapModule } from "@/lib/course-map";
 import { getCourseMap } from "@/server/student-learning";
+import { getTestStatus, type TestStatus } from "@/server/student-tests";
 import { requireStudent } from "@/server/student-session";
 
 export const metadata: Metadata = { title: "My course · CIC Launchpad" };
@@ -28,7 +29,7 @@ export default function LearnPage() {
 
 async function CourseMapPage() {
   const student = await requireStudent();
-  const map = await getCourseMap(student);
+  const [map, tests] = await Promise.all([getCourseMap(student), getTestStatus(student)]);
   const firstName = student.displayName.split(" ")[0];
 
   return (
@@ -49,13 +50,13 @@ async function CourseMapPage() {
             <p className="rounded-lg border border-green-700 bg-green-50 px-4 py-3 font-medium text-green-800">✓ You finished everything open to you. Nice work!</p>
           )}
         </div>
-        {map.modules.map((m) => <UnitSection key={m.id} unit={m} />)}
+        {map.modules.map((m) => <UnitSection key={m.id} unit={m} tests={tests[m.id]} />)}
       </main>
     </>
   );
 }
 
-function UnitSection({ unit }: { unit: MapModule }) {
+function UnitSection({ unit, tests }: { unit: MapModule; tests?: TestStatus[string] }) {
   const total = unit.lessons.length;
   const pct = total ? Math.round((unit.doneCount / total) * 100) : 0;
   return (
@@ -72,6 +73,15 @@ function UnitSection({ unit }: { unit: MapModule }) {
         </div>
       </div>
       {!unit.unlocked && <p className="mt-2 text-sm text-muted-foreground">🔒 {unit.lockedReason}</p>}
+      {tests && (tests.pre !== "none" || tests.post !== "none") && (
+        <div className="mt-3 flex flex-wrap gap-3 text-sm">
+          {tests.pre === "todo" && <Link href={`/learn/test/${unit.id}/pre`} className={buttonVariants({ variant: "outline" })}>Take the pre-test first (5 min)</Link>}
+          {tests.pre === "done" && <span className="text-green-800">✓ Pre-test done</span>}
+          {tests.post === "todo" && <Link href={`/learn/test/${unit.id}/post`} className={buttonVariants()}>Take the post-test: see how much you grew</Link>}
+          {tests.post === "locked" && <span className="text-muted-foreground">Post-test opens when you finish this unit</span>}
+          {tests.post === "done" && <span className="text-green-800">✓ Post-test done</span>}
+        </div>
+      )}
       <ol className="mt-4 grid gap-3 sm:grid-cols-3">
         {unit.lessons.map((l) => {
           const s = STATUS[unit.unlocked ? l.status : "locked"];
