@@ -259,13 +259,13 @@ begin
   -- learning gain; students who missed Loops have no post-test yet ("missing tests" warning).
   insert into public.assessment_responses (student_id, question_id, correct, created_at)
   select s.id, q.id,
-    ((hashtext(s.id::text || q.id::text)::bigint % 100) + 100) % 100 < case
+    ((hashtext(s.id::text || a.kind || q.position::text)::bigint % 100) + 100) % 100 < case
       when a.kind = 'pre'  and q.concept_tag = 'conditionals' then case when s.class_id = p3 then 55 else 50 end
       when a.kind = 'pre'  and q.concept_tag = 'loops'        then case when s.class_id = p3 then 38 else 42 end
       when a.kind = 'pre'                                     then 30
       when q.concept_tag = 'conditionals'                     then case when s.class_id = p3 then 82 else 74 end
-      when q.concept_tag = 'loops'                            then case when s.class_id = p3 then 80 else 66 end
-      else 60
+      when q.concept_tag = 'loops'                            then case when s.class_id = p3 then 82 else 74 end
+      else 70
     end,
     case when a.kind = 'pre' then now() - interval '12 days' else now() - interval '1 day' end
   from public.students s
