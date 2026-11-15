@@ -2,7 +2,7 @@ import "server-only";
 import { z } from "zod";
 import type { Result } from "@/types/result";
 
-export const idSchema = z.uuid();
+export const idSchema = z.guid({ error: "That item could not be found. Refresh and try again." });
 export const titleSchema = z.string().trim().min(1, "Enter a title.").max(200);
 export const orderedIdsSchema = z.array(idSchema).refine((ids) => new Set(ids).size === ids.length, "Include each item only once.");
 
