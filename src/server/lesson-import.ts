@@ -37,7 +37,7 @@ Plain text only: no Markdown, no code fences, no backticks. Put code on its own 
 line breaks. Keep every answer option on ONE line (write outputs like "1, 2, 3").`;
 
 /** Removes Markdown the AI sometimes adds anyway, and keeps answer options on one line. */
-function tidy(value: unknown, inOptions = false): unknown {
+export function tidy(value: unknown, inOptions = false): unknown {
   if (typeof value === "string") {
     const t = value.replace(/```[a-zA-Z]*\n?/g, "").replace(/`([^`]*)`/g, "$1").trim();
     return inOptions ? t.replace(/\\n|\n/g, ", ") : t;

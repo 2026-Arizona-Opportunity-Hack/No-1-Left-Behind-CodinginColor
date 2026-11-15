@@ -7,6 +7,7 @@ import type { ActivityType } from "@/types/activity-content";
 import type { Result } from "@/types/result";
 import { getStaff } from "@/server/auth";
 import * as c from "@/server/curriculum";
+import { draftExercise } from "@/server/exercise-draft";
 
 // Curriculum editor saves (CIC staff only). Each wraps Maulik's curriculum functions (#8),
 // which validate input and run as the signed-in user, so the database only allows admins.
@@ -43,3 +44,9 @@ export const saveAssessmentAction = async (moduleId: string, kind: "pre" | "post
   run(() => c.saveAssessment(moduleId, kind, questions));
 
 export const deleteModuleAction = async (id: string) => run(() => c.deleteModule(id));
+
+/** AI draft of one coding exercise for a lesson. Saves nothing: staff review it in the form first. */
+export const draftExerciseAction = async (lessonId: string, note: string) => {
+  await adminOnly();
+  return draftExercise(lessonId, String(note ?? ""));
+};

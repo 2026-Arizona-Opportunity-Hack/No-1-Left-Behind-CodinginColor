@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { updateActivityAction } from "@/app/(staff)/admin/curriculum/actions";
 import { CodeEditor } from "@/components/code/code-editor";
+import { ExerciseTools } from "./exercise-tools";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -104,6 +105,8 @@ export function ActivityForm({ activity }: { activity: Activity }) {
           <Textarea id={id("lines")} value={toLines(content.lines)} onChange={(e) => set("lines", e.target.value.split("\n"))} className="min-h-24 font-mono text-[15px]" />
           <p className="text-xs text-muted-foreground">One line of code per line, with its indentation. Students get them shuffled.</p></div></>}
       {(t === "code_exercise" || t === "fix_bug") && <>
+        <ExerciseTools lessonId={activity.lesson_id} starterCode={str("starter_code")} checks={checks}
+          onDraft={(d) => { setContent((c) => ({ ...c, prompt: d.prompt, starter_code: d.starter_code, tests: d.tests })); setHints(d.hints.join("\n")); }} />
         {text("prompt", "Instructions", { area: true })}
         <div className="space-y-1">
           <Label>{t === "fix_bug" ? "Code with the mistake in it" : "Code students start with"}</Label>
