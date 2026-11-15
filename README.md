@@ -245,3 +245,64 @@ Without a key, AI features switch off and manual authoring works as normal.
 - Greg
 
 Built with mentors from Opportunity Hack. Questions: [#npo-coding-in-color](https://opportunity-hack.slack.com/app_redirect?channel=npo-coding-in-color) on the OHack Slack.
+
+### Mentor feedback: staff access and a complete learning path
+
+CIC administrators can open **Staff access** (`/admin/roles`) to add a role such
+as Mentor, choose its permissions, rename it, assign existing staff accounts, or
+delete it while moving its members to another role. Changes apply to the next
+server request; both action checks and database RLS enforce them. Curriculum
+editing includes reading and publishing. Class/results access stays scoped to a
+staff member's own classes unless they are an administrator. Managing staff access
+can grant administrator access; grant that permission only to access managers.
+The administrator role and last administrator are protected. Students keep their
+separate personal-code sign-in and never inherit staff permissions. Staff accounts
+are still created through the existing Supabase Auth onboarding process, then
+assigned a role here.
+
+**Add curriculum from slides or video** can create a new unit directly, or add a
+lesson to an existing one. With AI configured, the same source-based generation
+creates the learning steps plus three to five basic pre-test questions and three
+to five different post-test questions covering matching topics. The full supported
+deck (up to 60 text-bearing slides) becomes material; the upload limit is 20 MB.
+YouTube captions are read when available; otherwise paste the transcript. Only
+curriculum source text goes to the AI. Invalid AI output saves nothing, and database
+saves are transactional. Without AI, staff can still create a manual draft, but
+must author the quiz pair themselves. There are no fabricated automatic quizzes.
+
+Review and save the AI steps and both quizzes, publish the lessons, then publish
+the unit. The database refuses to publish a unit without a reviewed nonempty quiz
+pair. Imports into existing units preserve their existing tests. Used assessments
+cannot be replaced, and units with assignments or student history must be hidden
+instead of deleted, to preserve progress and results. Unused units can be deleted.
+Curriculum saves invalidate the student, teacher, reviewer and editor views.
+
+Students see every **assigned, published** unit in their class's assigned order,
+including the titles of locked materials. Every unit shows **pre-test → course
+materials → post-test**. The pre-test opens materials; finishing the materials
+opens the post-test; completing the post-test unlocks the next unit. Teacher start
+points and unlock overrides remain supported. Completed quizzes link to the
+student's own saved score; answer keys remain on the server. The known demo units
+now all have curated pre/post pairs. New classes need published module assignments
+before their students see material.
+
+Rollout requires these two migrations, in order, **before deploying the new UI**:
+
+1. `20261115170812_configurable_roles.sql`
+2. `20261115171150_curriculum_assessment_import.sql`
+
+They have only been applied to disposable local test databases. Shrey/the database
+owner must apply them to the shared Supabase project, following the team's handoff.
+Keep `SUPABASE_SECRET_KEY`, `SESSION_SECRET`, and AI settings in ignored
+`.env.local`/hosting secrets. The local public URL and publishable key alone cannot
+run the student session or exercise the external AI service.
+
+Validation: `npm test` runs unit and component tests;
+`TEST_DATABASE_URL=postgresql://... npm test` also runs the rollback-only SQL
+integration tests, including role creation/revocation, atomic imports, publish
+review, student-history protection, and class isolation. Use a disposable database
+only. Both a fresh migration/seed and an upgrade over the previous demo schema were
+tested; the upgrade preserved student, activity, response and progress counts.
+Screenshots in `docs/screenshots/` show the real components rendered with synthetic
+fixtures and production CSS for layout review; they are not a live authenticated
+Supabase rehearsal.
