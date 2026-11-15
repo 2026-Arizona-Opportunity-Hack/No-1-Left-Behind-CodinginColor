@@ -63,7 +63,12 @@ function toStudentContent(a: ActivityRow, studentId: string): StudentStep {
     case "slide":
       return { kind: "slide", heading: s("heading"), body: s("body"), code: s("code") || undefined, output: s("output") || undefined, image_url: s("image_url") || undefined };
     case "video":
-      return { kind: "video", youtube_id: s("youtube_id"), key_points: (c.key_points as string[]) ?? [] };
+      return {
+        kind: "video", youtube_id: s("youtube_id"), key_points: (c.key_points as string[]) ?? [],
+        // Pause-point questions without their answers (checked on the server, like every quiz).
+        pause_points: ((c.pause_points as { at_seconds: number; prompt: string; options: string[] }[]) ?? [])
+          .map(({ at_seconds, prompt, options }) => ({ at_seconds, prompt, options })).sort((a, b) => a.at_seconds - b.at_seconds),
+      };
     case "quiz_mcq":
     case "exit_question":
       return { kind: "choice", prompt: s("prompt"), options: (c.options as string[]) ?? [] };
@@ -101,6 +106,13 @@ export async function getOpenActivity(student: Student, activityId: string): Pro
   const { data } = await createAdminClient().from("activities").select(ACTIVITY_COLUMNS).eq("id", activityId).maybeSingle();
   if (!data || !(await lessonIsOpen(student, data.lesson_id))) return null;
   return data as ActivityRow;
+}
+
+/** One pause-point question inside a video step. */
+export function checkPausePoint(a: ActivityRow, atSeconds: number, answer: number): AnswerResult {
+  const point = ((a.content.pause_points as { at_seconds: number; answer: number }[]) ?? []).find((p) => p.at_seconds === atSeconds);
+  if (!point) return { correct: false, message: "That question isn't in this video." };
+  return point.answer === answer ? { correct: true, message: "That's right! Keep watching." } : { correct: false, message: "Not quite. Think about what the video just showed, then try again." };
 }
 
 export function checkAnswer(a: ActivityRow, answer: unknown): AnswerResult {

@@ -6,7 +6,7 @@ import type { CodeCheck } from "@/lib/python/runner";
 
 export type StudentStep =
   | { kind: "slide"; heading: string; body: string; code?: string; output?: string; image_url?: string }
-  | { kind: "video"; youtube_id: string; key_points: string[] }
+  | { kind: "video"; youtube_id: string; key_points: string[]; pause_points: { at_seconds: number; prompt: string; options: string[] }[] }
   | { kind: "choice"; prompt: string; options: string[] } // quiz_mcq and exit_question
   | { kind: "predict_output"; prompt: string; code: string }
   | { kind: "fill_blank"; prompt: string; template: string }

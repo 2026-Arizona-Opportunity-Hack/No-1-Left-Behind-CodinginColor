@@ -7,7 +7,8 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { ACTIVITY_LABEL } from "@/lib/activity-labels";
 import { PythonRunner } from "@/lib/python/runner";
 import type { PlayerActivity, PlayerLesson } from "@/types/student-lesson";
-import { CodeStep, ParsonsStep, VideoStep } from "./rich-steps";
+import { CodeStep, ParsonsStep } from "./rich-steps";
+import { VideoStep } from "./video-step";
 import { ChoiceStep, FillBlankStep, PredictStep, SlideStep, WorksheetStep, type StepProps } from "./simple-steps";
 
 export type CatchUp = { todayLesson: { id: string; title: string } | null; onFinish: () => Promise<boolean> };
