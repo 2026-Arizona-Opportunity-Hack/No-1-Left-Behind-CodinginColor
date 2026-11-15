@@ -53,12 +53,12 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
 
       <div className="flex flex-wrap items-center gap-x-8 gap-y-5">
         <div>
-          <h1 className="text-5xl leading-none font-bold tracking-tight">{cls.name}</h1>
+          <h1 className="text-4xl leading-none font-bold tracking-tight sm:text-5xl">{cls.name}</h1>
           <p className="mt-1.5 text-muted-foreground">
             {cls.school} · Today: {today?.lesson_title ?? "no class"}{today ? ` · ${attendance.present} here, ${attendance.absent} absent` : ""} · Code <span className="font-mono font-bold text-foreground">{cls.class_code}</span>
           </p>
         </div>
-        <dl className="flex gap-x-6">
+        <dl className="flex flex-wrap gap-x-6 gap-y-3">
           {([["needs_help", "! Needs help"], ["behind", "◷ Behind"], ["not_started", "○ Not started"], ["on_track", "✓ On track"]] as const).map(([k, label]) => (
             <div key={k} className="flex flex-col-reverse"><dt className="text-base whitespace-nowrap">{label}</dt><dd className="m-0 text-4xl leading-none font-bold tabular-nums">{counts[k]}</dd></div>
           ))}
