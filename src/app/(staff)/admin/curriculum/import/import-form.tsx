@@ -112,6 +112,7 @@ export function ImportForm({ units, aiOn }: { units: { id: string; title: string
         </div>
       ) : (
         <>
+          <p className="rounded-2xl bg-sky p-4 text-sky-ink">Using part of a long video? On YouTube, pause where your part starts, then Share → tick &quot;Start at&quot; → copy. We&apos;ll draft from there.</p>
           <div className="space-y-1">
             <Label htmlFor="yt">YouTube link</Label>
             <Input id="yt" value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://www.youtube.com/watch?v=…" className="h-11" />

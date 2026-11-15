@@ -21,9 +21,8 @@ export default async function ImportPage() {
     <div className="mx-auto max-w-2xl space-y-6">
       <Link href="/admin/curriculum" className="inline-block text-base text-foreground no-underline"><span aria-hidden="true" className="font-mono font-extrabold text-[#0DB031]">&lt;</span> All units</Link>
       <div>
-        <h1 className="text-4xl font-bold tracking-tight">Make a lesson from a YouTube video</h1>
-        <p className="mt-2 text-muted-foreground">Paste a link and we&apos;ll draft a full lesson from what the video says. You check everything before students see it.</p>
-        <p className="mt-2 rounded-2xl bg-sky p-4 text-sky-ink">Using part of a long video? On YouTube, pause where your part starts, then Share → tick &quot;Start at&quot; → copy. We&apos;ll draft from there.</p>
+        <h1 className="text-4xl font-bold tracking-tight">Make a lesson</h1>
+        <p className="mt-2 text-muted-foreground">Upload your slides or paste a YouTube link, and we&apos;ll draft a full lesson from it. You check everything before students see it.</p>
       </div>
       <ImportForm units={data ?? []} aiOn={aiConfigured()} />
     </div>
