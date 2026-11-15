@@ -4,7 +4,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Logo } from "@/components/logo";
 import { getStaff } from "@/server/auth";
-import { ROLE_HOME, safeNextPath } from "@/lib/roles";
+import { safeNextPath } from "@/lib/roles";
+import { staffHome } from "@/lib/permissions";
 import { LoginForm } from "./login-form";
 
 export const metadata: Metadata = { title: "Sign in · CIC Launchpad" };
@@ -35,6 +36,6 @@ export default function LoginPage({ searchParams }: Props) {
 async function SignInArea({ searchParams }: Props) {
   const next = safeNextPath((await searchParams).next);
   const staff = await getStaff();
-  if (staff) redirect(next ?? ROLE_HOME[staff.role]);
+  if (staff) redirect(next ?? staffHome(staff));
   return <LoginForm next={next} />;
 }

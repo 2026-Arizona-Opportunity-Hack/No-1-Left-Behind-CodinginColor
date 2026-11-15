@@ -7,7 +7,7 @@ import { getStaff } from "@/server/auth";
 // them wait for that data instead of showing a prerendered shell.
 export const instant = false;
 
-// Shared shell for staff pages. Each page still checks its own allowed roles with requireStaff().
+// Shared shell for staff pages. Each page checks its required capability with requirePermission().
 // Everything here depends on who is signed in (cookies), so it renders at request time inside Suspense.
 export default function StaffLayout({ children }: { children: React.ReactNode }) {
   return (

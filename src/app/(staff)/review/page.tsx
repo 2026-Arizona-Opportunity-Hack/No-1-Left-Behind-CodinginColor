@@ -1,7 +1,8 @@
+import { can } from "@/lib/permissions";
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { requireStaff } from "@/server/auth";
+import { requirePermission } from "@/server/auth";
 import { ACTIVITY_LABEL } from "@/lib/activity-labels";
 
 // Live, per-user data: navigations wait for it rather than showing a prerendered shell.
@@ -18,7 +19,7 @@ type Module = { id: string; title: string; description: string | null; position:
 // The database decides what's visible: reviewers and teachers only ever get published content.
 export default async function CurriculumPage() {
   await connection(); // per-user, live data: render at request time
-  const staff = await requireStaff(["reviewer", "instructor", "admin"], "/review");
+  const staff = await requirePermission("curriculum.read", "/review");
   const supabase = await createClient();
   const { data } = await supabase
     .from("modules")
@@ -31,8 +32,8 @@ export default async function CurriculumPage() {
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-4xl font-bold tracking-tight">Python Basics curriculum</h1>
-        {staff.role !== "admin" && (
+        <h1 className="text-4xl font-bold tracking-tight">Curriculum</h1>
+        {!can(staff,"curriculum.write") && (
           <span className="rounded-full border px-2.5 py-0.5 text-sm font-medium">View only</span>
         )}
       </div>

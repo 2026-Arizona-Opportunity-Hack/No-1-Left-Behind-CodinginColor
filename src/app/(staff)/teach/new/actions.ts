@@ -1,5 +1,6 @@
 "use server";
 
+import { can } from "@/lib/permissions";
 import type { RosterRow } from "@/lib/roster-csv";
 import { addStudents, assignModules, createClass, setSchedule } from "@/server/classes";
 import { getStaff } from "@/server/auth";
@@ -9,7 +10,7 @@ import { getStaff } from "@/server/auth";
 
 async function teacherOnly() {
   const staff = await getStaff();
-  if (!staff || (staff.role !== "instructor" && staff.role !== "admin")) throw new Error("Sign in as a teacher to set up a class.");
+  if (!can(staff,"classes.manage")) throw new Error("Sign in as a teacher to set up a class.");
 }
 
 export async function createClassStep(name: string, school: string) {

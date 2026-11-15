@@ -3,7 +3,7 @@ import { connection } from "next/server";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
-import { requireStaff } from "@/server/auth";
+import { requirePermission } from "@/server/auth";
 
 // Live, per-user data: navigations wait for it rather than showing a prerendered shell.
 export const instant = false;
@@ -14,7 +14,7 @@ export const metadata: Metadata = { title: "My classes · CIC Launchpad" };
 
 export default async function TeachHome() {
   await connection(); // per-user, live data: render at request time
-  const staff = await requireStaff(["instructor", "admin"], "/teach");
+  const staff = await requirePermission("classes.manage", "/teach");
   const supabase = await createClient();
   // The database only returns classes this teacher owns (admins see all).
   const { data: classes } = await supabase

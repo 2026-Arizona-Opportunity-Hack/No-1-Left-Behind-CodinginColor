@@ -2,9 +2,9 @@ import "server-only";
 import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { ROLE_HOME, type StaffRole } from "@/lib/roles";
+import { can, type Permission } from "@/lib/permissions";
 
-export type Staff = { id: string; email: string | null; role: StaffRole; displayName: string };
+export type Staff = { id: string; email: string | null; role: string; roleName: string; permissions: string[]; displayName: string };
 
 /** The signed-in staff member (admin / instructor / reviewer), or null. Cached per request. */
 export const getStaff = cache(async (): Promise<Staff | null> => {
@@ -19,10 +19,14 @@ export const getStaff = cache(async (): Promise<Staff | null> => {
     .eq("id", user.id)
     .single();
   if (!profile) return null;
+  const { data: definition, error } = await supabase.from("staff_roles").select("name, permissions").eq("id", profile.role).single();
+  if (error || !definition) throw new Error("Staff permissions are unavailable. Ask CIC staff to finish applying the access migration.");
   return {
     id: user.id,
     email: user.email ?? null,
-    role: profile.role as StaffRole,
+    role: profile.role,
+    roleName: definition.name,
+    permissions: definition.permissions,
     displayName: profile.display_name ?? user.email ?? "Staff",
   };
 });
@@ -31,9 +35,17 @@ export const getStaff = cache(async (): Promise<Staff | null> => {
  * Use at the top of every staff page. Not signed in → sign-in page (then back here).
  * Wrong role → their own home. The database's access rules still apply on every query.
  */
-export async function requireStaff(allowed: StaffRole[], currentPath: string): Promise<Staff> {
+export async function requirePermission(permission: Permission, currentPath: string): Promise<Staff> {
   const staff = await getStaff();
   if (!staff) redirect(`/login?next=${encodeURIComponent(currentPath)}`);
-  if (!allowed.includes(staff.role)) redirect(ROLE_HOME[staff.role]);
+  if (!can(staff, permission)) redirect(`/access?next=${encodeURIComponent(currentPath)}`);
+  return staff;
+}
+
+/** Retained for admin-only home pages; functional features use permissions. */
+export async function requireStaff(allowed: string[], currentPath: string): Promise<Staff> {
+  const staff = await getStaff();
+  if (!staff) redirect(`/login?next=${encodeURIComponent(currentPath)}`);
+  if (!allowed.includes(staff.role)) redirect("/access");
   return staff;
 }

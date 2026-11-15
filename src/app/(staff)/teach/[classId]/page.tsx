@@ -4,7 +4,7 @@ import { connection } from "next/server";
 import { AutoRefresh } from "@/components/teach/auto-refresh";
 import { CopyLinkButton } from "@/components/teach/copy-link-button";
 import { formatDuration, timeAgo } from "@/lib/status-display";
-import { requireStaff } from "@/server/auth";
+import { requirePermission } from "@/server/auth";
 import { getCatchUpState } from "@/server/catch-up-teacher";
 import { getClassroom, getTopicMastery } from "@/server/dashboard";
 import type { ClassroomStudent } from "@/types/dashboard";
@@ -23,7 +23,7 @@ type CatchUp = "assigned" | "caught_up" | undefined;
 export default async function LiveClassroom({ params, searchParams }: Props) {
   await connection(); // per-user, live data: render at request time
   const { classId } = await params;
-  await requireStaff(["instructor", "admin"], `/teach/${classId}`);
+  await requirePermission("classes.manage", `/teach/${classId}`);
   const showAll = (await searchParams).show === "all";
   const [room, mastery, catchUp] = await Promise.all([getClassroom(classId), getTopicMastery(classId), getCatchUpState(classId)]);
 
