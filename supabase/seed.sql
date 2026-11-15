@@ -277,6 +277,9 @@ begin
 end
 $seed$;
 
+-- Add the curated pre/post pairs for the other demo units.
+select public.ensure_demo_assessment_pairs();
+
 -- Publish only after lessons and reviewed activities exist.
 update public.modules set status = 'published' where id in (
   '10000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000002',

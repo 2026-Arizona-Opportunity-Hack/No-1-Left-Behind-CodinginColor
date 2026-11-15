@@ -7,7 +7,7 @@ insert into auth.users(id, email, raw_app_meta_data) values
 set local role authenticated;
 select set_config('request.jwt.claim.sub', 'f0000000-0000-0000-0000-000000000001', true);
 do $$
-declare m uuid; l uuid; a uuid; result jsonb; n int;
+declare m uuid; l uuid; a uuid; result jsonb; n int; reviewed_lesson uuid;
 begin
   result := public.edit_curriculum('create', '{"entity":"modules","patch":{"title":"Test unit"}}');
   m := (result->>'id')::uuid;
@@ -24,7 +24,15 @@ begin
   assert n = 4, 'Template must create four ordered steps';
   select id into a from public.activities where lesson_id = l and position = 1;
   update public.activities set ai_suggested = true where id = a;
-  perform public.edit_curriculum('update', jsonb_build_object('entity','lessons','id',l,'patch','{"status":"published"}'::jsonb));
+  begin
+    perform public.edit_curriculum('update', jsonb_build_object('entity','lessons','id',l,'patch','{"status":"published"}'::jsonb));
+    raise exception 'TEST: AI lesson published';
+  exception when raise_exception then
+    if sqlerrm not like 'Review and save all AI-drafted activities before publishing this lesson%' then raise; end if;
+  end;
+  result:=public.edit_curriculum('create',jsonb_build_object('entity','lessons','parent_id',m,'patch','{"title":"Reviewed lesson"}'::jsonb));
+  reviewed_lesson:=(result->>'id')::uuid;
+  perform public.edit_curriculum('update',jsonb_build_object('entity','lessons','id',reviewed_lesson,'patch','{"status":"published"}'::jsonb));
   begin
     perform public.edit_curriculum('update', jsonb_build_object('entity','modules','id',m,'patch','{"status":"published"}'::jsonb));
     raise exception 'TEST: AI draft published';
@@ -32,6 +40,11 @@ begin
     if sqlerrm not like 'Review and save%' then raise; end if;
   end;
   perform public.edit_curriculum('update', jsonb_build_object('entity','activities','id',a,'patch','{"content":{"heading":"Reviewed","body":"Approved"}}'::jsonb));
+  perform public.edit_curriculum('update', jsonb_build_object('entity','lessons','id',l,'patch','{"status":"published"}'::jsonb));
+  perform public.edit_curriculum('assessment', jsonb_build_object('entity','modules','parent_id',m,'kind','pre','questions',
+    '[{"concept_tag":"loops","prompt":"Before?","options":["A","B"],"answer":0}]'::jsonb));
+  perform public.edit_curriculum('assessment', jsonb_build_object('entity','modules','parent_id',m,'kind','post','questions',
+    '[{"concept_tag":"loops","prompt":"After?","options":["A","B"],"answer":1}]'::jsonb));
   perform public.edit_curriculum('update', jsonb_build_object('entity','modules','id',m,'patch','{"status":"published"}'::jsonb));
   assert (select status = 'published' from public.modules where id = m), 'Admin publish failed';
   begin
