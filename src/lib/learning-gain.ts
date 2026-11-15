@@ -57,6 +57,19 @@ export function studentGain(responses: TestResponse[]): StudentGain | null {
 }
 
 /** Class (or cohort) summary. Pass one entry per student, including those missing a test. */
+/**
+ * One score pair per student PER MODULE. Students missing a test still appear (and are counted as
+ * missing), and a pre-test from one module is never paired with another module's post-test.
+ */
+export function scoresByStudentAndModule(rows: (TestResponse & { module_id?: string })[]): StudentScores[] {
+  const groups = new Map<string, TestResponse[]>();
+  for (const r of rows) {
+    const key = `${r.student_id ?? ""}:${r.module_id ?? ""}`;
+    groups.set(key, [...(groups.get(key) ?? []), r]);
+  }
+  return [...groups.values()].map(studentScores);
+}
+
 export function aggregateGain(perStudent: StudentScores[]): GainSummary {
   const both = perStudent.filter(
     (s): s is { pre_pct: number; post_pct: number } => s.pre_pct !== null && s.post_pct !== null,

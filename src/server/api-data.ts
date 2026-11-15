@@ -1,6 +1,6 @@
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { aggregateGain, gainByConcept, studentScores, type ConceptGain, type GainSummary, type TestResponse } from "@/lib/learning-gain";
+import { aggregateGain, gainByConcept, scoresByStudentAndModule, type ConceptGain, type GainSummary, type TestResponse } from "@/lib/learning-gain";
 import { isUuid } from "@/lib/validate";
 import { fetchAll } from "@/server/fetch-all";
 import { loadClassroom, loadTopicMastery } from "@/server/dashboard";
@@ -43,12 +43,7 @@ async function loadGainRows(db: Db, classId?: string): Promise<GainRow[]> {
   });
 }
 
-/** One entry per student, so students missing a test are counted as missing. */
-function perStudent(rows: TestResponse[]) {
-  const byStudent = new Map<string, TestResponse[]>();
-  for (const r of rows) byStudent.set(r.student_id!, [...(byStudent.get(r.student_id!) ?? []), r]);
-  return [...byStudent.values()].map(studentScores);
-}
+const perStudent = scoresByStudentAndModule;
 
 export type ApiClass = { id: string; name: string; school: string; students: number; completion_pct: number };
 export async function listClasses(db: Db): Promise<Result<ApiClass[]>> {

@@ -1,4 +1,5 @@
 import "server-only";
+import { isUuid } from "@/lib/validate";
 import { generateApiKey, hashApiKey } from "@/lib/api-keys";
 import { createClient } from "@/lib/supabase/server";
 import { fail, ok, type Result } from "@/types/result";
@@ -33,6 +34,7 @@ export async function createApiKey(name: string): Promise<Result<{ id: string; k
 
 /** Stops a key from working. The row stays, so the log of who used it is kept. */
 export async function revokeApiKey(id: string): Promise<Result<void>> {
+  if (!isUuid(id)) return fail("That key doesn't exist or was already revoked.");
   const { data, error } = await (await createClient())
     .from("api_keys")
     .update({ revoked_at: new Date().toISOString() })

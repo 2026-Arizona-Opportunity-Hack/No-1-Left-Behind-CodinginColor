@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { aggregateGain, gainByConcept, studentGain, studentScores, type TestResponse } from "./learning-gain";
+import { aggregateGain, gainByConcept, scoresByStudentAndModule, studentGain, studentScores, type TestResponse } from "./learning-gain";
 
 const r = (kind: "pre" | "post", correct: boolean, concept_tag?: string, student_id?: string): TestResponse => ({
   kind,
@@ -89,5 +89,25 @@ describe("gainByConcept", () => {
   });
   it("skips responses without a concept tag or student", () => {
     expect(gainByConcept([r("pre", true), r("post", true, "loops")])).toEqual([]);
+  });
+});
+
+describe("scoresByStudentAndModule", () => {
+  it("never pairs one module's pre-test with another module's post-test", () => {
+    const rows = [
+      { student_id: "s1", module_id: "m1", kind: "pre" as const, correct: false },
+      { student_id: "s1", module_id: "m2", kind: "post" as const, correct: true },
+    ];
+    const scores = scoresByStudentAndModule(rows);
+    expect(scores).toHaveLength(2);
+    expect(aggregateGain(scores).n).toBe(0); // no student has BOTH tests for the same module
+  });
+
+  it("pairs pre and post within the same module", () => {
+    const rows = [
+      { student_id: "s1", module_id: "m1", kind: "pre" as const, correct: false },
+      { student_id: "s1", module_id: "m1", kind: "post" as const, correct: true },
+    ];
+    expect(aggregateGain(scoresByStudentAndModule(rows))).toMatchObject({ n: 1, avg_gain: 100 });
   });
 });
