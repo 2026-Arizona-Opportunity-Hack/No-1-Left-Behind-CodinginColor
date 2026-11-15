@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { DragHandle, useDragReorder } from "@/components/curriculum/drag-reorder";
+import { DRAG_HINT, DragHandle, useDragReorder } from "@/components/curriculum/drag-reorder";
 import { SaveMessage, StatusBadge, moved, useSave } from "@/components/curriculum/use-save";
 import { createModuleAction, deleteModuleAction, reorderModulesAction, setModuleStatusAction } from "./actions";
 
@@ -18,6 +18,7 @@ export function ModuleList({ modules }: { modules: Row[] }) {
   const drag = useDragReorder(ids, (next) => save(() => reorderModulesAction(next), "Order saved"), pending);
   return (
     <div className="space-y-6">
+      <p className="text-sm text-muted-foreground">{DRAG_HINT}</p>
       <ol className="space-y-3">
         {modules.map((m, i) => (
           <li key={m.id} {...drag.rowProps(m.id)} className={`flex flex-wrap items-center gap-3 rounded-2xl bg-card p-4 ${drag.rowClass(m.id)}`}>
