@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { CodeEditor } from "@/components/code/code-editor";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -83,20 +84,7 @@ export function Playground() {
         <Label id="code-heading" htmlFor="code" className="text-base">
           Your code
         </Label>
-        <Textarea
-          id="code"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          onKeyDown={(e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === "Enter") handleRun();
-          }}
-          spellCheck={false}
-          aria-describedby="code-help"
-          className="min-h-56 rounded-[18px] border-0 bg-[#0F2E1C] px-5 py-4 font-mono text-[18px] leading-[1.75] text-[#E6F4EA] focus-visible:outline-[#FFD75E]"
-        />
-        <p id="code-help" className="text-sm text-muted-foreground">
-          Tip: press Ctrl + Enter to run. Press Tab to move to the next field.
-        </p>
+        <CodeEditor value={code} onChange={setCode} label="Your code" onRun={handleRun} minLines={7} />
         <Label htmlFor="stdin">Input (one answer per line, for input())</Label>
         <Textarea id="stdin" value={stdin} onChange={(e) => setStdin(e.target.value)} className="min-h-16 font-mono" />
         <div className="flex flex-wrap items-center gap-3">

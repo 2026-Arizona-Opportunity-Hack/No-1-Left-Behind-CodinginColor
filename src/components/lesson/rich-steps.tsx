@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { answerStep, reportCodeCheck } from "@/app/learn/[lessonId]/actions";
+import { CodeEditor } from "@/components/code/code-editor";
 import { Button } from "@/components/ui/button";
 import { checkCode, friendlyError, type CheckSummary, type PythonRunner, type RunResult } from "@/lib/python/runner";
 import type { AnswerResult } from "@/types/student-lesson";
@@ -35,15 +36,21 @@ export function CodeStep({ activity, onDone, elapsed, runner }: StepProps<"code"
   const allPassed = summary && summary.passed === summary.total;
   return (
     <div className="flex flex-col gap-3.5">
-      <label htmlFor={`code-${activity.id}`} className="sr-only">Your code</label>
-      <textarea id={`code-${activity.id}`} value={code} onChange={(e) => setCode(e.target.value)} spellCheck={false}
-        onKeyDown={(e) => { if ((e.ctrlKey || e.metaKey) && e.key === "Enter") doRun(); }}
-        className="min-h-48 w-full resize-y rounded-[18px] border-0 bg-[#0F2E1C] px-5 py-4 font-mono text-[18px] leading-[1.75] text-[#E6F4EA] focus-visible:outline-3 focus-visible:outline-[#FFD75E]" />
+      <CodeEditor value={code} onChange={setCode} label="Your code" onRun={doRun} />
       <div className="flex flex-wrap items-center gap-3">
         <Button variant="outline" onClick={doRun} disabled={!runner || busy}>Run</Button>
         <Button onClick={doCheck} disabled={!runner || busy}>Check my code</Button>
+        <Button variant="ghost" onClick={() => { setCode(activity.step.starter_code); setRun(null); setSummary(null); }} disabled={busy || code === activity.step.starter_code}>Start over</Button>
         <span role="status" className="text-[15px] text-muted-foreground">{!runner ? "Getting Python ready…" : busy ? "Running…" : ""}</span>
       </div>
+      {!summary && activity.step.tests.length > 0 && (
+        <div className="rounded-2xl bg-background px-5 py-3.5">
+          <p className="text-[15px] font-semibold text-muted-foreground">Your code needs to pass</p>
+          <ul className="mt-1 flex flex-wrap gap-x-5 gap-y-1 text-base">
+            {activity.step.tests.map((c) => <li key={c.label}><b aria-hidden="true">○</b> {c.label}</li>)}
+          </ul>
+        </div>
+      )}
       <div className="rounded-2xl bg-background px-5 py-3.5">
         <p className="text-[15px] font-semibold text-muted-foreground">What your code printed</p>
         <pre aria-live="polite" className="mt-1 font-mono text-[17px] leading-relaxed whitespace-pre-wrap">

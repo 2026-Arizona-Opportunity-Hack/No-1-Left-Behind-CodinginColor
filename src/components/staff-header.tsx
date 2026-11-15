@@ -18,8 +18,12 @@ export function StaffHeader({ staff }: { staff: Staff }) {
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-3 text-base whitespace-nowrap">
+          {/* One pill with the role. The person's name goes beside it only when it says something different
+              (an admin named "CIC administrator" would otherwise show the same words twice). */}
           <span className="rounded-full bg-card px-3 py-1 font-medium">{staff.roleName}</span>
-          <span className="hidden xl:inline">{staff.displayName}</span>
+          {staff.displayName.trim().toLowerCase() !== staff.roleName.trim().toLowerCase() && (
+            <span className="hidden xl:inline">{staff.displayName}</span>
+          )}
           <form action={signOut}>
             <button type="submit" className="h-10 cursor-pointer rounded-full border-2 border-primary bg-card px-4 text-base font-bold text-foreground hover:bg-secondary">Sign out</button>
           </form>
