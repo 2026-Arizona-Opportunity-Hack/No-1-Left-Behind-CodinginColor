@@ -64,7 +64,7 @@ export function LessonPlayer({ lesson, catchUp }: { lesson: PlayerLesson; catchU
           &lt;<span className="flex size-28 items-center justify-center rounded-full bg-primary text-6xl text-primary-foreground sm:size-32">✓</span>&gt;
         </div>
         <h1 id="done-heading" className="mt-8 text-5xl font-bold tracking-tight sm:text-7xl">You finished {lesson.title}</h1>
-        <p className="mt-3 text-xl text-muted-foreground">{done.size} of {steps.length} steps done{steps.some((a) => !a.isCore && !done.has(a.id)) ? " (extras are optional)" : ""}.</p>
+        <p className="mt-3 text-xl text-muted-foreground">{done.size} of {steps.length} steps done{steps.some((a) => !a.isCore && !done.has(a.id)) ? " (the bonus steps are optional)" : ""}.</p>
         <div className="mt-10 flex flex-wrap justify-center gap-3.5">
           {lesson.nextLesson && <Link href={`/learn/${lesson.nextLesson.id}`} className={buttonVariants({ size: "lg" })}>Next: {lesson.nextLesson.title} <span aria-hidden="true" className="font-mono font-extrabold">&gt;</span></Link>}
           <Link href="/learn" className={buttonVariants({ size: "lg", variant: "outline" })}>Back to my course</Link>
@@ -100,7 +100,7 @@ export function LessonPlayer({ lesson, catchUp }: { lesson: PlayerLesson; catchU
       <div className="grid flex-1 grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,420px)_1fr] lg:grid-rows-[1fr_auto] lg:gap-x-12 lg:gap-y-6">
         <div className="flex flex-col pt-2 lg:col-start-1 lg:row-start-1 lg:pt-6">
           {(current.title && current.title !== ACTIVITY_LABEL[current.type] || !current.isCore) && (
-            <p className="text-base font-semibold text-[#047D13]">{current.title && current.title !== ACTIVITY_LABEL[current.type] ? ACTIVITY_LABEL[current.type] : ""}{current.isCore ? "" : " · Extra (optional)"}</p>
+            <p className="text-base font-semibold text-[#047D13]">{current.title && current.title !== ACTIVITY_LABEL[current.type] ? ACTIVITY_LABEL[current.type] : ""}{current.isCore ? "" : " · Bonus (optional)"}</p>
           )}
           <h1 id="step-heading" ref={headingRef} tabIndex={-1} className="mt-2.5 text-4xl leading-[1.05] font-bold tracking-tight outline-none sm:text-5xl lg:text-[56px]">
             {current.title || ACTIVITY_LABEL[current.type]}
@@ -120,7 +120,7 @@ export function LessonPlayer({ lesson, catchUp }: { lesson: PlayerLesson; catchU
             </div>
           )}
         </div>
-        <section aria-labelledby="step-heading" className="flex min-w-0 flex-col gap-4 rounded-[28px] bg-card p-4 sm:p-6 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+        <section aria-labelledby="step-heading" className="flex min-w-0 flex-col gap-4 self-start rounded-[28px] bg-card p-4 sm:p-6 lg:col-start-2 lg:row-span-2 lg:row-start-1">
           <StepBody activity={current} props={props} runner={runner} />
         </section>
         <div className="lg:col-start-1 lg:row-start-2">

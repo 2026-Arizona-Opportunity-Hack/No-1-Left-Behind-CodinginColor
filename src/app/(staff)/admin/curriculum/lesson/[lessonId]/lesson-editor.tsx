@@ -21,8 +21,9 @@ export function LessonEditor({ lesson, unit, activities }: { lesson: Lesson; uni
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center gap-3">
-        <Link href={`/admin/curriculum/${unit.id}`} className="text-sm font-medium underline underline-offset-4">← {unit.title}</Link>
+      <Link href={`/admin/curriculum/${unit.id}`} className="inline-block text-base text-foreground no-underline"><span aria-hidden="true" className="font-mono font-extrabold text-[#0DB031]">&lt;</span> {unit.title}</Link>
+      <div className="!mt-3 flex flex-wrap items-center gap-3">
+        <h1 className="mr-auto text-4xl font-bold tracking-tight sm:text-5xl">{lesson.title}</h1>
         <StatusBadge status={lesson.status} />
         <Button size="sm" variant="outline" disabled={pending}
           onClick={() => save(() => setLessonStatusAction(lesson.id, lesson.status === "published" ? "draft" : "published"), lesson.status === "published" ? "Lesson moved back to draft" : "Lesson published")}>
@@ -35,7 +36,7 @@ export function LessonEditor({ lesson, unit, activities }: { lesson: Lesson; uni
         <Button type="submit" variant="outline" disabled={pending}>Rename</Button>
       </form>
       {needsReview > 0 && (
-        <p className="rounded-lg border border-amber-600 bg-amber-50 p-3 text-amber-900">
+        <p className="rounded-2xl bg-sun p-4 text-sun-ink">
           {needsReview} step{needsReview === 1 ? " was" : "s were"} drafted by AI. Review and save each one before publishing.
         </p>
       )}
@@ -46,9 +47,11 @@ export function LessonEditor({ lesson, unit, activities }: { lesson: Lesson; uni
           <li key={a.id}>
             <details className="rounded-2xl bg-card p-4" open={a.ai_suggested}>
               <summary className="flex cursor-pointer flex-wrap items-center gap-2">
-                <span className="font-medium">{i + 1}. {a.title || ACTIVITY_LABEL[a.type]}</span>
-                <span className="text-sm text-muted-foreground">{ACTIVITY_LABEL[a.type]}{a.concept_tag ? ` · ${a.concept_tag}` : ""}{a.is_core ? "" : " · Extra"}</span>
-                {a.ai_suggested && <span className="rounded-full border border-amber-600 bg-amber-50 px-2 text-xs font-semibold text-amber-900">Suggested: please review</span>}
+                <span className="text-lg font-semibold">{i + 1}. {a.title || ACTIVITY_LABEL[a.type]}</span>
+                <span className="rounded-full bg-sky px-2.5 py-0.5 text-sm text-sky-ink">{ACTIVITY_LABEL[a.type]}</span>
+                {!a.is_core && <span className="rounded-full bg-lilac px-2.5 py-0.5 text-sm text-lilac-ink">Optional</span>}
+                {a.ai_suggested && <span className="rounded-full bg-sun px-2.5 py-0.5 text-sm font-semibold text-sun-ink">Made by AI: please check</span>}
+                <span className="ml-auto text-sm font-semibold text-[#047D13]">Edit</span>
               </summary>
               <div className="mt-4 space-y-4">
                 <ActivityForm key={a.updated_at} activity={a} />
@@ -64,7 +67,7 @@ export function LessonEditor({ lesson, unit, activities }: { lesson: Lesson; uni
         ))}
       </ol>
 
-      <form className="flex flex-wrap items-end gap-3 rounded-xl border border-dashed p-4"
+      <form className="flex flex-wrap items-end gap-3 rounded-3xl border-2 border-dashed border-[#7FA08B] p-5"
         onSubmit={(e) => { e.preventDefault(); save(() => createActivityAction(lesson.id, newType), "Step added"); }}>
         <div className="space-y-1"><Label htmlFor="new-step">Add a step</Label>
           <select id="new-step" value={newType} onChange={(e) => setNewType(e.target.value as ActivityType)} className="h-10 rounded-md border bg-background px-2">

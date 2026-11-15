@@ -56,7 +56,7 @@ export function HelpPanel(p: HelpPanelProps) {
                   </li>
                 ))}
               </ul>
-              {summary.run && (summary.run.error || summary.run.timedOut) && <p className="mt-2 text-sm text-red-900">{friendlyError(summary.run)}</p>}
+              {summary.run && (summary.run.error || summary.run.timedOut) && <p className="mt-2 text-sm text-help-ink">{friendlyError(summary.run)}</p>}
             </div>
           )}
           {/* The worked example sits under their code so the teacher can compare the two. */}

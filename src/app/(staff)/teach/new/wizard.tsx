@@ -43,13 +43,13 @@ export function ClassWizard({ modules }: { modules: WizardModule[] }) {
   return (
     <div className="mx-auto max-w-3xl space-y-6 print:hidden">
       <div>
-        <h1 className="text-3xl font-semibold tracking-tight">Set up a class</h1>
+        <h1 className="text-4xl font-bold tracking-tight">Set up a class</h1>
         <p className="text-muted-foreground">Four short steps. Most teachers finish in under 10 minutes.</p>
       </div>
       <ol aria-label="Steps" className="flex flex-wrap gap-2">
         {STEPS.map((s, i) => (
           <li key={s} aria-current={i === step ? "step" : undefined}
-            className={`rounded-full border-2 px-3 py-1 text-sm font-medium ${i === step ? "border-primary bg-primary text-primary-foreground" : i < step ? "border-green-700 text-green-800" : "border-zinc-300 text-zinc-500"}`}>
+            className={`rounded-full border-2 px-3 py-1 text-sm font-medium ${i === step ? "border-primary bg-primary text-primary-foreground" : i < step ? "border-[#047D13] text-[#047D13]" : "border-border text-muted-foreground"}`}>
             {i < step ? "✓" : i + 1}. {s}
           </li>
         ))}
@@ -73,7 +73,7 @@ export function ClassWizard({ modules }: { modules: WizardModule[] }) {
             onSkip={() => setStep(4)} />
         )}
       </section>
-      {error && <p role="alert" className="rounded-lg border border-red-300 bg-red-50 p-3 text-red-900">{error}</p>}
+      {error && <p role="alert" className="rounded-2xl bg-help p-4 text-help-ink">{error}</p>}
     </div>
   );
 }
@@ -121,9 +121,9 @@ function RosterStep({ onSave, pending }: { onSave: (rows: RosterCsv["rows"]) => 
       </div>
       {parsed && (
         <div className="space-y-3">
-          {parsed.warnings.map((w) => <p key={w} className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{w}</p>)}
+          {parsed.warnings.map((w) => <p key={w} className="rounded-2xl bg-sun p-4 text-sm text-sun-ink">{w}</p>)}
           {parsed.errors.length > 0 && (
-            <ul role="alert" className="space-y-1 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-900">
+            <ul role="alert" className="space-y-1 rounded-2xl bg-help p-4 text-sm text-help-ink">
               {parsed.errors.map((e) => <li key={`${e.line}${e.message}`}>Line {e.line}: {e.message}</li>)}
             </ul>
           )}
@@ -233,9 +233,9 @@ function JoinCards({ cls, cards }: { cls: { id: string; class_code: string; name
   return (
     <div className="space-y-6">
       <div className="space-y-3 print:hidden">
-        <h1 className="text-3xl font-semibold tracking-tight">✓ {cls.name} is ready</h1>
+        <h1 className="text-4xl font-bold tracking-tight">✓ {cls.name} is ready</h1>
         <p className="text-lg">Class code <span className="font-mono font-semibold">{cls.class_code}</span>. Print these cards and hand one to each student.</p>
-        <p className="rounded-lg border border-amber-600 bg-amber-50 p-3 text-amber-900">
+        <p className="rounded-2xl bg-sun p-4 text-sun-ink">
           Personal codes are shown <strong>only now</strong>. If a card gets lost, you can give that student a new code from the classroom.
         </p>
         <div className="flex flex-wrap gap-3">

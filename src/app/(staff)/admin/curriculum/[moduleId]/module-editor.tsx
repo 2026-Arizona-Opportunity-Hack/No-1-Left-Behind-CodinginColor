@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,16 +21,15 @@ export function ModuleEditor({ module: m }: { module: ModuleTree }) {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-wrap items-center gap-3">
-        <Link href="/admin/curriculum" className="text-sm font-medium underline underline-offset-4">← All units</Link>
+      <Link href="/admin/curriculum" className="inline-block text-base text-foreground no-underline"><span aria-hidden="true" className="font-mono font-extrabold text-[#0DB031]">&lt;</span> All units</Link>
+      <div className="!mt-3 flex flex-wrap items-center gap-3">
+        <h1 className="mr-auto text-4xl font-bold tracking-tight sm:text-5xl">{m.title}</h1>
         <StatusBadge status={m.status} />
         <Button size="sm" variant="outline" disabled={pending}
           onClick={() => save(() => setModuleStatusAction(m.id, m.status === "published" ? "draft" : "published"), m.status === "published" ? "Unit moved back to draft" : "Unit published")}>
           {m.status === "published" ? "Unpublish unit" : "Publish unit"}
         </Button>
       </div>
-
-      <h1 className="text-5xl font-bold tracking-tight">{m.title}</h1>
       <form className="space-y-3 rounded-3xl bg-card p-6" onSubmit={(e) => { e.preventDefault(); save(() => updateModuleAction(m.id, title, description), "Unit saved"); }}>
         <Label htmlFor="unit-title" className="text-base">Unit title</Label>
         <Input id="unit-title" value={title} onChange={(e) => setTitle(e.target.value)} className="h-11 text-lg font-semibold" />
@@ -62,7 +61,7 @@ export function ModuleEditor({ module: m }: { module: ModuleTree }) {
         </ol>
       </section>
 
-      <form className="space-y-4 rounded-xl border border-dashed p-5" onSubmit={(e) => {
+      <form className="space-y-4 rounded-3xl border-2 border-dashed border-[#7FA08B] p-6" onSubmit={(e) => {
         e.preventDefault();
         save(() => createLessonAction(m.id, lessonTitle, practice === "blank" ? null : { intro, practice }), "Lesson created", () => setLessonTitle(""));
       }}>
@@ -90,13 +89,13 @@ export function ModuleEditor({ module: m }: { module: ModuleTree }) {
         <Button type="submit" disabled={pending || !lessonTitle.trim()}>Create lesson</Button>
       </form>
 
-      <section aria-labelledby="tests-h" className="space-y-2">
-        <h2 id="tests-h" className="text-xl font-semibold">Pre-test and post-test</h2>
-        <p className="text-sm text-muted-foreground">Same learning goals, different questions. Learning gain = post-test % − pre-test %.</p>
-        <div className="flex gap-3">
-          <Link href={`/admin/curriculum/${m.id}/test/pre`} className="font-medium underline underline-offset-4">Edit pre-test</Link>
-          <Link href={`/admin/curriculum/${m.id}/test/post`} className="font-medium underline underline-offset-4">Edit post-test</Link>
+      <section aria-labelledby="tests-h" className="flex flex-wrap items-center gap-4 rounded-3xl bg-lilac p-6 text-lilac-ink">
+        <div className="mr-auto">
+          <h2 id="tests-h" className="text-xl font-semibold">Pre-test and post-test</h2>
+          <p>Students take one before the unit and one after. Comparing them shows how much they learned.</p>
         </div>
+        <Link href={`/admin/curriculum/${m.id}/test/pre`} className={buttonVariants({ variant: "outline" })}>Edit pre-test</Link>
+        <Link href={`/admin/curriculum/${m.id}/test/post`} className={buttonVariants({ variant: "outline" })}>Edit post-test</Link>
       </section>
     </div>
   );

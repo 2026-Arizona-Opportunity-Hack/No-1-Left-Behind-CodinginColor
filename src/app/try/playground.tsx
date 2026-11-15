@@ -126,7 +126,7 @@ export function Playground() {
           {run?.truncated && "\n… (output cut off: that's a lot of printing!)"}
         </pre>
         {run && (run.error || run.timedOut) && (
-          <div role="alert" className="rounded-lg border border-red-300 bg-red-50 p-4 text-red-900">
+          <div role="alert" className="rounded-2xl bg-help p-4 text-help-ink">
             <p className="font-medium">{friendlyError(run)}</p>
             {run.error?.traceback && (
               <details className="mt-2 text-sm">
@@ -144,7 +144,7 @@ export function Playground() {
             <ul className="mt-3 space-y-2">
               {summary.results.map((r) => (
                 <li key={r.label} className="flex gap-2">
-                  <span aria-hidden="true" className={r.passed ? "text-green-700" : "text-red-700"}>
+                  <span aria-hidden="true" className={r.passed ? "text-[#047D13]" : "text-[#B3261E]"}>
                     {r.passed ? "✓" : "✗"}
                   </span>
                   <span>

@@ -28,7 +28,7 @@ export function KeysManager({ keys }: { keys: ApiKeyRow[] }) {
       <SaveMessage message={message} />
 
       {fresh && (
-        <div role="status" className="space-y-3 rounded-xl border-2 border-amber-600 bg-amber-50 p-4 text-amber-950">
+        <div role="status" className="space-y-3 rounded-2xl bg-sun p-5 text-sun-ink">
           <p className="font-semibold">Copy this key now. You won&apos;t see it again.</p>
           <p className="text-sm">We only keep a scrambled version. If it&apos;s lost, revoke it and create a new one. Keep it out of email and chat; put it straight into your dashboard&apos;s settings.</p>
           <div className="flex flex-wrap items-center gap-2">
@@ -49,7 +49,7 @@ export function KeysManager({ keys }: { keys: ApiKeyRow[] }) {
                 <th scope="row" className="p-3 font-medium">{k.name}</th>
                 <td className="p-3">{fmt(k.created_at)}</td>
                 <td className="p-3">{fmt(k.last_used_at)}</td>
-                <td className="p-3">{k.revoked_at ? <span className="text-zinc-600">✕ Revoked</span> : <span className="text-green-800">✓ Active</span>}</td>
+                <td className="p-3">{k.revoked_at ? <span className="text-muted-foreground">✕ Revoked</span> : <span className="text-[#047D13]">✓ Active</span>}</td>
                 <td className="p-3 text-right">{!k.revoked_at && (
                   <Button size="sm" variant="destructive" disabled={pending}
                     onClick={() => { if (confirm(`Revoke "${k.name}"? Anything using it stops working right away.`)) save(() => revokeKeyAction(k.id), "Key revoked"); }}>Revoke</Button>

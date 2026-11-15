@@ -65,7 +65,7 @@ async function CourseMapPage() {
           )}
 
           {missed.map((m) => (
-            <div key={m.lessonId} role="status" className="flex flex-wrap items-center gap-4 rounded-3xl border-l-[6px] border-[#C77700] bg-behind px-6 py-5 text-behind-ink">
+            <div key={m.lessonId} role="status" className="flex flex-wrap items-center gap-4 rounded-3xl bg-behind px-6 py-5 text-behind-ink">
               <p className="flex-1"><b className="font-semibold">You missed {m.title} on {weekdayName(m.date)}.</b><br />
                 {m.assigned ? "Your teacher set up a catch-up for you. " : ""}Catch up in about 15 minutes.</p>
               <Link href={`/learn/catch-up/${m.lessonId}`} className="inline-flex h-12 items-center rounded-full border-2 border-primary bg-card px-6 font-semibold text-foreground no-underline hover:bg-secondary">Catch up</Link>
@@ -100,8 +100,8 @@ function UnitCard({ unit, nextId, tests }: { unit: MapModule; nextId?: string; t
       <section aria-labelledby={`unit-${unit.id}`} className="flex items-center gap-5 rounded-3xl border-2 border-border px-7 py-5">
         <svg aria-hidden="true" width="22" height="26" viewBox="0 0 22 26"><path d="M5 11V7a6 6 0 0 1 12 0v4" fill="none" stroke="#0B3D1E" strokeWidth="3" /><rect x="1" y="11" width="20" height="14" rx="4" fill="#0B3D1E" /></svg>
         <div className="flex-1">
-          <h2 id={`unit-${unit.id}`} className="text-xl font-semibold">{unit.position} · {unit.title}</h2>
-          <p className="text-base text-muted-foreground">Locked · {unit.lockedReason}</p>
+          <h2 id={`unit-${unit.id}`} className="text-xl font-semibold"><span className="sr-only">{unit.position} · </span>{unit.title}</h2>
+          <p className="text-base text-muted-foreground">{unit.lockedReason}</p>
         </div>
         <span className="text-[15px] text-muted-foreground">{unit.lessons.length} lessons</span>
       </section>

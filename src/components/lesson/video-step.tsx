@@ -114,7 +114,7 @@ export function VideoStep({ activity }: StepProps<"video">) {
           <p className="text-sm text-muted-foreground">The video stops {pause_points.length} time{pause_points.length === 1 ? "" : "s"} for a quick question ({solved.length} answered).</p>
           <div className="relative mt-2 h-2 rounded-full bg-muted" aria-hidden="true">
             {duration > 0 && pause_points.map((q) => (
-              <span key={q.at_seconds} className={`absolute -top-1 size-4 rounded-full border-2 ${solved.includes(q.at_seconds) ? "border-green-700 bg-green-700" : "border-primary bg-background"}`}
+              <span key={q.at_seconds} className={`absolute -top-1 size-4 rounded-full border-2 ${solved.includes(q.at_seconds) ? "border-[#047D13] bg-[#047D13]" : "border-primary bg-background"}`}
                 style={{ left: `calc(${(q.at_seconds / duration) * 100}% - 8px)` }} />
             ))}
           </div>

@@ -22,7 +22,7 @@ export function LoginForm({ next }: { next: string | null }) {
           aria-invalid={Boolean(state.error)} aria-describedby={state.error ? "login-error" : undefined} className="h-14" />
       </div>
       {state.error && (
-        <p id="login-error" role="alert" className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-900">
+        <p id="login-error" role="alert" className="rounded-2xl bg-help p-4 text-sm text-help-ink">
           {state.error}
         </p>
       )}

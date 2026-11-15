@@ -31,7 +31,7 @@ export default async function CurriculumPage() {
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-3xl font-semibold tracking-tight">Python Basics curriculum</h1>
+        <h1 className="text-4xl font-bold tracking-tight">Python Basics curriculum</h1>
         {staff.role !== "admin" && (
           <span className="rounded-full border px-2.5 py-0.5 text-sm font-medium">View only</span>
         )}
@@ -62,7 +62,7 @@ export default async function CurriculumPage() {
                           <span className="text-sm font-normal text-muted-foreground">
                             {ACTIVITY_LABEL[a.type] ?? a.type}
                             {a.concept_tag ? ` · topic: ${a.concept_tag}` : ""}
-                            {a.is_core ? "" : " · Extra"}
+                            {a.is_core ? "" : " · Optional"}
                           </span>
                         </p>
                         {a.teaching_guide?.about && (

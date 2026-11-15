@@ -30,7 +30,7 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
   if (!room.ok) {
     return (
       <div className="space-y-3">
-        <h1 className="text-3xl font-bold">We couldn&apos;t open that class</h1>
+        <h1 className="text-3xl font-bold tracking-tight">We couldn&apos;t open that class</h1>
         <p className="text-muted-foreground">{room.error}</p>
         <Link href="/teach">Back to my classes</Link>
       </div>
