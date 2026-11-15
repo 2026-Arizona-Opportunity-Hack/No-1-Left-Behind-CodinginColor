@@ -115,3 +115,82 @@ export async function importVideoLesson(input: {
   if (stepsError) throw new Error("We created the lesson but couldn't add its steps. Try again.");
   return { lessonId: lesson.id, usedAi: Boolean(draft), note };
 }
+
+// ---------------------------------------------------------------------------------------------------
+// PowerPoint deck → draft lesson. The browser reads the .pptx and sends only the slide text. The
+// slides become the lesson's first steps word for word (CIC's own content, so not marked as AI);
+// the AI then drafts the quick check, coding exercise, last question and teacher guide from that
+// text, and those are marked for a person to check before students can see the lesson.
+
+export const SLIDES_SYSTEM = SYSTEM
+  .replace("From a video transcript, draft ONE short interactive lesson.", "From a teacher's slide deck (slide text and speaker notes), draft ONE short interactive lesson that follows the slides.")
+  .replace(/ "pause_points": \[[^\n]*\n/, "\n")
+  .replace(/Rules: 2 or 3 pause_points[^\n]*\n/, "Rules: ");
+
+export const MAX_SLIDE_STEPS = 15;
+const PY_LINE = /^(\s{2,}|for |while |if |elif |else:|def |print\(|import |return\b|[A-Za-z_]\w*\s*=[^=])/;
+
+/** Splits a slide's text into plain words and Python-looking lines, so code shows in the code box. */
+function splitCode(body: string): { body: string; code?: string } {
+  const lines = body.split("\n");
+  const code = lines.filter((l) => PY_LINE.test(l));
+  if (code.length < 2) return { body };
+  return { body: lines.filter((l) => !PY_LINE.test(l)).join("\n"), code: code.join("\n") };
+}
+
+export async function importSlideLesson(input: {
+  moduleId: string; deckName: string; slides: { heading: string; body: string; notes: string }[];
+}): Promise<ImportResult> {
+  let draft: z.infer<typeof draftSchema> | null = null;
+  let note: string | null = null;
+  if (!aiConfigured()) note = "Automatic writing is turned off, so we made a lesson from your slides for you to finish.";
+  else {
+    const deckText = input.slides.map((s, i) =>
+      `Slide ${i + 1}: ${s.heading}\n${s.body}${s.notes ? `\n(Speaker notes: ${s.notes})` : ""}`).join("\n\n").slice(0, 14000);
+    const raw = tidy(await chatJSON(SLIDES_SYSTEM, `Deck title: ${input.deckName}\n\n${deckText}`)) as Record<string, unknown>;
+    const parsed = draftSchema.safeParse({ pause_points: [], ...raw });
+    if (parsed.success) draft = parsed.data;
+    else note = "The AI didn't finish the lesson, so we made one from just your slides. Try again, or fill in the questions yourself.";
+  }
+
+  const valid = <K extends keyof typeof activityContentSchemas>(type: K, value: unknown) => {
+    const r = activityContentSchemas[type].safeParse(value);
+    return r.success ? r.data : null;
+  };
+  const quiz = draft ? valid("quiz_mcq", draft.quiz) : null;
+  const exercise = draft ? valid("code_exercise", draft.exercise) : null;
+  const exit = draft ? valid("exit_question", draft.exit_question) : null;
+  const guide = draft ? teachingGuideSchema.safeParse(draft.teaching_guide) : null;
+  const ai = (part: unknown) => Boolean(draft && part);
+  const topic = draft?.concept_tag.toLowerCase() ?? null;
+  if (input.slides.length > MAX_SLIDE_STEPS) {
+    note = [note, `We turned the first ${MAX_SLIDE_STEPS} slides into steps (the AI read all ${input.slides.length}). Add or remove slide steps in the editor.`].filter(Boolean).join(" ");
+  }
+
+  const db = await createClient(); // the signed-in admin; RLS only lets admins write curriculum
+  const { data: last } = await db.from("lessons").select("position").eq("module_id", input.moduleId).order("position", { ascending: false }).limit(1).maybeSingle();
+  const { data: lesson, error } = await db.from("lessons").insert({
+    module_id: input.moduleId,
+    title: draft?.title ?? (input.deckName || "New slide lesson"),
+    position: (last?.position ?? 0) + 1,
+    source: "pptx",
+    recap: draft ? { minutes: 2, key_points: draft.key_points } : null,
+    status: "draft",
+  }).select("id").single();
+  if (error || !lesson) throw new Error("Only CIC staff can create lessons.");
+
+  const slideSteps = input.slides.slice(0, MAX_SLIDE_STEPS).map((s, i) => ({
+    type: "slide", title: s.heading.slice(0, 120) || `Slide ${i + 1}`, ai_suggested: false,
+    content: { heading: s.heading || `Slide ${i + 1}`, ...splitCode(s.body) },
+  }));
+  const steps = [
+    ...slideSteps,
+    { type: "quiz_mcq", title: "Quick check", content: quiz ?? emptyContent("quiz_mcq"), ai_suggested: ai(quiz) },
+    { type: "code_exercise", title: "Your turn", content: exercise ?? emptyContent("code_exercise"), ai_suggested: ai(exercise),
+      teaching_guide: guide?.success ? guide.data : null },
+    { type: "exit_question", title: "Last question", content: exit ?? emptyContent("exit_question"), ai_suggested: ai(exit) },
+  ].map((s, i) => ({ ...s, lesson_id: lesson.id, position: i + 1, concept_tag: topic, is_core: true }));
+  const { error: stepsError } = await db.from("activities").insert(steps);
+  if (stepsError) throw new Error("We created the lesson but couldn't add its steps. Try again.");
+  return { lessonId: lesson.id, usedAi: Boolean(draft), note };
+}

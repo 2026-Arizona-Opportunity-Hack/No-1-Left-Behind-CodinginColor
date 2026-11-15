@@ -41,7 +41,11 @@ All names and codes in the demo data are made up.
 **CIC staff** (admins).
 - **Edit the curriculum without engineering** (`/admin/curriculum`): units, lessons from CIC's template
   (intro → quick check → worksheet or coding exercise → exit question), every step type as a simple form,
-  teaching guides, hints, pre/post tests, Draft → Publish.
+  teaching guides, hints, warm-up and final quizzes, Show to students / Hide from students.
+- **Make a lesson from PowerPoint slides or a YouTube video** (`/admin/curriculum/import`). Upload a `.pptx`
+  (Google Slides: File → Download → .pptx) and the slides become the first steps, word for word; or paste a YouTube
+  link (a `t=` start time drafts from that point). AI then drafts a quick check, a coding exercise, a last question
+  and a teacher guide, each marked "Made by AI: please check". Try it with `docs/sample-while-loops.pptx`.
 - **Results** (`/results`): "+37 points on Loops" style headlines with how many students it's based on,
   gain by topic, class and student, missing-test warnings, **CSV download**.
 - **API keys** for CIC's own dashboard (see [Read API](#read-api-for-cics-dashboard)).
@@ -217,8 +221,9 @@ upgrade to Pro ($25/month) or keep it active once CIC uses it daily.
 ## AI drafting
 
 AI is optional and only drafts *curriculum* from slide text, video captions or exercise text: **never student
-names, codes or answers**. Every AI-drafted step is marked "Suggested: please review", and nothing AI-drafted can be
-published until a person reviews and saves it. Set `AI_BASE_URL`, `AI_API_KEY` and `AI_MODEL` for any
+names, codes or answers**. Every AI-drafted step is marked "Made by AI: please check", and nothing AI-drafted can be
+published until a person reviews and saves it. Slide decks are read in the browser: only the words on the slides and
+the speaker notes reach the server (no images), so large decks upload fine. Set `AI_BASE_URL`, `AI_API_KEY` and `AI_MODEL` for any
 OpenAI-compatible provider. During the hackathon we used the OHack gateway (`https://ai.ohack.dev/v1`,
 model `gpt-oss-120b`), whose keys stop working on **Sun Nov 15, 6 PM AZ**; after that, CIC sets its own key.
 Without a key, AI features switch off and manual authoring works as normal.
