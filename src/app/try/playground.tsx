@@ -92,7 +92,7 @@ export function Playground() {
           }}
           spellCheck={false}
           aria-describedby="code-help"
-          className="min-h-56 font-mono text-[15px] leading-6"
+          className="min-h-56 rounded-[18px] border-0 bg-[#0F2E1C] px-5 py-4 font-mono text-[18px] leading-[1.75] text-[#E6F4EA] focus-visible:outline-[#FFD75E]"
         />
         <p id="code-help" className="text-sm text-muted-foreground">
           Tip: press Ctrl + Enter to run. Press Tab to move to the next field.
@@ -120,7 +120,7 @@ export function Playground() {
         </h2>
         <pre
           aria-live="polite"
-          className="min-h-40 overflow-auto rounded-lg bg-[#0F2E1C] p-4 font-mono text-sm leading-6 whitespace-pre-wrap text-[#E6F4EA]"
+          className="min-h-40 overflow-auto rounded-2xl bg-card px-5 py-4 font-mono text-[17px] leading-relaxed whitespace-pre-wrap"
         >
           {run ? run.output || (run.error || run.timedOut ? "" : "(Your code didn't print anything.)") : "Press Run to see what your code prints."}
           {run?.truncated && "\n… (output cut off: that's a lot of printing!)"}
