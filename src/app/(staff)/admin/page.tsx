@@ -24,6 +24,7 @@ export default async function AdminHome() {
         ))}
       </dl>
       <div className="flex flex-wrap gap-3">
+        <Link href="/admin/curriculum" className="font-medium underline underline-offset-4">Edit the curriculum</Link>
         <Link href="/review" className="font-medium underline underline-offset-4">Browse the curriculum</Link>
         <Link href="/teach" className="font-medium underline underline-offset-4">See all classes</Link>
       </div>
