@@ -140,6 +140,9 @@ function StudentRow({ s, classId, sessionId, now }: { s: ClassroomStudent; class
           <span aria-hidden="true">{d.icon}</span>{d.word}
         </span>
         {s.reasons.length > 0 && <span className="mt-1 block text-xs text-muted-foreground">{s.reasons.join(" · ")}</span>}
+        {s.status === "needs_help" && (
+          <Link href={`/teach/${classId}/students/${s.id}#help`} className="mt-1 block text-xs font-semibold text-red-800 underline underline-offset-2">Help me teach this</Link>
+        )}
       </td>
       {sessionId && (
         <td className="p-3">

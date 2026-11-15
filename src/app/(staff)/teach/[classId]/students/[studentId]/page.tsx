@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
+import { HelpPanel, type Guide } from "@/components/teach/help-panel";
 import { Button } from "@/components/ui/button";
 import { ACTIVITY_LABEL } from "@/lib/activity-labels";
 import { STATUS_DISPLAY, formatDuration } from "@/lib/status-display";
@@ -13,7 +14,7 @@ import { saveStartModule, skipLesson, toggleUnlock } from "./actions";
 export const metadata: Metadata = { title: "Student · CIC Launchpad" };
 
 type Props = { params: Promise<{ classId: string; studentId: string }> };
-type CurriculumModule = { id: string; title: string; position: number; lessons: { id: string; title: string; position: number; activities: { id: string; type: string; content: { fields?: { id: string; label: string }[] } }[] }[] };
+type CurriculumModule = { id: string; title: string; position: number; lessons: { id: string; title: string; position: number; activities: { id: string; type: string; title: string | null; position: number; teaching_guide: Guide | null; content: { fields?: { id: string; label: string }[]; tests?: import("@/lib/python/runner").CodeCheck[] } }[] }[] };
 
 const STEP_STATUS = {
   done: { icon: "✓", word: "Done", className: "text-green-800" },
@@ -30,7 +31,7 @@ export default async function StudentPage({ params }: Props) {
     getStudentDetail(studentId),
     getClassroom(classId),
     supabase.from("modules")
-      .select("id, title, position, lessons(id, title, position, activities(id, type, content))")
+      .select("id, title, position, lessons(id, title, position, activities(id, type, title, position, teaching_guide, content))")
       .eq("status", "published").order("position")
       .order("position", { referencedTable: "lessons" }).order("position", { referencedTable: "lessons.activities" }),
   ]);
@@ -50,6 +51,12 @@ export default async function StudentPage({ params }: Props) {
   const hidden = (name: string, value: string) => <input type="hidden" name={name} value={value} />;
   const ids = <>{hidden("classId", classId)}{hidden("studentId", studentId)}</>;
 
+  // "Help me teach this": the step they're stuck on, its checks and the best teaching guide in that lesson.
+  const stuckLesson = row.status === "needs_help" && row.current ? modules.flatMap((m) => m.lessons).find((l) => l.id === row.current!.lesson_id) : undefined;
+  const stuck = stuckLesson?.activities.find((a) => a.position === row.current!.step);
+  const fallbackGuide = stuckLesson?.activities.find((a) => a.teaching_guide?.about);
+  const stuckWork = stuck ? byActivity.get(stuck.id) : undefined;
+
   return (
     <div className="space-y-8">
       <div className="space-y-2">
@@ -65,6 +72,14 @@ export default async function StudentPage({ params }: Props) {
           {row.reasons.length > 0 && <> · {row.reasons.join(" · ")}</>}
         </p>
       </div>
+
+      {stuckLesson && stuck && (
+        <HelpPanel studentLabel={row.label} stepTitle={stuck.title || ACTIVITY_LABEL[stuck.type]} stepNumber={stuck.position}
+          lessonTitle={stuckLesson.title} code={stuckWork?.last_code ?? null} checks={stuck.content.tests ?? []}
+          attempts={stuckWork?.attempts ?? 0} hints={stuckWork?.hints ?? 0} timeLabel={`${formatDuration(stuckWork?.time_ms ?? 0)} on this step`}
+          guide={stuck.teaching_guide?.about ? stuck.teaching_guide : fallbackGuide?.teaching_guide ?? null}
+          guideFrom={!stuck.teaching_guide?.about && fallbackGuide ? fallbackGuide.title || ACTIVITY_LABEL[fallbackGuide.type] : null} />
+      )}
 
       <section aria-labelledby="pace-heading" className="grid gap-4 rounded-2xl border p-5 md:grid-cols-2">
         <h2 id="pace-heading" className="sr-only">Where this student works</h2>
