@@ -11,9 +11,9 @@ delete from public.modules where id in (
 
 -- ---------- Course: units = modules ----------
 insert into public.modules (id, title, description, position, status) values
-  ('10000000-0000-0000-0000-000000000001', 'Getting started', 'Your first Python programs.', 1, 'published'),
-  ('10000000-0000-0000-0000-000000000002', 'Making decisions', 'If statements, loops and lists.', 2, 'published'),
-  ('10000000-0000-0000-0000-000000000003', 'Building things', 'Functions and a mini project.', 3, 'published');
+  ('10000000-0000-0000-0000-000000000001', 'Getting started', 'Your first Python programs.', 1, 'draft'),
+  ('10000000-0000-0000-0000-000000000002', 'Making decisions', 'If statements, loops and lists.', 2, 'draft'),
+  ('10000000-0000-0000-0000-000000000003', 'Building things', 'Functions and a mini project.', 3, 'draft');
 
 insert into public.lessons (id, module_id, title, position, status, recap) values
   ('20000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 'Hello Python', 1, 'published', null),
@@ -256,3 +256,16 @@ begin
     and (a.kind = 'pre' or s.display_name not in ('Diego Perez', 'Kevin Nguyen', 'Tyler Jim'));
 end
 $seed$;
+
+-- Publish only after lessons and reviewed activities exist.
+update public.modules set status = 'published' where id in (
+  '10000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000002',
+  '10000000-0000-0000-0000-000000000003');
+
+-- Both demo classes follow all three modules, in order.
+insert into public.class_modules (class_id, module_id, position)
+select c.id, m.id, m.position
+from public.classes c cross join public.modules m
+where c.id in ('c0000000-0000-0000-0000-000000000003', 'c0000000-0000-0000-0000-000000000005')
+  and m.id in ('10000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000003')
+on conflict (class_id, module_id) do update set position = excluded.position;
