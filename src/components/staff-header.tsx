@@ -6,7 +6,7 @@ import type { Staff } from "@/server/auth";
 
 export function StaffHeader({ staff }: { staff: Staff }) {
   return (
-    <header className="border-b bg-background">
+    <header className="border-b bg-background print:hidden">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3 sm:px-6">
         <Link href="/" className="font-semibold">
           Coding in Color <span className="font-normal text-muted-foreground">Launchpad</span>
