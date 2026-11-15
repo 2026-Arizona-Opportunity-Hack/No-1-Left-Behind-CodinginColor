@@ -15,6 +15,8 @@ export function CodeStep({ activity, onDone, elapsed, runner }: StepProps<"code"
   const [summary, setSummary] = useState<CheckSummary | null>(null);
   const [busy, setBusy] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [turnedIn, setTurnedIn] = useState(false);
+  const noChecks = activity.step.tests.length === 0;
 
   async function doRun() {
     if (!runner) return;
@@ -25,6 +27,15 @@ export function CodeStep({ activity, onDone, elapsed, runner }: StepProps<"code"
   async function doCheck() {
     if (!runner) return;
     setBusy(true); setSaveError(null);
+    if (noChecks) { // nothing to grade: turning it in counts once the code is written and runs
+      const result = await runner.run(code);
+      setRun(result); setSummary(null); setBusy(false);
+      if (!code.trim()) return setSaveError("Write some code first, then turn it in.");
+      if (result.error || result.timedOut) return;
+      try { await reportCodeCheck(activity.id, 0, 0, code, elapsed()); setTurnedIn(true); onDone(); }
+      catch (e) { setSaveError((e as Error).message); }
+      return;
+    }
     const result = await checkCode(runner, code, activity.step.tests);
     setSummary(result); setRun(result.run); setBusy(false);
     try {
@@ -39,7 +50,7 @@ export function CodeStep({ activity, onDone, elapsed, runner }: StepProps<"code"
       <CodeEditor value={code} onChange={setCode} label="Your code" onRun={doRun} />
       <div className="flex flex-wrap items-center gap-3">
         <Button variant="outline" onClick={doRun} disabled={!runner || busy}>Run</Button>
-        <Button onClick={doCheck} disabled={!runner || busy}>Check my code</Button>
+        <Button onClick={doCheck} disabled={!runner || busy}>{noChecks ? "Turn in my code" : "Check my code"}</Button>
         <Button variant="ghost" onClick={() => { setCode(activity.step.starter_code); setRun(null); setSummary(null); }} disabled={busy || code === activity.step.starter_code}>Start over</Button>
         <span role="status" className="text-[15px] text-muted-foreground">{!runner ? "Getting Python ready…" : busy ? "Running…" : ""}</span>
       </div>
@@ -73,6 +84,7 @@ export function CodeStep({ activity, onDone, elapsed, runner }: StepProps<"code"
           </ul>
         </div>
       )}
+      {turnedIn && <p role="status" className="rounded-[18px] bg-[#DDF3E3] px-5 py-4 text-xl font-semibold">✓ Turned in. Your teacher can see your code.</p>}
       {saveError && <p role="alert" className="text-[15px] text-[#4A1008]">{saveError}</p>}
     </div>
   );

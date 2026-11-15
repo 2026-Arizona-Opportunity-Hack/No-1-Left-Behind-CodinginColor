@@ -110,6 +110,9 @@ export function ActivityForm({ activity }: { activity: Activity }) {
           <CodeEditor value={str("starter_code")} onChange={(v) => set("starter_code", v)} label="Starter code" minLines={6} />
         </div>
         <fieldset className="space-y-2"><legend className="font-semibold">How we check the student&apos;s code (when they press &quot;Check my code&quot;)</legend>
+          {checks.length === 0 && (
+            <p className="rounded-2xl bg-sun p-3 text-sun-ink">No checks yet. Students will only turn in their code, and it won&apos;t be graded. Add at least one check to grade it.</p>
+          )}
           {checks.length > 0 && (
             <div aria-hidden="true" className="hidden grid-cols-[1fr_1.2fr_1.4fr_auto] gap-2 px-3 text-sm font-semibold text-muted-foreground sm:grid">
               <span>What it checks</span><span>What the code should print</span><span>Hint if it&apos;s wrong</span><span className="w-9" />

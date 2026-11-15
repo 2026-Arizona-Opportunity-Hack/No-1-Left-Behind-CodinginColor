@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DragHandle, useDragReorder } from "@/components/curriculum/drag-reorder";
 import { SaveMessage, StatusBadge, moved, useSave } from "@/components/curriculum/use-save";
 import { createModuleAction, deleteModuleAction, reorderModulesAction, setModuleStatusAction } from "./actions";
 
@@ -14,11 +15,13 @@ export function ModuleList({ modules }: { modules: Row[] }) {
   const { pending, message, save } = useSave();
   const [title, setTitle] = useState("");
   const ids = modules.map((m) => m.id);
+  const drag = useDragReorder(ids, (next) => save(() => reorderModulesAction(next), "Order saved"), pending);
   return (
     <div className="space-y-6">
       <ol className="space-y-3">
         {modules.map((m, i) => (
-          <li key={m.id} className="flex flex-wrap items-center gap-3 rounded-2xl bg-card p-4">
+          <li key={m.id} {...drag.rowProps(m.id)} className={`flex flex-wrap items-center gap-3 rounded-2xl bg-card p-4 ${drag.rowClass(m.id)}`}>
+            <DragHandle {...drag.handleProps(m.id)} />
             <div className="min-w-0 flex-1">
               <Link href={`/admin/curriculum/${m.id}`} className="text-xl font-semibold text-foreground underline-offset-4 hover:underline">Unit {i + 1}: {m.title}</Link>
               <p className="text-sm text-muted-foreground">{m.lesson_count} lessons{m.description ? ` · ${m.description}` : ""}</p>

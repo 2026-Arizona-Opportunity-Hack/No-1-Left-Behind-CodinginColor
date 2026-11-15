@@ -6,6 +6,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { DragHandle, useDragReorder } from "@/components/curriculum/drag-reorder";
 import { SaveMessage, StatusBadge, moved, useSave } from "@/components/curriculum/use-save";
 import type { ModuleTree } from "@/types/curriculum";
 import { createLessonAction, deleteLessonAction, reorderLessonsAction, setLessonStatusAction, setModuleStatusAction, updateModuleAction } from "../actions";
@@ -18,6 +19,7 @@ export function ModuleEditor({ module: m }: { module: ModuleTree }) {
   const [practice, setPractice] = useState<"worksheet" | "code_exercise" | "blank">("code_exercise");
   const [intro, setIntro] = useState<"slide" | "video">("slide");
   const ids = m.lessons.map((l) => l.id);
+  const drag = useDragReorder(ids, (next) => save(() => reorderLessonsAction(m.id, next), "Order saved"), pending);
 
   return (
     <div className="space-y-8">
@@ -43,7 +45,8 @@ export function ModuleEditor({ module: m }: { module: ModuleTree }) {
         <h2 id="lessons-h" className="text-xl font-semibold">Lessons</h2>
         <ol className="space-y-2">
           {m.lessons.map((l, i) => (
-            <li key={l.id} className="flex flex-wrap items-center gap-2 rounded-2xl bg-card p-3">
+            <li key={l.id} {...drag.rowProps(l.id)} className={`flex flex-wrap items-center gap-2 rounded-2xl bg-card p-3 ${drag.rowClass(l.id)}`}>
+              <DragHandle {...drag.handleProps(l.id)} />
               <Link href={`/admin/curriculum/lesson/${l.id}`} className="min-w-0 flex-1 text-lg font-semibold text-foreground underline-offset-4 hover:underline">
                 {i + 1}. {l.title} <span className="text-sm font-normal text-muted-foreground">· {l.activities.length} steps</span>
               </Link>
