@@ -36,7 +36,7 @@ export default async function ResultsPage({ searchParams }: { searchParams: Prom
             <option value="">All classes</option>
             {r.classes.map((c) => <option key={c.id} value={c.id}>{c.school} · {c.name}</option>)}</select></label>
           <button type="submit" className={buttonVariants({ variant: "outline" })}>Show</button>
-          <a href={exportHref} className={buttonVariants()}>Download CSV</a>
+          <a href={exportHref} className={buttonVariants()}>Download as a spreadsheet</a>
         </form>
       </div>
 

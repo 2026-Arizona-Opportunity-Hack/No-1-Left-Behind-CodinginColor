@@ -45,7 +45,7 @@ export function TestTaker({ moduleId, test }: { moduleId: string; test: StudentT
       <div className="space-y-2">
         <p className="text-sm text-muted-foreground">{name} · {test.unitTitle}</p>
         <div className="flex items-center gap-3">
-          <div className="h-2 flex-1 rounded-full bg-muted" role="progressbar" aria-label="Test progress"
+          <div className="h-2 flex-1 rounded-full bg-muted" role="progressbar" aria-label="Quiz progress"
             aria-valuenow={index + 1} aria-valuemin={1} aria-valuemax={test.questions.length}>
             <div className="h-2 rounded-full bg-primary" style={{ width: `${((index + 1) / test.questions.length) * 100}%` }} />
           </div>
@@ -82,7 +82,7 @@ export function TestTaker({ moduleId, test }: { moduleId: string; test: StudentT
         <div className="flex justify-between">
           <Button type="button" variant="outline" disabled={index === 0} onClick={() => go(index - 1)}>Back</Button>
           <Button type="submit" size="lg" disabled={answers[q.id] === undefined || pending}>
-            {last ? (pending ? "Saving…" : "Finish test") : "Next question"}
+            {last ? (pending ? "Saving…" : "Finish quiz") : "Next question"}
           </Button>
         </div>
         {error && <p role="alert" className="rounded-2xl bg-help p-4 text-help-ink">{error}</p>}

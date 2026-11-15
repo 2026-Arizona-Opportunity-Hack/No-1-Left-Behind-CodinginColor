@@ -3,11 +3,11 @@ export const ACTIVITY_LABEL: Record<string, string> = {
   slide: "Slides",
   video: "Video",
   quiz_mcq: "Quick check",
-  predict_output: "Predict the output",
+  predict_output: "What will it print?",
   fix_bug: "Fix the bug",
   fill_blank: "Fill in the blank",
   parsons: "Put the lines in order",
   code_exercise: "Coding exercise",
   worksheet: "Worksheet",
-  exit_question: "Exit question",
+  exit_question: "Last question",
 };

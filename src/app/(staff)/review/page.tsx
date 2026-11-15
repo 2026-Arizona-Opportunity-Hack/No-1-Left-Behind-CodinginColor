@@ -36,12 +36,12 @@ export default async function CurriculumPage() {
           <span className="rounded-full border px-2.5 py-0.5 text-sm font-medium">View only</span>
         )}
       </div>
-      {!modules.length && <p className="text-muted-foreground">No published units yet.</p>}
+      {!modules.length && <p className="text-muted-foreground">No units are ready yet.</p>}
       {modules.map((m) => (
         <section key={m.id} aria-labelledby={`unit-${m.id}`} className="space-y-3">
           <h2 id={`unit-${m.id}`} className="text-xl font-semibold">
             Unit {m.position}: {m.title}
-            {m.status === "draft" && <span className="ml-2 text-sm font-normal text-muted-foreground">(Draft)</span>}
+            {m.status === "draft" && <span className="ml-2 text-sm font-normal text-muted-foreground">(not shown to students yet)</span>}
           </h2>
           {m.description && <p className="text-muted-foreground">{m.description}</p>}
           <ol className="space-y-2">
@@ -51,7 +51,7 @@ export default async function CurriculumPage() {
                   <summary className="cursor-pointer font-medium">
                     {l.title}
                     <span className="ml-2 text-sm font-normal text-muted-foreground">
-                      {l.activities.length} steps{l.status === "draft" ? " · Draft" : ""}
+                      {l.activities.length} steps{l.status === "draft" ? " · not shown to students yet" : ""}
                     </span>
                   </summary>
                   <ol className="mt-3 space-y-3">
@@ -61,7 +61,7 @@ export default async function CurriculumPage() {
                           {a.position}. {a.title ?? ACTIVITY_LABEL[a.type]}{" "}
                           <span className="text-sm font-normal text-muted-foreground">
                             {ACTIVITY_LABEL[a.type] ?? a.type}
-                            {a.concept_tag ? ` · topic: ${a.concept_tag}` : ""}
+                            {a.concept_tag ? ` · ${a.concept_tag}` : ""}
                             {a.is_core ? "" : " · Optional"}
                           </span>
                         </p>

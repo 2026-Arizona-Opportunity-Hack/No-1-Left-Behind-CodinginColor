@@ -30,11 +30,11 @@ export function parseRosterCsv(text: string): RosterCsv {
     else { cell += char; }
   }
   if (quoted) {
-    result.errors.push({ line: startLine, message: "A quoted value is missing its closing quote." });
+    result.errors.push({ line: startLine, message: "A quote mark (\") in your list is never closed. Remove it or add the missing one." });
   } else finish();
   const header = records.shift();
   if (!header || header.invalid) {
-    result.errors.push({ line: header?.line ?? 1, message: "Add a header row with a name column." });
+    result.errors.push({ line: header?.line ?? 1, message: "The first row should be headings, with one called name." });
     return result;
   }
   const headings = header.cells.map((h) => h.toLowerCase().replace(/[_-]/g, " ").replace(/\s+/g, " ").trim());
@@ -54,7 +54,7 @@ export function parseRosterCsv(text: string): RosterCsv {
   }
   for (const record of records) {
     if (record.invalid || record.cells.length !== headings.length) {
-      result.errors.push({ line: record.line, message: "Check the quotes and number of columns in this row." });
+      result.errors.push({ line: record.line, message: "This row has a different number of columns from the first row." });
       continue;
     }
     const name = (full >= 0 ? record.cells[full] : `${record.cells[first]} ${record.cells[last]}`).trim().replace(/\s+/g, " ");

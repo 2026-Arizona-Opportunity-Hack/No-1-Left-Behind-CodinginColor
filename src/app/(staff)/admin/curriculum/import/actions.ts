@@ -18,7 +18,7 @@ export async function importFromYouTube(moduleId: string, link: string, pastedTr
     const transcript = pastedTranscript.trim() ? parsePastedTranscript(pastedTranscript.slice(0, 60000)) : fetched;
     // YouTube often blocks reading captions from a server. Rather than a half-empty draft, ask for the transcript.
     if (aiConfigured() && !transcript?.length) {
-      return { ok: false, needTranscript: true, error: "We couldn't read this video's captions automatically. On YouTube, click ⋯ under the video → Show transcript, copy it, and paste it below." };
+      return { ok: false, needTranscript: true, error: "We couldn't read what this video says. On YouTube, click ⋯ under the video → Show transcript, copy all of it, and paste it below." };
     }
     const r = await importVideoLesson({ moduleId, videoId, videoTitle: title, transcript, startSeconds: parseYouTubeStart(link) });
     revalidatePath("/admin/curriculum", "layout");

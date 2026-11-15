@@ -63,8 +63,8 @@ export async function importVideoLesson(input: {
 }): Promise<ImportResult> {
   let draft: z.infer<typeof draftSchema> | null = null;
   let note: string | null = null;
-  if (!aiConfigured()) note = "AI drafting is off (no AI key), so we built a starter lesson with your video for you to fill in.";
-  else if (!input.transcript?.length) note = "We couldn't read this video's captions, so we built a starter lesson with your video to fill in.";
+  if (!aiConfigured()) note = "Automatic writing is turned off, so we made a lesson with your video for you to fill in.";
+  else if (!input.transcript?.length) note = "We couldn't read what this video says, so we made a lesson with your video for you to fill in.";
   else {
     // Long videos: draft from the part the link points at (…&t=…), about the next 15 minutes.
     const start = input.startSeconds ?? 0;
@@ -72,7 +72,7 @@ export async function importVideoLesson(input: {
     const transcript = (fromStart.length ? fromStart : input.transcript).map((l) => `[${Math.floor(l.seconds / 60)}:${String(l.seconds % 60).padStart(2, "0")}] ${l.text}`).join("\n").slice(0, 14000);
     const parsed = draftSchema.safeParse(tidy(await chatJSON(SYSTEM, `Video title: ${input.videoTitle ?? "(unknown)"}\n\nTranscript:\n${transcript}`)));
     if (parsed.success) draft = parsed.data;
-    else note = "The AI's draft was incomplete, so we built a starter lesson instead. Try again or fill it in.";
+    else note = "The AI didn't finish the lesson, so we made one with just your video. Try again, or fill it in yourself.";
   }
 
   // Keep only the parts that pass the same checks the editor uses; fall back to empty starters.

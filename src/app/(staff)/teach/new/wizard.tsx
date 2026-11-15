@@ -100,24 +100,26 @@ function ClassStep({ onSave, pending }: { onSave: (name: string, school: string)
 
 function RosterStep({ onSave, pending }: { onSave: (rows: RosterCsv["rows"]) => void; pending: boolean }) {
   const [text, setText] = useState("");
-  const parsed = useMemo(() => (text.trim() ? parseRosterCsv(text) : null), [text]);
+  // A plain list of names (no commas, no heading) is fine too: we add the "name" heading for them.
+  const parsed = useMemo(() => (text.trim() ? parseRosterCsv(/,|^\s*(student name|name|first name)\s*$/im.test(text) ? text : `name\n${text}`) : null), [text]);
   const labels = useMemo(() => (parsed ? displayLabels(parsed.rows.map((r) => r.name)) : []), [parsed]);
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-semibold">2. Add your students</h2>
       <p className="text-muted-foreground">
-        Upload your roster as a CSV file (from Google Sheets or Excel: File → Download → CSV) with a <strong>name</strong> column.
-        We only keep each student&apos;s name and school.
+        Type or paste your students&apos; names below, one per line. Or upload a spreadsheet saved as CSV
+        (in Excel or Google Sheets: File → Download → CSV) with a column called <strong>name</strong>.
+        We only keep each student&apos;s name.
       </p>
       <div className="space-y-2">
-        <Label htmlFor="roster-file">Roster file (.csv)</Label>
+        <Label htmlFor="roster-file">Upload a spreadsheet (optional)</Label>
         <Input id="roster-file" type="file" accept=".csv,text/csv" className="h-11"
           onChange={async (e) => { const f = e.target.files?.[0]; if (f) setText(await f.text()); }} />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="roster-text">…or paste it here</Label>
+        <Label htmlFor="roster-text">Student names, one per line</Label>
         <Textarea id="roster-text" value={text} onChange={(e) => setText(e.target.value)} className="min-h-28 font-mono text-sm"
-          placeholder={"name\nAlex Rivera\nAlex Morales\nMaria Garcia"} />
+          placeholder={"Alex Rivera\nAlex Morales\nMaria Garcia"} />
       </div>
       {parsed && (
         <div className="space-y-3">
@@ -130,7 +132,7 @@ function RosterStep({ onSave, pending }: { onSave: (rows: RosterCsv["rows"]) => 
           {parsed.rows.length > 0 && (
             <div className="max-h-72 overflow-auto rounded-lg border">
               <table className="w-full text-left text-sm">
-                <caption className="sr-only">Roster preview</caption>
+                <caption className="sr-only">Your students</caption>
                 <thead className="sticky top-0 bg-muted"><tr><th scope="col" className="p-2">Name</th><th scope="col" className="p-2">Shown as</th><th scope="col" className="p-2">School</th></tr></thead>
                 <tbody>{parsed.rows.map((r, i) => (
                   <tr key={i} className="border-t"><td className="p-2">{r.name}</td><td className="p-2 font-medium">{labels[i]}</td><td className="p-2 text-muted-foreground">{r.school ?? "—"}</td></tr>

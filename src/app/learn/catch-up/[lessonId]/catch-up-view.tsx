@@ -20,7 +20,7 @@ export function CatchUpView({ lesson, recap, missedOn, todayLesson }: {
         <h1 className="mt-2 text-5xl leading-[1.04] font-bold tracking-tight sm:text-6xl">Let&apos;s catch you up on {lesson.title}</h1>
         <ol aria-label="Catch-up steps" className="mt-10 flex list-none flex-col gap-2.5 p-0 text-lg">
           <li className="flex items-center gap-3.5 rounded-2xl bg-[#FFD75E] px-4.5 py-3.5 font-semibold"><span className="font-mono font-extrabold">1</span><span className="flex-1">{recap?.minutes ?? 2}-minute recap</span><span className="text-[15px] font-medium">You are here</span></li>
-          <li className="flex items-center gap-3.5 px-4.5 py-3.5"><span className="font-mono font-extrabold">2</span><span className="flex-1">Core exercises</span><span className="text-[15px] text-muted-foreground">{lesson.activities.length} steps</span></li>
+          <li className="flex items-center gap-3.5 px-4.5 py-3.5"><span className="font-mono font-extrabold">2</span><span className="flex-1">Practice</span><span className="text-[15px] text-muted-foreground">{lesson.activities.length} steps</span></li>
           <li className="flex items-center gap-3.5 px-4.5 py-3.5"><span className="font-mono font-extrabold">3</span><span className="flex-1">You&apos;re caught up</span></li>
         </ol>
       </div>
@@ -32,7 +32,7 @@ export function CatchUpView({ lesson, recap, missedOn, todayLesson }: {
             <p className="text-lg">{k}</p>
           </div>
         )) : <p>Read each step carefully. Use &quot;Need a hint?&quot; whenever you&apos;re stuck.</p>}
-        <p className="text-muted-foreground">We skipped the slides and the extra steps. You&apos;ll only do what you need to catch up.</p>
+        <p className="text-muted-foreground">We skipped the slides and bonus steps. You&apos;ll only do what you need to catch up.</p>
         <div className="flex-1" />
         <Button size="lg" className="self-start" onClick={() => setStarted(true)}>Start the exercises</Button>
       </section>

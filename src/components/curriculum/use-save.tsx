@@ -40,6 +40,6 @@ export function moved(ids: string[], index: number, by: -1 | 1): string[] {
 
 export function StatusBadge({ status }: { status: string }) {
   return status === "published"
-    ? <span className="rounded-full bg-ontrack px-2.5 py-0.5 text-sm font-semibold text-ontrack-ink">✓ Published</span>
-    : <span className="rounded-full bg-sun px-2.5 py-0.5 text-sm font-semibold text-sun-ink">✎ Draft</span>;
+    ? <span className="rounded-full bg-ontrack px-2.5 py-0.5 text-sm font-semibold text-ontrack-ink">✓ Students can see this</span>
+    : <span className="rounded-full bg-sun px-2.5 py-0.5 text-sm font-semibold text-sun-ink">✎ Hidden from students</span>;
 }

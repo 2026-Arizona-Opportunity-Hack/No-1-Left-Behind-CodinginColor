@@ -12,7 +12,7 @@ type Props = { params: Promise<{ moduleId: string; kind: string }> };
 
 export default function TestPage({ params }: Props) {
   return (
-    <Suspense fallback={<p role="status" className="p-8 text-muted-foreground">Loading your test…</p>}>
+    <Suspense fallback={<p role="status" className="p-8 text-muted-foreground">Loading your quiz…</p>}>
       <Test params={params} />
     </Suspense>
   );
@@ -28,7 +28,7 @@ async function Test({ params }: Props) {
       <main className="w-full flex-1 px-4 py-8 sm:px-6">
         {test ? <TestTaker moduleId={moduleId} test={test} /> : (
           <div className="mx-auto max-w-md space-y-3 rounded-3xl bg-card p-8 text-center">
-            <h1 className="text-3xl font-bold tracking-tight">This test isn&apos;t open right now</h1>
+            <h1 className="text-3xl font-bold tracking-tight">This quiz isn&apos;t open right now</h1>
             <p className="text-muted-foreground">You may have finished it already, or need to finish the unit first.</p>
             <Link href="/learn" className="font-medium underline underline-offset-4">Back to my course</Link>
           </div>
