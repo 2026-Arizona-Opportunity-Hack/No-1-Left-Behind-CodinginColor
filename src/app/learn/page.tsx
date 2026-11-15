@@ -99,7 +99,7 @@ function UnitSection({ unit, tests }: { unit: MapModule; tests?: TestStatus[stri
               {unit.unlocked ? (
                 <Link href={`/learn/${l.id}`} className="flex items-center gap-3 rounded-xl border p-4 hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2">{body}</Link>
               ) : (
-                <div className="flex items-center gap-3 rounded-xl border border-dashed p-4 opacity-80">{body}</div>
+                <div className="flex items-center gap-3 rounded-xl border border-dashed bg-muted/40 p-4">{body}</div>
               )}
             </li>
           );
