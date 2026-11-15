@@ -258,3 +258,11 @@ $seed$;
 update public.modules set status = 'published' where id in (
   '10000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000002',
   '10000000-0000-0000-0000-000000000003');
+
+-- Both demo classes follow all three modules, in order.
+insert into public.class_modules (class_id, module_id, position)
+select c.id, m.id, m.position
+from public.classes c cross join public.modules m
+where c.id in ('c0000000-0000-0000-0000-000000000003', 'c0000000-0000-0000-0000-000000000005')
+  and m.id in ('10000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000003')
+on conflict (class_id, module_id) do update set position = excluded.position;
