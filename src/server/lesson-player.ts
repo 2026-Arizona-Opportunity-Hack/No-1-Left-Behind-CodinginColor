@@ -144,7 +144,7 @@ async function markStarted(student: Student, lessonId: string) {
 }
 
 /** Completed when every core step is done; otherwise in progress. Never overwrites "exempt". */
-async function refreshLessonStatus(student: Student, lessonId: string) {
+export async function refreshLessonStatus(student: Student, lessonId: string) {
   const db = createAdminClient();
   const [core, done, current] = await Promise.all([
     db.from("activities").select("id").eq("lesson_id", lessonId).eq("is_core", true),
