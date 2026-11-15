@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 import { buttonVariants } from "@/components/ui/button";
-import { requireStaff } from "@/server/auth";
+import { requirePermission } from "@/server/auth";
 import { listModules } from "@/server/curriculum";
 import { ModuleList } from "./module-list";
 
@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: "Edit curriculum · CIC Launchpad" };
 
 export default async function CurriculumEditorPage() {
   await connection(); // per-user, live data: render at request time
-  await requireStaff(["admin"], "/admin/curriculum");
+  await requirePermission("curriculum.write", "/admin/curriculum");
   const modules = await listModules();
   return (
     <div className="space-y-6">
@@ -22,7 +22,7 @@ export default async function CurriculumEditorPage() {
         <h1 className="text-4xl font-bold tracking-tight">Edit curriculum</h1>
         <p className="text-muted-foreground">Students go through units in this order. They only see the units and lessons you choose to show them.</p>
       </div>
-      <Link href="/admin/curriculum/import" className={buttonVariants({ size: "lg" })}>Make a lesson from slides or a video</Link>
+      <Link href="/admin/curriculum/import" className={buttonVariants({ size: "lg" })}>Add curriculum from slides or video</Link>
       </div>
       {modules.ok ? <ModuleList modules={modules.data} /> : <p role="alert">{modules.error}</p>}
     </div>

@@ -94,8 +94,8 @@ export function ModuleEditor({ module: m }: { module: ModuleTree }) {
           <h2 id="tests-h" className="text-xl font-semibold">Before and after quizzes</h2>
           <p>Students take a warm-up quiz before the unit and a final quiz after it. Comparing them shows how much they learned.</p>
         </div>
-        <Link href={`/admin/curriculum/${m.id}/test/pre`} className={buttonVariants({ variant: "outline" })}>Edit warm-up quiz</Link>
-        <Link href={`/admin/curriculum/${m.id}/test/post`} className={buttonVariants({ variant: "outline" })}>Edit final quiz</Link>
+        <Link href={`/admin/curriculum/${m.id}/test/pre`} className={buttonVariants({ variant: "outline" })}>Edit pre-test</Link>
+        <Link href={`/admin/curriculum/${m.id}/test/post`} className={buttonVariants({ variant: "outline" })}>Edit post-test</Link>
       </section>
     </div>
   );

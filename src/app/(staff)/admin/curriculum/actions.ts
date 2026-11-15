@@ -1,5 +1,7 @@
 "use server";
 
+import { can } from "@/lib/permissions";
+
 import { revalidatePath } from "next/cache";
 import type { ActivityType } from "@/types/activity-content";
 import type { Result } from "@/types/result";
@@ -11,12 +13,12 @@ import * as c from "@/server/curriculum";
 
 async function adminOnly() {
   const staff = await getStaff();
-  if (staff?.role !== "admin") throw new Error("Only CIC staff can edit the curriculum.");
+  if (!can(staff, "curriculum.write")) throw new Error("Only CIC staff can edit the curriculum.");
 }
 async function run<T>(work: () => Promise<Result<T>>): Promise<Result<T>> {
   await adminOnly();
   const result = await work();
-  if (result.ok) revalidatePath("/admin/curriculum", "layout");
+  if (result.ok) revalidatePath("/", "layout");
   return result;
 }
 
@@ -39,3 +41,5 @@ export const deleteActivityAction = async (id: string) => run(() => c.deleteActi
 
 export const saveAssessmentAction = async (moduleId: string, kind: "pre" | "post", questions: Parameters<typeof c.saveAssessment>[2]) =>
   run(() => c.saveAssessment(moduleId, kind, questions));
+
+export const deleteModuleAction = async (id: string) => run(() => c.deleteModule(id));
