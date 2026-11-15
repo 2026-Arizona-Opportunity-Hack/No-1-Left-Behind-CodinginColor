@@ -39,6 +39,19 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  /* Soft tints for telling things apart. Each pairs with its dark "-ink" text colour (AA contrast). */
+  --color-help: #FDE4DF;
+  --color-help-ink: #5C1409;
+  --color-behind: #FFEBD2;
+  --color-behind-ink: #4A2800;
+  --color-ontrack: #D6F2DE;
+  --color-ontrack-ink: #0B3D1E;
+  --color-sky: #DCEEFB;
+  --color-sky-ink: #0B2E4A;
+  --color-lilac: #ECE5FA;
+  --color-lilac-ink: #2E1A5C;
+  --color-sun: #FFF1C2;
+  --color-sun-ink: #4A3800;
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);

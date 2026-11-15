@@ -9,6 +9,8 @@ import { getCourseMap } from "@/server/student-learning";
 import { requireStudent } from "@/server/student-session";
 import { getTestStatus, type TestStatus } from "@/server/student-tests";
 
+const UNIT_TINT = ["bg-sky text-sky-ink", "bg-lilac text-lilac-ink", "bg-sun text-sun-ink", "bg-ontrack text-ontrack-ink"];
+
 export const metadata: Metadata = { title: "My course · CIC Launchpad" };
 
 // Status is never shown by color alone: every state has a symbol and a word.
@@ -63,21 +65,21 @@ async function CourseMapPage() {
           )}
 
           {missed.map((m) => (
-            <div key={m.lessonId} role="status" className="flex flex-wrap items-center gap-4 rounded-3xl bg-card px-6 py-5">
+            <div key={m.lessonId} role="status" className="flex flex-wrap items-center gap-4 rounded-3xl border-l-[6px] border-[#C77700] bg-behind px-6 py-5 text-behind-ink">
               <p className="flex-1"><b className="font-semibold">You missed {m.title} on {weekdayName(m.date)}.</b><br />
                 {m.assigned ? "Your teacher set up a catch-up for you. " : ""}Catch up in about 15 minutes.</p>
-              <Link href={`/learn/catch-up/${m.lessonId}`} className="inline-flex h-12 items-center rounded-full border-2 border-primary px-6 font-semibold text-foreground no-underline hover:bg-secondary">Catch up</Link>
+              <Link href={`/learn/catch-up/${m.lessonId}`} className="inline-flex h-12 items-center rounded-full border-2 border-primary bg-card px-6 font-semibold text-foreground no-underline hover:bg-secondary">Catch up</Link>
             </div>
           ))}
 
           {pre && (
-            <div className="flex flex-wrap items-center gap-4 rounded-3xl border-2 border-dashed border-[#7FA08B] px-6 py-4">
+            <div className="flex flex-wrap items-center gap-4 rounded-3xl bg-sky px-6 py-4 text-sky-ink">
               <p className="flex-1"><b className="font-semibold">Take the pre-test first.</b> A few questions, not graded.</p>
               <Link href={`/learn/test/${pre.m.id}/pre`}>Start pre-test</Link>
             </div>
           )}
           {post && (
-            <div className="flex flex-wrap items-center gap-4 rounded-3xl bg-card px-6 py-4">
+            <div className="flex flex-wrap items-center gap-4 rounded-3xl bg-ontrack px-6 py-4 text-ontrack-ink">
               <p className="flex-1"><b className="font-semibold">You finished {post.m.title}!</b> See how much you grew.</p>
               <Link href={`/learn/test/${post.m.id}/post`}>Take the post-test</Link>
             </div>
@@ -108,8 +110,8 @@ function UnitCard({ unit, nextId, tests }: { unit: MapModule; nextId?: string; t
   return (
     <section aria-labelledby={`unit-${unit.id}`} className="rounded-3xl bg-card px-3.5 pt-4 pb-3">
       <div className="flex flex-wrap justify-between gap-2 px-3.5 pb-2">
-        <h2 id={`unit-${unit.id}`} className="text-xl font-semibold">{unit.position} · {unit.title}</h2>
-        <span className="text-[15px] text-muted-foreground">
+        <h2 id={`unit-${unit.id}`} className="flex items-center gap-2.5 text-xl font-semibold"><span aria-hidden="true" className={`flex size-8 items-center justify-center rounded-full text-base font-bold ${UNIT_TINT[(unit.position - 1) % UNIT_TINT.length]}`}>{unit.position}</span><span className="sr-only">{unit.position} · </span>{unit.title}</h2>
+        <span className="self-center text-[15px] text-muted-foreground">
           {unit.isStart ? "Your teacher says start here · " : ""}{unit.doneCount} of {unit.lessons.length} done
           {tests?.pre === "done" ? " · ✓ Pre-test" : ""}{tests?.post === "done" ? " · ✓ Post-test" : ""}
         </span>
