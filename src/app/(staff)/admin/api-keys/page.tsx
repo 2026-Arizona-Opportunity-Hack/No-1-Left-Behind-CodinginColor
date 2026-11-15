@@ -23,20 +23,20 @@ export default async function ApiKeysPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-semibold tracking-tight">API keys</h1>
-        <p className="text-muted-foreground">Let CIC&apos;s org dashboard read class completion and learning gain without a login.
-          The API only returns totals and averages, <strong>never student names</strong>.</p>
+        <h1 className="text-4xl font-bold tracking-tight">API keys</h1>
+        <p className="text-muted-foreground">A key lets CIC&apos;s own reporting tools read class progress and learning results.
+          They only get totals and averages, <strong>never student names</strong>. You only need this if someone technical asks for one.</p>
       </div>
       {keys.ok ? <KeysManager keys={keys.data} /> : <p role="alert">{keys.error}</p>}
-      <section aria-labelledby="how-h" className="space-y-3 rounded-3xl bg-card p-5">
-        <h2 id="how-h" className="text-xl font-semibold">How to use a key</h2>
+      <details className="space-y-3 rounded-3xl bg-card p-5">
+        <summary className="cursor-pointer text-xl font-semibold">For developers: how to use a key</summary>
         <p>Send it in the <code className="rounded bg-muted px-1">x-api-key</code> header. For example:</p>
         <pre className="overflow-auto rounded-lg bg-[#0F2E1C] p-4 font-mono text-sm text-[#E6F4EA]">{`curl -H "x-api-key: YOUR_KEY" https://cic-launchpad.vercel.app/api/v1/classes`}</pre>
         <ul className="space-y-1 text-sm">
           {ENDPOINTS.map(([path, what]) => <li key={path}><code className="rounded bg-muted px-1">GET {path}</code> {what}</li>)}
         </ul>
         <p className="text-sm text-muted-foreground">Full examples are in the README, under &quot;Read API&quot;.</p>
-      </section>
+      </details>
     </div>
   );
 }

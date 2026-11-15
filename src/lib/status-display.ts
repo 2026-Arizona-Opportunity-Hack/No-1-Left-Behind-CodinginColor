@@ -2,10 +2,10 @@
 import type { Status } from "@/lib/student-status";
 
 export const STATUS_DISPLAY: Record<Status, { icon: string; word: string; chip: string }> = {
-  needs_help: { icon: "!", word: "Needs help", chip: "border-red-700 bg-red-50 text-red-800" },
-  behind: { icon: "⏱", word: "Behind", chip: "border-orange-700 bg-orange-50 text-orange-800" },
-  not_started: { icon: "○", word: "Not started", chip: "border-zinc-500 bg-zinc-50 text-zinc-700" },
-  on_track: { icon: "✓", word: "On track", chip: "border-green-700 bg-green-50 text-green-800" },
+  needs_help: { icon: "!", word: "Needs help", chip: "border-transparent bg-help text-help-ink" },
+  behind: { icon: "◷", word: "Behind", chip: "border-transparent bg-behind text-behind-ink" },
+  not_started: { icon: "○", word: "Not started", chip: "border-dashed border-[#7FA08B] bg-card text-foreground" },
+  on_track: { icon: "✓", word: "On track", chip: "border-transparent bg-ontrack text-ontrack-ink" },
 };
 
 /** "4 min", "1 h 12 min", "—" for nothing yet. */

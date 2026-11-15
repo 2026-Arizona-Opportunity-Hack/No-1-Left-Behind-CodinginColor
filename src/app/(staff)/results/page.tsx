@@ -69,7 +69,7 @@ export default async function ResultsPage({ searchParams }: { searchParams: Prom
                     {t.avg_pre_pct !== null && t.avg_post_pct !== null && (
                       <div className="absolute h-3 rounded-full bg-[#0DB031]/40" style={{ left: `${Math.min(t.avg_pre_pct, t.avg_post_pct)}%`, width: `${Math.abs(t.avg_post_pct - t.avg_pre_pct)}%` }} />
                     )}
-                    {t.avg_pre_pct !== null && <div className="absolute top-0 size-3 rounded-full border-2 border-zinc-500 bg-white" style={{ left: `calc(${t.avg_pre_pct}% - 6px)` }} />}
+                    {t.avg_pre_pct !== null && <div className="absolute top-0 size-3 rounded-full border-2 border-[#3D5C49] bg-white" style={{ left: `calc(${t.avg_pre_pct}% - 6px)` }} />}
                     {t.avg_post_pct !== null && <div className="absolute top-0 size-3 rounded-full bg-[#047D13]" style={{ left: `calc(${t.avg_post_pct}% - 6px)` }} />}
                   </div>
                 </li>

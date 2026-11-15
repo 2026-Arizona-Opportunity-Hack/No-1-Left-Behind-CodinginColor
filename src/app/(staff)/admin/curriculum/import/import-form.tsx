@@ -27,9 +27,9 @@ export function ImportForm({ units, aiOn }: { units: { id: string; title: string
 
   if (result?.ok) {
     return (
-      <div role="status" className="space-y-3 rounded-2xl border-2 border-green-700 bg-green-50 p-6 text-green-950">
+      <div role="status" className="space-y-3 rounded-3xl bg-ontrack p-6 text-ontrack-ink">
         <h2 className="text-2xl font-semibold">✓ Your draft lesson is ready to review</h2>
-        <p>{result.usedAi ? "AI drafted the video's key points, pause-point quizzes, a quick check, a coding exercise, an exit question and a teaching guide. Each one is marked \"Suggested: please review\": check it, edit it, and save it before you publish." : result.note}</p>
+        <p>{result.usedAi ? "AI drafted the video's key points, pause-point quizzes, a quick check, a coding exercise, an exit question and a teaching guide. Each one is marked \"Made by AI: please check\". Check it, edit it, and save it before you publish." : result.note}</p>
         {result.usedAi && result.note && <p className="text-sm">{result.note}</p>}
         <Link href={`/admin/curriculum/lesson/${result.lessonId}`} className={buttonVariants({ size: "lg" })}>Review the draft</Link>
       </div>
@@ -46,7 +46,7 @@ export function ImportForm({ units, aiOn }: { units: { id: string; title: string
         setResult(r);
       });
     }}>
-      {!aiOn && <p className="rounded-lg border border-amber-600 bg-amber-50 p-3 text-sm text-amber-900">AI drafting is off (no AI key set). You&apos;ll still get a starter lesson with the video to fill in by hand. See the README to add a key.</p>}
+      {!aiOn && <p className="rounded-2xl bg-sun p-4 text-sm text-sun-ink">AI drafting is off (no AI key set). You&apos;ll still get a starter lesson with the video to fill in by hand. See the README to add a key.</p>}
       <div className="space-y-1">
         <Label htmlFor="yt">YouTube link</Label>
         <Input id="yt" value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://www.youtube.com/watch?v=…" className="h-11" required />
@@ -73,7 +73,7 @@ export function ImportForm({ units, aiOn }: { units: { id: string; title: string
           {STAGES.slice(0, stage + 1).map((s, i) => <li key={s}>{i < stage ? "✓" : "…"} {s.replace("…", "")}</li>)}
         </ol>
       )}
-      {result && !result.ok && <p role="alert" className="rounded-lg border border-red-300 bg-red-50 p-3 text-red-900">{result.error}</p>}
+      {result && !result.ok && <p role="alert" className="rounded-2xl bg-help p-4 text-help-ink">{result.error}</p>}
     </form>
   );
 }

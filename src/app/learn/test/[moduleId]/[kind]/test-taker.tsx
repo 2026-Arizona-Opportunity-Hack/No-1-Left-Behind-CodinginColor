@@ -22,7 +22,7 @@ export function TestTaker({ moduleId, test }: { moduleId: string; test: StudentT
   if (scores) {
     return (
       <section aria-labelledby="done-h" className="mx-auto max-w-xl space-y-5 rounded-3xl bg-card p-8">
-        <h1 id="done-h" className="text-3xl font-semibold">✓ {name} done!</h1>
+        <h1 id="done-h" className="text-4xl font-bold tracking-tight">✓ {name} done!</h1>
         <p className="text-muted-foreground">{test.kind === "pre"
           ? "Thanks! This shows what you already know, so we can see how much you learn."
           : "Here's how much you grew in this unit:"}</p>
@@ -31,7 +31,7 @@ export function TestTaker({ moduleId, test }: { moduleId: string; test: StudentT
             <li key={s.concept_tag} className="rounded-lg border p-3">
               <p className="flex justify-between font-medium capitalize"><span>{s.concept_tag}</span>
                 <span className="tabular-nums">{s.pre_pct !== null ? `${s.pre_pct}% → ${s.pct}%` : `${s.pct}%`}</span></p>
-              <div className="mt-2 h-2 rounded-full bg-muted" aria-hidden="true"><div className="h-2 rounded-full bg-green-700" style={{ width: `${s.pct}%` }} /></div>
+              <div className="mt-2 h-2 rounded-full bg-muted" aria-hidden="true"><div className="h-2 rounded-full bg-[#047D13]" style={{ width: `${s.pct}%` }} /></div>
             </li>
           ))}
         </ul>
@@ -85,7 +85,7 @@ export function TestTaker({ moduleId, test }: { moduleId: string; test: StudentT
             {last ? (pending ? "Saving…" : "Finish test") : "Next question"}
           </Button>
         </div>
-        {error && <p role="alert" className="rounded-lg border border-red-300 bg-red-50 p-3 text-red-900">{error}</p>}
+        {error && <p role="alert" className="rounded-2xl bg-help p-4 text-help-ink">{error}</p>}
       </form>
     </div>
   );

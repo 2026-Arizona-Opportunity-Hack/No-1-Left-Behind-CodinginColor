@@ -78,7 +78,7 @@ export function ActivityForm({ activity }: { activity: Activity }) {
         <div className="space-y-1"><Label htmlFor={id("topic")}>Topic</Label>
           <Input id={id("topic")} value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="e.g. loops" className="h-10" /></div>
         <label className="flex items-end gap-2 pb-2 text-sm"><input type="checkbox" checked={isCore} onChange={(e) => setIsCore(e.target.checked)} className="size-4" />
-          Core <span className="text-muted-foreground">(untick = Extra; catch-up skips extras)</span></label>
+          Required <span className="text-muted-foreground">(untick to make it optional; catch-up skips optional steps)</span></label>
       </div>
 
       {t === "slide" && <>{text("heading", "Heading")}{text("body", "Text", { area: true })}{text("code", "Example code (optional)", { code: true })}{text("output", "What it prints (optional)", { code: true })}{text("image_url", "Slide image link (optional)")}</>}

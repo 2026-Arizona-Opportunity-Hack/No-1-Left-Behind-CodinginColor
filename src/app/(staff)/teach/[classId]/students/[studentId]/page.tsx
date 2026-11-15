@@ -20,9 +20,9 @@ type Props = { params: Promise<{ classId: string; studentId: string }> };
 type CurriculumModule = { id: string; title: string; position: number; lessons: { id: string; title: string; position: number; activities: { id: string; type: string; title: string | null; position: number; teaching_guide: Guide | null; content: { fields?: { id: string; label: string }[]; tests?: import("@/lib/python/runner").CodeCheck[] } }[] }[] };
 
 const STEP_STATUS = {
-  done: { icon: "✓", word: "Done", className: "text-green-800" },
-  in_progress: { icon: "◐", word: "Started", className: "text-amber-800" },
-  not_started: { icon: "○", word: "Not started", className: "text-zinc-500" },
+  done: { icon: "✓", word: "Done", className: "text-[#047D13]" },
+  in_progress: { icon: "◐", word: "Started", className: "text-[#8A4B00]" },
+  not_started: { icon: "○", word: "Not started", className: "text-muted-foreground" },
 };
 
 export default async function StudentPage({ params }: Props) {
@@ -42,7 +42,7 @@ export default async function StudentPage({ params }: Props) {
   if (!detail.ok || !row || detail.data.student.class_id !== classId) {
     return (
       <div className="space-y-3">
-        <h1 className="text-2xl font-semibold">We couldn&apos;t find that student</h1>
+        <h1 className="text-3xl font-bold tracking-tight">We couldn&apos;t find that student</h1>
         <Link href={`/teach/${classId}`} className="font-medium underline underline-offset-4">Back to the classroom</Link>
       </div>
     );
@@ -63,9 +63,9 @@ export default async function StudentPage({ params }: Props) {
   return (
     <div className="space-y-8">
       <div className="space-y-2">
-        <Link href={`/teach/${classId}`} className="text-sm font-medium underline underline-offset-4">← Back to the classroom</Link>
+        <Link href={`/teach/${classId}`} className="inline-block text-base text-foreground no-underline"><span aria-hidden="true" className="font-mono font-extrabold text-[#0DB031]">&lt;</span> Back to the classroom</Link>
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-3xl font-semibold tracking-tight">{row.label}</h1>
+          <h1 className="text-4xl font-bold tracking-tight">{row.label}</h1>
           <span className={`inline-flex items-center gap-1 rounded-full border px-3 py-0.5 text-sm font-semibold ${status.chip}`}>
             <span aria-hidden="true">{status.icon}</span>{status.word}
           </span>
