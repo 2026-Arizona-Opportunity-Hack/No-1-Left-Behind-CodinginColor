@@ -1,6 +1,11 @@
+import { connection } from "next/server";
 import { Suspense } from "react";
 import { StaffHeader } from "@/components/staff-header";
 import { getStaff } from "@/server/auth";
+
+// Staff pages always load live, per-user data (who is signed in, current progress), so navigations into
+// them wait for that data instead of showing a prerendered shell.
+export const instant = false;
 
 // Shared shell for staff pages. Each page still checks its own allowed roles with requireStaff().
 // Everything here depends on who is signed in (cookies), so it renders at request time inside Suspense.
@@ -13,6 +18,7 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
 }
 
 async function StaffShell({ children }: { children: React.ReactNode }) {
+  await connection(); // staff pages are per-user and live; Supabase's sign-in check also reads the clock
   const staff = await getStaff();
   return (
     <>

@@ -64,7 +64,7 @@ export function LessonPlayer({ lesson, catchUp }: { lesson: PlayerLesson; catchU
           &lt;<span className="flex size-28 items-center justify-center rounded-full bg-primary text-6xl text-primary-foreground sm:size-32">✓</span>&gt;
         </div>
         <h1 id="done-heading" className="mt-8 text-5xl font-bold tracking-tight sm:text-7xl">You finished {lesson.title}</h1>
-        <p className="mt-3 text-xl text-muted-foreground">{steps.length} of {steps.length} steps done.</p>
+        <p className="mt-3 text-xl text-muted-foreground">{done.size} of {steps.length} steps done{steps.some((a) => !a.isCore && !done.has(a.id)) ? " (extras are optional)" : ""}.</p>
         <div className="mt-10 flex flex-wrap justify-center gap-3.5">
           {lesson.nextLesson && <Link href={`/learn/${lesson.nextLesson.id}`} className={buttonVariants({ size: "lg" })}>Next: {lesson.nextLesson.title} <span aria-hidden="true" className="font-mono font-extrabold">&gt;</span></Link>}
           <Link href="/learn" className={buttonVariants({ size: "lg", variant: "outline" })}>Back to my course</Link>
@@ -98,7 +98,9 @@ export function LessonPlayer({ lesson, catchUp }: { lesson: PlayerLesson; catchU
 
       <div className="grid flex-1 gap-8 lg:grid-cols-[minmax(0,420px)_1fr] lg:gap-12">
         <div className="flex flex-col pt-2 lg:pt-6">
-          <p className="text-base font-semibold text-[#047D13]">{ACTIVITY_LABEL[current.type]}{current.isCore ? "" : " · Extra (optional)"}</p>
+          {(current.title && current.title !== ACTIVITY_LABEL[current.type] || !current.isCore) && (
+            <p className="text-base font-semibold text-[#047D13]">{current.title && current.title !== ACTIVITY_LABEL[current.type] ? ACTIVITY_LABEL[current.type] : ""}{current.isCore ? "" : " · Extra (optional)"}</p>
+          )}
           <h1 id="step-heading" ref={headingRef} tabIndex={-1} className="mt-2.5 text-4xl leading-[1.05] font-bold tracking-tight outline-none sm:text-5xl lg:text-[56px]">
             {current.title || ACTIVITY_LABEL[current.type]}
           </h1>

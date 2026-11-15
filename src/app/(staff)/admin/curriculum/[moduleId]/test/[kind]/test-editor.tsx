@@ -40,7 +40,7 @@ export function TestEditor({ moduleId, unitTitle, kind, questions }: { moduleId:
             <div className="space-y-1"><Label htmlFor={`p-${i}`}>Question</Label>
               <Textarea id={`p-${i}`} value={q.prompt} onChange={(e) => update(i, { prompt: e.target.value })} /></div>
             <div className="space-y-1"><Label htmlFor={`o-${i}`}>Answer options (one per line)</Label>
-              <Textarea id={`o-${i}`} value={q.options} onChange={(e) => update(i, { options: e.target.value })} className="font-mono text-sm" /></div>
+              <Textarea id={`o-${i}`} value={q.options} onChange={(e) => update(i, { options: e.target.value })} className="font-mono text-[15px]" /></div>
             <div className="space-y-1"><Label htmlFor={`a-${i}`}>Correct answer</Label>
               <select id={`a-${i}`} value={q.answer} onChange={(e) => update(i, { answer: Number(e.target.value) })} className="h-10 w-full rounded-md border bg-background px-2">
                 {opts(q).map((o, j) => <option key={j} value={j}>{o}</option>)}

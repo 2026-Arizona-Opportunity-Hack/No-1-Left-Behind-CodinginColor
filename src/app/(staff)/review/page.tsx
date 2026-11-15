@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireStaff } from "@/server/auth";
 import { ACTIVITY_LABEL } from "@/lib/activity-labels";
+
+// Live, per-user data: navigations wait for it rather than showing a prerendered shell.
+export const instant = false;
 
 export const metadata: Metadata = { title: "Curriculum · CIC Launchpad" };
 
@@ -13,6 +17,7 @@ type Module = { id: string; title: string; description: string | null; position:
 // Read-only curriculum browser: the external reviewer's view (P0), also used by teachers and CIC staff.
 // The database decides what's visible: reviewers and teachers only ever get published content.
 export default async function CurriculumPage() {
+  await connection(); // per-user, live data: render at request time
   const staff = await requireStaff(["reviewer", "instructor", "admin"], "/review");
   const supabase = await createClient();
   const { data } = await supabase
@@ -61,10 +66,10 @@ export default async function CurriculumPage() {
                           </span>
                         </p>
                         {a.teaching_guide?.about && (
-                          <details className="mt-2 text-sm">
-                            <summary className="cursor-pointer">Teaching guide</summary>
-                            <div className="mt-2 space-y-2">
-                              <p>{a.teaching_guide.about}</p>
+                          <details className="mt-3 text-base">
+                            <summary className="cursor-pointer font-semibold text-[#047D13]">Teaching guide</summary>
+                            <div className="mt-3 space-y-3 rounded-2xl bg-card p-4">
+                              <div><p className="font-semibold">What this is about</p><p>{a.teaching_guide.about}</p></div>
                               {!!a.teaching_guide.mistakes?.length && (
                                 <div><p className="font-medium">Common mistakes</p>
                                   <ul className="list-disc pl-5">{a.teaching_guide.mistakes.map((x) => <li key={x}>{x}</li>)}</ul></div>

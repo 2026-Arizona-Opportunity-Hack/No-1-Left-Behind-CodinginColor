@@ -5,14 +5,17 @@ import type { GainSummary } from "@/lib/learning-gain";
 import { requireStaff } from "@/server/auth";
 import { getResults } from "@/server/results";
 
+// Live, per-user data: navigations wait for it rather than showing a prerendered shell.
+export const instant = false;
+
 export const metadata: Metadata = { title: "Learning results · CIC Launchpad" };
 
 const pct = (v: number | null) => (v === null ? "—" : `${Math.round(v)}%`);
 const signed = (v: number | null) => (v === null ? "—" : `${v >= 0 ? "+" : ""}${Math.round(v)}`);
 
 export default async function ResultsPage({ searchParams }: { searchParams: Promise<{ unit?: string; class?: string }> }) {
+  await connection(); // per-user, live data: render at request time
   const staff = await requireStaff(["instructor", "admin"], "/results");
-  await connection();
   const q = await searchParams;
   const r = await getResults(q.unit, q.class);
   const top = r.byTopic.find((t) => t.avg_gain !== null);

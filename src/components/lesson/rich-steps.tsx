@@ -47,7 +47,7 @@ export function CodeStep({ activity, onDone, elapsed, runner }: StepProps<"code"
       <div className="rounded-2xl bg-background px-5 py-3.5">
         <p className="text-[15px] font-semibold text-muted-foreground">What your code printed</p>
         <pre aria-live="polite" className="mt-1 font-mono text-[17px] leading-relaxed whitespace-pre-wrap">
-          {run ? run.output || (run.error || run.timedOut ? "" : "(Nothing printed yet.)") : "Press Run to see what your code prints."}
+          {run ? run.output || (run.error || run.timedOut ? "" : "(Nothing printed yet.)") : <span className="font-sans text-muted-foreground">Press Run to see what your code prints.</span>}
         </pre>
       </div>
       {run && (run.error || run.timedOut) && (
@@ -86,9 +86,9 @@ export function ParsonsStep({ activity, onDone, elapsed }: StepProps<"parsons">)
       <ol className="space-y-2">
         {lines.map((line, i) => (
           <li key={line + i} className="flex items-center gap-2 rounded-lg border bg-[#0F2E1C] p-2 pl-4">
-            <code className="flex-1 font-mono text-sm whitespace-pre text-[#E6F4EA]">{line}</code>
-            <Button size="sm" variant="secondary" disabled={locked || i === 0} onClick={() => move(i, -1)} aria-label={`Move line ${i + 1} up`}>Up</Button>
-            <Button size="sm" variant="secondary" disabled={locked || i === lines.length - 1} onClick={() => move(i, 1)} aria-label={`Move line ${i + 1} down`}>Down</Button>
+            <code className="flex-1 font-mono text-base whitespace-pre text-[#E6F4EA]">{line}</code>
+            <Button variant="secondary" disabled={locked || i === 0} onClick={() => move(i, -1)} aria-label={`Move line ${i + 1} up`}>Up</Button>
+            <Button variant="secondary" disabled={locked || i === lines.length - 1} onClick={() => move(i, 1)} aria-label={`Move line ${i + 1} down`}>Down</Button>
           </li>
         ))}
       </ol>

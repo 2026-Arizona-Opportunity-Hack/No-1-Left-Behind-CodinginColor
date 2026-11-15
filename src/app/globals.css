@@ -139,6 +139,10 @@
   h1, h2, h3 {
     text-wrap: balance;
   }
+  input[type="radio"],
+  input[type="checkbox"] {
+    accent-color: #047D13;
+  }
   html {
     @apply font-sans;
   }

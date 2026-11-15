@@ -30,7 +30,8 @@ export function ModuleEditor({ module: m }: { module: ModuleTree }) {
         </Button>
       </div>
 
-      <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); save(() => updateModuleAction(m.id, title, description), "Unit saved"); }}>
+      <h1 className="text-5xl font-bold tracking-tight">{m.title}</h1>
+      <form className="space-y-3 rounded-3xl bg-card p-6" onSubmit={(e) => { e.preventDefault(); save(() => updateModuleAction(m.id, title, description), "Unit saved"); }}>
         <Label htmlFor="unit-title" className="text-base">Unit title</Label>
         <Input id="unit-title" value={title} onChange={(e) => setTitle(e.target.value)} className="h-11 text-lg font-semibold" />
         <Label htmlFor="unit-desc">Short description (students see this)</Label>
@@ -44,7 +45,7 @@ export function ModuleEditor({ module: m }: { module: ModuleTree }) {
         <ol className="space-y-2">
           {m.lessons.map((l, i) => (
             <li key={l.id} className="flex flex-wrap items-center gap-2 rounded-2xl bg-card p-3">
-              <Link href={`/admin/curriculum/lesson/${l.id}`} className="min-w-0 flex-1 font-medium underline-offset-4 hover:underline">
+              <Link href={`/admin/curriculum/lesson/${l.id}`} className="min-w-0 flex-1 text-lg font-semibold text-foreground underline-offset-4 hover:underline">
                 {i + 1}. {l.title} <span className="text-sm font-normal text-muted-foreground">· {l.activities.length} steps</span>
               </Link>
               <StatusBadge status={l.status} />

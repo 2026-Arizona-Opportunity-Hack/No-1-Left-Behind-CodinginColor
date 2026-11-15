@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { requireStaff } from "@/server/auth";
 
+// Live, per-user data: navigations wait for it rather than showing a prerendered shell.
+export const instant = false;
+
 export const metadata: Metadata = { title: "My classes · CIC Launchpad" };
 
 export default async function TeachHome() {
+  await connection(); // per-user, live data: render at request time
   const staff = await requireStaff(["instructor", "admin"], "/teach");
   const supabase = await createClient();
   // The database only returns classes this teacher owns (admins see all).
@@ -31,14 +36,14 @@ export default async function TeachHome() {
         <ul className="grid gap-4 sm:grid-cols-2">
           {classes.map((c) => (
             <li key={c.id}>
-              <Link href={`/teach/${c.id}`} className="block rounded-2xl bg-card p-5 hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2">
+              <Link href={`/teach/${c.id}`} className="block rounded-3xl bg-card p-6 text-foreground no-underline hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2">
               <p className="text-sm text-muted-foreground">{c.school}</p>
-              <p className="text-xl font-semibold">{c.name}</p>
+              <p className="text-3xl font-bold">{c.name}</p>
               <p className="mt-2 text-sm">
                 Class code <span className="font-mono font-semibold">{c.class_code}</span> ·{" "}
                 {(c.students as unknown as { count: number }[])[0]?.count ?? 0} students
               </p>
-              <p className="mt-3 text-sm font-medium underline underline-offset-4">Open live classroom</p>
+              <p className="mt-3 font-semibold text-[#047D13]">Open live classroom <span aria-hidden="true" className="font-mono font-extrabold">&gt;</span></p>
               </Link>
             </li>
           ))}

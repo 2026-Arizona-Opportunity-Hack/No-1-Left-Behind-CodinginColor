@@ -41,7 +41,7 @@ export function ActivityForm({ activity }: { activity: Activity }) {
     <div className="space-y-1">
       <Label htmlFor={id(k)}>{label}</Label>
       {opts.area || opts.code
-        ? <Textarea id={id(k)} value={str(k)} onChange={(e) => set(k, e.target.value)} spellCheck={!opts.code} className={opts.code ? "min-h-24 font-mono text-sm" : "min-h-20"} />
+        ? <Textarea id={id(k)} value={str(k)} onChange={(e) => set(k, e.target.value)} spellCheck={!opts.code} className={opts.code ? "min-h-24 font-mono text-[15px]" : "min-h-20"} />
         : <Input id={id(k)} value={str(k)} onChange={(e) => set(k, e.target.value)} className="h-10" />}
       {opts.help && <p className="text-xs text-muted-foreground">{opts.help}</p>}
     </div>
@@ -96,26 +96,29 @@ export function ActivityForm({ activity }: { activity: Activity }) {
       {t === "fill_blank" && <>{text("prompt", "Instructions")}{text("template", "Code with a blank", { code: true, help: "Write ____ (four underscores) where the blank goes." })}{lines("answers", "Accepted answers")}</>}
       {t === "parsons" && <>{text("prompt", "Instructions")}
         <div className="space-y-1"><Label htmlFor={id("lines")}>Lines in the CORRECT order</Label>
-          <Textarea id={id("lines")} value={toLines(content.lines)} onChange={(e) => set("lines", e.target.value.split("\n"))} className="min-h-24 font-mono text-sm" />
+          <Textarea id={id("lines")} value={toLines(content.lines)} onChange={(e) => set("lines", e.target.value.split("\n"))} className="min-h-24 font-mono text-[15px]" />
           <p className="text-xs text-muted-foreground">One line of code per line, with its indentation. Students get them shuffled.</p></div></>}
       {(t === "code_exercise" || t === "fix_bug") && <>
         {text("prompt", "Instructions", { area: true })}
         {text("starter_code", t === "fix_bug" ? "Code with the bug" : "Starter code", { code: true })}
-        <fieldset className="space-y-2"><legend className="font-medium">Checks (what &quot;Check my code&quot; tests)</legend>
+        <fieldset className="space-y-2"><legend className="font-semibold">Checks (what &quot;Check my code&quot; tests)</legend>
+          {checks.length > 0 && (
+            <div aria-hidden="true" className="hidden grid-cols-[1fr_1.2fr_1.4fr_auto] gap-2 px-3 text-sm font-semibold text-muted-foreground sm:grid">
+              <span>What it checks</span><span>Expected output (or Python test)</span><span>Hint if it fails</span><span className="w-9" />
+            </div>
+          )}
           {checks.map((c, i) => (
-            <div key={i} className="grid gap-2 rounded-lg border p-3 sm:grid-cols-3">
+            <div key={i} className="grid items-start gap-2 rounded-2xl border-2 border-border p-3 sm:grid-cols-[1fr_1.2fr_1.4fr_auto]">
               <Input aria-label={`Check ${i + 1} name`} value={c.label} placeholder="What it checks, e.g. Stops at 5"
                 onChange={(e) => set("tests", checks.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
               {c.assert !== undefined
-                ? <Textarea aria-label={`Check ${i + 1} Python test`} value={c.assert} className="font-mono text-xs"
+                ? <Textarea aria-label={`Check ${i + 1} Python test`} value={c.assert} className="min-h-12 font-mono text-[15px]"
                     onChange={(e) => set("tests", checks.map((x, j) => (j === i ? { ...x, assert: e.target.value } : x)))} />
-                : <Textarea aria-label={`Check ${i + 1} expected output`} value={c.expectedOutput ?? ""} placeholder="Exact expected output" className="font-mono text-xs"
+                : <Textarea aria-label={`Check ${i + 1} expected output`} value={c.expectedOutput ?? ""} placeholder="Exact expected output" className="min-h-12 font-mono text-[15px]"
                     onChange={(e) => set("tests", checks.map((x, j) => (j === i ? { ...x, expectedOutput: e.target.value } : x)))} />}
-              <div className="flex gap-2">
-                <Input aria-label={`Check ${i + 1} hint`} value={c.hint ?? ""} placeholder="Hint if it fails"
-                  onChange={(e) => set("tests", checks.map((x, j) => (j === i ? { ...x, hint: e.target.value } : x)))} />
-                <Button size="sm" variant="ghost" aria-label={`Remove check ${i + 1}`} onClick={() => set("tests", checks.filter((_, j) => j !== i))}>✕</Button>
-              </div>
+              <Textarea aria-label={`Check ${i + 1} hint`} value={c.hint ?? ""} placeholder="Hint if it fails" className="min-h-12"
+                onChange={(e) => set("tests", checks.map((x, j) => (j === i ? { ...x, hint: e.target.value } : x)))} />
+              <Button size="sm" variant="ghost" aria-label={`Remove check ${i + 1}`} onClick={() => set("tests", checks.filter((_, j) => j !== i))}>✕</Button>
             </div>
           ))}
           <Button size="sm" variant="outline" onClick={() => set("tests", [...checks, { label: "", expectedOutput: "" }])}>+ Add a check</Button>
