@@ -119,3 +119,31 @@ To deploy by hand instead: `vercel deploy --prod`.
 Winning teams finish the project with the nonprofit — the [Definition of Done](https://www.ohack.dev/about/completion) (deployed, nonprofit sign-off, docs, open source) is tracked on your team page. Keep the repo public and the README honest; recruiters do read these.
 
 Need a hand this weekend? [#ask-a-mentor](https://opportunity-hack.slack.com/archives/C01E5CGDQ74) on Slack, or ask in [#no_1_left_behind](https://opportunity-hack.slack.com/app_redirect?channel=no_1_left_behind) and a mentor will drop in.
+
+### Curriculum editor integration (#8)
+
+`src/server/curriculum.ts` exposes the handoff's named functions for modules,
+lessons, activities and pre/post assessments. All return `Result<T>` (`ok/data`
+or `ok/error`). Import these from a Server Component or call them through a
+`"use server"` action; they use the staff member's cookie session and RLS.
+`getModuleTree` returns module fields plus `lessons`, each with `activities`.
+`createLessonFromTemplate` returns the new lesson; reload its tree for the four
+steps. Mutations return the saved row, reorder/delete return `null`, and
+`saveAssessment` returns `{ id }`. Missing assessments return an error until saved.
+Activity content types, Zod schemas and `emptyContent(type)` live in
+`src/types/activity-content.ts`. Starters are structurally valid drafts for staff
+editing. Saving an activity's validated `content` marks its AI draft reviewed;
+a title-only change does not. Tests with existing student responses cannot be
+replaced, to preserve learning results.
+
+**Shrey must apply `20261115010000_curriculum_operations.sql` before wiring the
+editor.** It adds atomic saves and enforces the publish rules in Postgres.
+Do not push migrations from a developer session. The seed now publishes modules
+after creating their lessons so it also satisfies that gate.
+
+Run `npm test`, `npm run lint`, and `npm run build`. On a disposable migrated and
+seeded Supabase/local Postgres database, run
+`psql "$TEST_DATABASE_URL" -X -v ON_ERROR_STOP=1 -f supabase/tests/curriculum.sql`.
+The SQL tests use synthetic staff, run under `authenticated`, verify admin
+publishing plus instructor/reviewer denial, and roll everything back. Never run
+the seed against production to test a change: it resets the demo records.
