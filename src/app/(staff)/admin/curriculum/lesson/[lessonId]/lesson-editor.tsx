@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { ActivityForm } from "@/components/curriculum/activity-form";
+import { DragHandle, useDragReorder } from "@/components/curriculum/drag-reorder";
 import { SaveMessage, StatusBadge, moved, useSave } from "@/components/curriculum/use-save";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +19,7 @@ export function LessonEditor({ lesson, unit, activities }: { lesson: Lesson; uni
   const [newType, setNewType] = useState<ActivityType>("slide");
   const ids = activities.map((a) => a.id);
   const needsReview = activities.filter((a) => a.ai_suggested).length;
+  const drag = useDragReorder(ids, (next) => save(() => reorderActivitiesAction(lesson.id, next), "Order saved"), pending);
 
   return (
     <div className="space-y-6">
@@ -44,9 +46,10 @@ export function LessonEditor({ lesson, unit, activities }: { lesson: Lesson; uni
 
       <ol className="space-y-3">
         {activities.map((a, i) => (
-          <li key={a.id}>
+          <li key={a.id} {...drag.rowProps(a.id)} className={`rounded-2xl ${drag.rowClass(a.id)}`}>
             <details className="rounded-2xl bg-card p-4" open={a.ai_suggested}>
               <summary className="flex cursor-pointer flex-wrap items-center gap-2">
+                <DragHandle {...drag.handleProps(a.id)} />
                 <span className="text-lg font-semibold">{i + 1}. {a.title || ACTIVITY_LABEL[a.type]}</span>
                 <span className="rounded-full bg-sky px-2.5 py-0.5 text-sm text-sky-ink">{ACTIVITY_LABEL[a.type]}</span>
                 {!a.is_core && <span className="rounded-full bg-lilac px-2.5 py-0.5 text-sm text-lilac-ink">Optional</span>}
