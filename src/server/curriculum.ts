@@ -110,17 +110,25 @@ export function deleteActivity(id: string) {
 export function getAssessment(moduleId: string, kind: "pre" | "post") {
   return staffResult(async (): Promise<Assessment> => {
     const db = await createClient();
-    const { data, error } = await db.from("assessments").select("id, assessment_questions(*)")
+    const { data, error } = await db.from("assessments").select("id, reviewed, assessment_questions(*)")
       .eq("module_id", idSchema.parse(moduleId)).eq("kind", kindSchema.parse(kind)).maybeSingle();
     if (error) databaseError(error);
     // A new module has no test yet: return an empty one for the editor to fill in (saveAssessment creates it).
-    if (!data) return { id: null, questions: [] };
-    return { id: data.id, questions: data.assessment_questions.map((q) => ({ id: q.id, position: q.position, concept_tag: q.concept_tag, ...quizSchema.parse(q.content) })).sort((a, b) => a.position - b.position) };
+    if (!data) return { id: null, reviewed: false, questions: [] };
+    return { id: data.id, reviewed: data.reviewed, questions: data.assessment_questions.map((q) => ({ id: q.id, position: q.position, concept_tag: q.concept_tag, ...quizSchema.parse(q.content) })).sort((a, b) => a.position - b.position) };
   });
 }
 export function saveAssessment(moduleId: string, kind: "pre" | "post", questions: z.input<typeof questionSchema>[]) {
   return staffResult(async () => {
     const id = await edit<string>("assessment", "modules", { parent_id: idSchema.parse(moduleId), kind: kindSchema.parse(kind), questions: z.array(questionSchema).parse(questions) });
     return { id };
+  });
+}
+
+export function deleteModule(id: string) {
+  return staffResult(async () => {
+    const { error } = await (await createClient()).rpc("delete_curriculum_module", { target_module: idSchema.parse(id) });
+    if (error) databaseError(error);
+    return null;
   });
 }
