@@ -26,8 +26,8 @@ export function LessonEditor({ lesson, unit, activities }: { lesson: Lesson; uni
         <h1 className="mr-auto text-4xl font-bold tracking-tight sm:text-5xl">{lesson.title}</h1>
         <StatusBadge status={lesson.status} />
         <Button size="sm" variant="outline" disabled={pending}
-          onClick={() => save(() => setLessonStatusAction(lesson.id, lesson.status === "published" ? "draft" : "published"), lesson.status === "published" ? "Lesson moved back to draft" : "Lesson published")}>
-          {lesson.status === "published" ? "Unpublish lesson" : "Publish lesson"}
+          onClick={() => save(() => setLessonStatusAction(lesson.id, lesson.status === "published" ? "draft" : "published"), lesson.status === "published" ? "Lesson hidden from students" : "Students can see this lesson now")}>
+          {lesson.status === "published" ? "Hide from students" : "Show to students"}
         </Button>
       </div>
       <form className="flex flex-wrap items-end gap-3" onSubmit={(e) => { e.preventDefault(); save(() => renameLessonAction(lesson.id, title), "Lesson renamed"); }}>
@@ -37,7 +37,7 @@ export function LessonEditor({ lesson, unit, activities }: { lesson: Lesson; uni
       </form>
       {needsReview > 0 && (
         <p className="rounded-2xl bg-sun p-4 text-sun-ink">
-          {needsReview} step{needsReview === 1 ? " was" : "s were"} drafted by AI. Review and save each one before publishing.
+          {needsReview} step{needsReview === 1 ? " was" : "s were"} written by AI. Check and save each one before students can see this lesson.
         </p>
       )}
       <SaveMessage message={message} />

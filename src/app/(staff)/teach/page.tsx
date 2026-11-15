@@ -32,7 +32,7 @@ export default async function TeachHome() {
       {!classes?.length ? (
         <div className="rounded-3xl border-2 border-dashed border-[#7FA08B] bg-card p-8 text-center">
           <p className="font-medium">You don&apos;t have any classes yet.</p>
-          <p className="mt-1 text-muted-foreground">Set one up in a few minutes: add your roster, pick units, print join cards.</p>
+          <p className="mt-1 text-muted-foreground">Set one up in a few minutes: add your students, pick what they&apos;ll learn, print their join cards.</p>
         </div>
       ) : (
         <ul className="grid gap-4 sm:grid-cols-2">

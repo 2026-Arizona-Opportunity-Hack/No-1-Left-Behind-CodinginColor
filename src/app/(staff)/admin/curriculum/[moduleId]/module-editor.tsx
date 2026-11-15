@@ -26,8 +26,8 @@ export function ModuleEditor({ module: m }: { module: ModuleTree }) {
         <h1 className="mr-auto text-4xl font-bold tracking-tight sm:text-5xl">{m.title}</h1>
         <StatusBadge status={m.status} />
         <Button size="sm" variant="outline" disabled={pending}
-          onClick={() => save(() => setModuleStatusAction(m.id, m.status === "published" ? "draft" : "published"), m.status === "published" ? "Unit moved back to draft" : "Unit published")}>
-          {m.status === "published" ? "Unpublish unit" : "Publish unit"}
+          onClick={() => save(() => setModuleStatusAction(m.id, m.status === "published" ? "draft" : "published"), m.status === "published" ? "Unit hidden from students" : "Students can see this unit now")}>
+          {m.status === "published" ? "Hide from students" : "Show to students"}
         </Button>
       </div>
       <form className="space-y-3 rounded-3xl bg-card p-6" onSubmit={(e) => { e.preventDefault(); save(() => updateModuleAction(m.id, title, description), "Unit saved"); }}>
@@ -49,8 +49,8 @@ export function ModuleEditor({ module: m }: { module: ModuleTree }) {
               </Link>
               <StatusBadge status={l.status} />
               <Button size="sm" variant="outline" disabled={pending}
-                onClick={() => save(() => setLessonStatusAction(l.id, l.status === "published" ? "draft" : "published"), l.status === "published" ? "Lesson moved back to draft" : "Lesson published")}>
-                {l.status === "published" ? "Unpublish" : "Publish"}
+                onClick={() => save(() => setLessonStatusAction(l.id, l.status === "published" ? "draft" : "published"), l.status === "published" ? "Lesson hidden from students" : "Students can see this lesson now")}>
+                {l.status === "published" ? "Hide from students" : "Show to students"}
               </Button>
               <Button size="sm" variant="secondary" disabled={pending || i === 0} aria-label={`Move ${l.title} up`} onClick={() => save(() => reorderLessonsAction(m.id, moved(ids, i, -1)), "Order saved")}>Up</Button>
               <Button size="sm" variant="secondary" disabled={pending || i === m.lessons.length - 1} aria-label={`Move ${l.title} down`} onClick={() => save(() => reorderLessonsAction(m.id, moved(ids, i, 1)), "Order saved")}>Down</Button>
@@ -91,11 +91,11 @@ export function ModuleEditor({ module: m }: { module: ModuleTree }) {
 
       <section aria-labelledby="tests-h" className="flex flex-wrap items-center gap-4 rounded-3xl bg-lilac p-6 text-lilac-ink">
         <div className="mr-auto">
-          <h2 id="tests-h" className="text-xl font-semibold">Pre-test and post-test</h2>
-          <p>Students take one before the unit and one after. Comparing them shows how much they learned.</p>
+          <h2 id="tests-h" className="text-xl font-semibold">Before and after quizzes</h2>
+          <p>Students take a warm-up quiz before the unit and a final quiz after it. Comparing them shows how much they learned.</p>
         </div>
-        <Link href={`/admin/curriculum/${m.id}/test/pre`} className={buttonVariants({ variant: "outline" })}>Edit pre-test</Link>
-        <Link href={`/admin/curriculum/${m.id}/test/post`} className={buttonVariants({ variant: "outline" })}>Edit post-test</Link>
+        <Link href={`/admin/curriculum/${m.id}/test/pre`} className={buttonVariants({ variant: "outline" })}>Edit warm-up quiz</Link>
+        <Link href={`/admin/curriculum/${m.id}/test/post`} className={buttonVariants({ variant: "outline" })}>Edit final quiz</Link>
       </section>
     </div>
   );

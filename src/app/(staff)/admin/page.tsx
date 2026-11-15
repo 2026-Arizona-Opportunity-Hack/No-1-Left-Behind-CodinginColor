@@ -21,10 +21,10 @@ export default async function AdminHome() {
   const [modules, classes, students] = await Promise.all([count("modules"), count("classes"), count("students")]);
 
   const actions = [
-    { href: "/results", title: "See learning results", text: "Learning gain by topic, class and student, with a CSV for grant reports." },
+    { href: "/results", title: "See learning results", text: "How much students improved, by topic, class and student. Download it as a spreadsheet for grant reports." },
     { href: "/admin/curriculum", title: "Edit the curriculum", text: "Change units, lessons and steps, and choose what students can see. No coding needed." },
-    { href: "/admin/curriculum/import", title: "Make a lesson from a YouTube video", text: "Paste a link; we draft quizzes, an exercise and a teaching guide for you to review." },
-    { href: "/teach", title: "See all classes", text: "Every class's live classroom, roster and progress." },
+    { href: "/admin/curriculum/import", title: "Make a lesson from a YouTube video", text: "Paste a link and AI writes the questions, an exercise and a teacher guide. You check it first." },
+    { href: "/teach", title: "See all classes", text: "See every class, its students and how they're doing." },
     { href: "/admin/api-keys", title: "API keys", text: "For CIC's own reporting tools. They get totals and averages, never student names." },
   ];
 

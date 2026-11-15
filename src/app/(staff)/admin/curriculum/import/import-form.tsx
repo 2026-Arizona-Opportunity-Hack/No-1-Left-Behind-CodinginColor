@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { importFromYouTube, type ImportState } from "./actions";
 
-const STAGES = ["Reading the video's captions…", "Finding the key ideas…", "Writing quiz questions for pause points…", "Drafting a coding exercise…", "Drafting the teaching guide…"];
+const STAGES = ["Reading what the video says…", "Finding the key ideas…", "Writing questions that pause the video…", "Drafting a coding exercise…", "Drafting the teaching guide…"];
 
 export function ImportForm({ units, aiOn }: { units: { id: string; title: string }[]; aiOn: boolean }) {
   const [unit, setUnit] = useState(units[0]?.id ?? "");
@@ -28,10 +28,10 @@ export function ImportForm({ units, aiOn }: { units: { id: string; title: string
   if (result?.ok) {
     return (
       <div role="status" className="space-y-3 rounded-3xl bg-ontrack p-6 text-ontrack-ink">
-        <h2 className="text-2xl font-semibold">✓ Your draft lesson is ready to review</h2>
-        <p>{result.usedAi ? "AI drafted the video's key points, pause-point quizzes, a quick check, a coding exercise, an exit question and a teaching guide. Each one is marked \"Made by AI: please check\". Check it, edit it, and save it before you publish." : result.note}</p>
+        <h2 className="text-2xl font-semibold">✓ Your new lesson is ready for you to check</h2>
+        <p>{result.usedAi ? "AI wrote the key points, questions that pause the video, a quick check, a coding exercise, a last question and a guide for teachers. Each one is marked \"Made by AI: please check\". Read it, fix anything, and save it. Students only see the lesson once you choose \"Show to students\"." : result.note}</p>
         {result.usedAi && result.note && <p className="text-sm">{result.note}</p>}
-        <Link href={`/admin/curriculum/lesson/${result.lessonId}`} className={buttonVariants({ size: "lg" })}>Review the draft</Link>
+        <Link href={`/admin/curriculum/lesson/${result.lessonId}`} className={buttonVariants({ size: "lg" })}>Check the lesson</Link>
       </div>
     );
   }
@@ -46,7 +46,7 @@ export function ImportForm({ units, aiOn }: { units: { id: string; title: string
         setResult(r);
       });
     }}>
-      {!aiOn && <p className="rounded-2xl bg-sun p-4 text-sm text-sun-ink">AI drafting is off (no AI key set). You&apos;ll still get a starter lesson with the video to fill in by hand. See the README to add a key.</p>}
+      {!aiOn && <p className="rounded-2xl bg-sun p-4 text-sm text-sun-ink">Automatic writing is turned off right now. You&apos;ll still get a lesson with the video in it, ready for you to fill in.</p>}
       <div className="space-y-1">
         <Label htmlFor="yt">YouTube link</Label>
         <Input id="yt" value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://www.youtube.com/watch?v=…" className="h-11" required />

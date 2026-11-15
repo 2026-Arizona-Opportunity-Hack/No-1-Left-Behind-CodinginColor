@@ -15,7 +15,7 @@ export function TestTaker({ moduleId, test }: { moduleId: string; test: StudentT
   const headingRef = useRef<HTMLHeadingElement>(null);
   const q = test.questions[index];
   const last = index === test.questions.length - 1;
-  const name = test.kind === "pre" ? "Pre-test" : "Post-test";
+  const name = test.kind === "pre" ? "Warm-up quiz" : "Final quiz";
 
   const go = (i: number) => { setIndex(i); requestAnimationFrame(() => headingRef.current?.focus()); };
 
@@ -30,7 +30,7 @@ export function TestTaker({ moduleId, test }: { moduleId: string; test: StudentT
           {scores.map((s) => (
             <li key={s.concept_tag} className="rounded-lg border p-3">
               <p className="flex justify-between font-medium capitalize"><span>{s.concept_tag}</span>
-                <span className="tabular-nums">{s.pre_pct !== null ? `${s.pre_pct}% → ${s.pct}%` : `${s.pct}%`}</span></p>
+                <span className="tabular-nums">{s.pre_pct !== null ? `Before ${s.pre_pct}% · Now ${s.pct}%` : `${s.pct}%`}</span></p>
               <div className="mt-2 h-2 rounded-full bg-muted" aria-hidden="true"><div className="h-2 rounded-full bg-[#047D13]" style={{ width: `${s.pct}%` }} /></div>
             </li>
           ))}
@@ -45,7 +45,7 @@ export function TestTaker({ moduleId, test }: { moduleId: string; test: StudentT
       <div className="space-y-2">
         <p className="text-sm text-muted-foreground">{name} · {test.unitTitle}</p>
         <div className="flex items-center gap-3">
-          <div className="h-2 flex-1 rounded-full bg-muted" role="progressbar" aria-label="Test progress"
+          <div className="h-2 flex-1 rounded-full bg-muted" role="progressbar" aria-label="Quiz progress"
             aria-valuenow={index + 1} aria-valuemin={1} aria-valuemax={test.questions.length}>
             <div className="h-2 rounded-full bg-primary" style={{ width: `${((index + 1) / test.questions.length) * 100}%` }} />
           </div>
@@ -82,7 +82,7 @@ export function TestTaker({ moduleId, test }: { moduleId: string; test: StudentT
         <div className="flex justify-between">
           <Button type="button" variant="outline" disabled={index === 0} onClick={() => go(index - 1)}>Back</Button>
           <Button type="submit" size="lg" disabled={answers[q.id] === undefined || pending}>
-            {last ? (pending ? "Saving…" : "Finish test") : "Next question"}
+            {last ? (pending ? "Saving…" : "Finish quiz") : "Next question"}
           </Button>
         </div>
         {error && <p role="alert" className="rounded-2xl bg-help p-4 text-help-ink">{error}</p>}

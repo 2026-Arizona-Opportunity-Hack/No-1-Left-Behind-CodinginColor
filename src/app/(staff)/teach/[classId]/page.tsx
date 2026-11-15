@@ -54,7 +54,7 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
       <div>
         <h1 className="text-4xl leading-none font-bold tracking-tight sm:text-5xl">{cls.name}</h1>
         <p className="mt-2 text-muted-foreground">
-          {cls.school} · Today: {today?.lesson_title ?? "no class"}{today ? ` · ${attendance.present} here, ${attendance.absent} absent` : ""} · Code <span className="font-mono font-bold text-foreground">{cls.class_code}</span>
+          {cls.school} · Today: {today?.lesson_title ?? "no class"}{today ? ` · ${attendance.present} here, ${attendance.absent} absent` : ""} · Class code <span className="font-mono font-bold text-foreground">{cls.class_code}</span>
         </p>
       </div>
 
@@ -141,7 +141,7 @@ function StudentCard({ s, classId, sessionId, now, catchUp }: { s: ClassroomStud
       <p className={`text-[15px] ${muted}`}>
         {[
           s.current ? `${s.current.lesson_title} · step ${s.current.step}` : null,
-          s.time_on_task_ms ? `${formatDuration(s.time_on_task_ms)} on task` : null,
+          s.time_on_task_ms ? `working for ${formatDuration(s.time_on_task_ms)}` : null,
           s.last_active_at ? `active ${timeAgo(s.last_active_at, now)}` : "No activity yet",
         ].filter(Boolean).join(" · ")}
       </p>

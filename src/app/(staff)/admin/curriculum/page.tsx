@@ -20,7 +20,7 @@ export default async function CurriculumEditorPage() {
       <div className="flex flex-wrap items-start justify-between gap-3">
       <div>
         <h1 className="text-4xl font-bold tracking-tight">Edit curriculum</h1>
-        <p className="text-muted-foreground">Units unlock for students in this order. Students only see published units and lessons.</p>
+        <p className="text-muted-foreground">Students go through units in this order. They only see the units and lessons you choose to show them.</p>
       </div>
       <Link href="/admin/curriculum/import" className={buttonVariants({ size: "lg" })}>Make a lesson from a YouTube video</Link>
       </div>

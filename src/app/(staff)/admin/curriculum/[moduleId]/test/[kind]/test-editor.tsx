@@ -24,7 +24,7 @@ export function TestEditor({ moduleId, unitTitle, kind, questions }: { moduleId:
     <div className="mx-auto max-w-3xl space-y-6">
       <Link href={`/admin/curriculum/${moduleId}`} className="inline-block text-base text-foreground no-underline"><span aria-hidden="true" className="font-mono font-extrabold text-[#0DB031]">&lt;</span> {unitTitle}</Link>
       <div>
-        <h1 className="text-4xl font-bold tracking-tight">{kind === "pre" ? "Pre-test" : "Post-test"}: {unitTitle}</h1>
+        <h1 className="text-4xl font-bold tracking-tight">{kind === "pre" ? "Warm-up quiz" : "Final quiz"}: {unitTitle}</h1>
         <p className="text-muted-foreground">
           {kind === "pre" ? "Students take this before the unit." : "Students take this after the unit."} Use the same topics in both tests
           but different questions, so learning gain per topic is fair.

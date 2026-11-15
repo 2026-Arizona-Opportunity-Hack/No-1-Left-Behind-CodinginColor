@@ -25,8 +25,8 @@ export function ModuleList({ modules }: { modules: Row[] }) {
             </div>
             <StatusBadge status={m.status} />
             <Button size="sm" variant="outline" disabled={pending}
-              onClick={() => save(() => setModuleStatusAction(m.id, m.status === "published" ? "draft" : "published"), m.status === "published" ? "Moved back to draft" : "Published")}>
-              {m.status === "published" ? "Unpublish" : "Publish"}
+              onClick={() => save(() => setModuleStatusAction(m.id, m.status === "published" ? "draft" : "published"), m.status === "published" ? "Hidden from students" : "Students can see it now")}>
+              {m.status === "published" ? "Hide from students" : "Show to students"}
             </Button>
             <Button size="sm" variant="secondary" disabled={pending || i === 0} aria-label={`Move ${m.title} up`} onClick={() => save(() => reorderModulesAction(moved(ids, i, -1)), "Order saved")}>Up</Button>
             <Button size="sm" variant="secondary" disabled={pending || i === modules.length - 1} aria-label={`Move ${m.title} down`} onClick={() => save(() => reorderModulesAction(moved(ids, i, 1)), "Order saved")}>Down</Button>

@@ -25,6 +25,9 @@ const slug = (s: string, taken: Set<string>) => {
   return id;
 };
 
+/** Accepts a full YouTube link (or a bare id) and keeps just the 11-character video id. */
+const youTubeId = (s: string) => s.trim().match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/)?.[1] ?? s.trim();
+
 export function ActivityForm({ activity }: { activity: Activity }) {
   const { pending, message, save } = useSave();
   const [title, setTitle] = useState(activity.title ?? "");
@@ -59,6 +62,7 @@ export function ActivityForm({ activity }: { activity: Activity }) {
     for (const k of ["options", "answers", "lines", "key_points"]) if (Array.isArray(clean[k])) clean[k] = (clean[k] as string[]).map((s) => s.trim()).filter(Boolean);
     if (activity.type === "parsons") clean.lines = toLines(content.lines).split("\n").filter((l) => l.trim()); // keep indentation
     for (const k of ["code", "output", "image_url", "explanation"]) if (clean[k] === "") delete clean[k];
+    if (typeof clean.youtube_id === "string") clean.youtube_id = youTubeId(clean.youtube_id);
     save(() => updateActivityAction(activity.id, {
       title: title.trim() || null, concept_tag: topic.trim() || null, is_core: isCore, content: clean,
       teaching_guide: guide.about.trim() ? { ...guide, mistakes: guide.mistakes.filter(Boolean), ask: guide.ask.filter(Boolean) } : null,
@@ -75,14 +79,14 @@ export function ActivityForm({ activity }: { activity: Activity }) {
       <div className="grid gap-3 sm:grid-cols-[1fr_12rem_auto]">
         <div className="space-y-1"><Label htmlFor={id("title")}>Step title</Label>
           <Input id={id("title")} value={title} onChange={(e) => setTitle(e.target.value)} className="h-10" /></div>
-        <div className="space-y-1"><Label htmlFor={id("topic")}>Topic</Label>
+        <div className="space-y-1"><Label htmlFor={id("topic")}>Topic (one word, e.g. loops)</Label>
           <Input id={id("topic")} value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="e.g. loops" className="h-10" /></div>
         <label className="flex items-end gap-2 pb-2 text-sm"><input type="checkbox" checked={isCore} onChange={(e) => setIsCore(e.target.checked)} className="size-4" />
           Required <span className="text-muted-foreground">(untick to make it optional; catch-up skips optional steps)</span></label>
       </div>
 
       {t === "slide" && <>{text("heading", "Heading")}{text("body", "Text", { area: true })}{text("code", "Example code (optional)", { code: true })}{text("output", "What it prints (optional)", { code: true })}{text("image_url", "Slide image link (optional)")}</>}
-      {t === "video" && <>{text("youtube_id", "YouTube video ID", { help: 'The part after "v=" in the link, e.g. dQw4w9WgXcQ' })}{lines("key_points", "Key points")}</>}
+      {t === "video" && <>{text("youtube_id", "YouTube link", { help: "Paste the video's link from your browser." })}{lines("key_points", "Key points")}</>}
       {(t === "quiz_mcq" || t === "exit_question") && <>
         {text("prompt", "Question", { area: true })}
         {lines("options", "Answer options")}
@@ -93,18 +97,18 @@ export function ActivityForm({ activity }: { activity: Activity }) {
         {text("explanation", "Why it's right (shown after a correct answer)", { area: true })}
       </>}
       {t === "predict_output" && <>{text("prompt", "Question")}{text("code", "Code to read", { code: true })}{text("answer", "What it prints", { code: true })}{text("explanation", "Explanation (optional)", { area: true })}</>}
-      {t === "fill_blank" && <>{text("prompt", "Instructions")}{text("template", "Code with a blank", { code: true, help: "Write ____ (four underscores) where the blank goes." })}{lines("answers", "Accepted answers")}</>}
+      {t === "fill_blank" && <>{text("prompt", "Instructions")}{text("template", "Code with a blank", { code: true, help: "Write ____ (four underscores) where the blank goes." })}{lines("answers", "Answers we accept (one per line)")}</>}
       {t === "parsons" && <>{text("prompt", "Instructions")}
-        <div className="space-y-1"><Label htmlFor={id("lines")}>Lines in the CORRECT order</Label>
+        <div className="space-y-1"><Label htmlFor={id("lines")}>The lines in the right order</Label>
           <Textarea id={id("lines")} value={toLines(content.lines)} onChange={(e) => set("lines", e.target.value.split("\n"))} className="min-h-24 font-mono text-[15px]" />
           <p className="text-xs text-muted-foreground">One line of code per line, with its indentation. Students get them shuffled.</p></div></>}
       {(t === "code_exercise" || t === "fix_bug") && <>
         {text("prompt", "Instructions", { area: true })}
-        {text("starter_code", t === "fix_bug" ? "Code with the bug" : "Starter code", { code: true })}
-        <fieldset className="space-y-2"><legend className="font-semibold">Checks (what &quot;Check my code&quot; tests)</legend>
+        {text("starter_code", t === "fix_bug" ? "Code with the mistake in it" : "Code students start with", { code: true })}
+        <fieldset className="space-y-2"><legend className="font-semibold">How we check the student&apos;s code (when they press &quot;Check my code&quot;)</legend>
           {checks.length > 0 && (
             <div aria-hidden="true" className="hidden grid-cols-[1fr_1.2fr_1.4fr_auto] gap-2 px-3 text-sm font-semibold text-muted-foreground sm:grid">
-              <span>What it checks</span><span>Expected output (or Python test)</span><span>Hint if it fails</span><span className="w-9" />
+              <span>What it checks</span><span>What the code should print</span><span>Hint if it&apos;s wrong</span><span className="w-9" />
             </div>
           )}
           {checks.map((c, i) => (
@@ -114,7 +118,7 @@ export function ActivityForm({ activity }: { activity: Activity }) {
               {c.assert !== undefined
                 ? <Textarea aria-label={`Check ${i + 1} Python test`} value={c.assert} className="min-h-12 font-mono text-[15px]"
                     onChange={(e) => set("tests", checks.map((x, j) => (j === i ? { ...x, assert: e.target.value } : x)))} />
-                : <Textarea aria-label={`Check ${i + 1} expected output`} value={c.expectedOutput ?? ""} placeholder="Exact expected output" className="min-h-12 font-mono text-[15px]"
+                : <Textarea aria-label={`Check ${i + 1} expected output`} value={c.expectedOutput ?? ""} placeholder="Exactly what it should print" className="min-h-12 font-mono text-[15px]"
                     onChange={(e) => set("tests", checks.map((x, j) => (j === i ? { ...x, expectedOutput: e.target.value } : x)))} />}
               <Textarea aria-label={`Check ${i + 1} hint`} value={c.hint ?? ""} placeholder="Hint if it fails" className="min-h-12"
                 onChange={(e) => set("tests", checks.map((x, j) => (j === i ? { ...x, hint: e.target.value } : x)))} />
