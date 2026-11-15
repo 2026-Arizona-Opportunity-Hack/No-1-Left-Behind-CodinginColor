@@ -64,7 +64,7 @@ function toStudentContent(a: ActivityRow, studentId: string): StudentStep {
       return { kind: "slide", heading: s("heading"), body: s("body"), code: s("code") || undefined, output: s("output") || undefined, image_url: s("image_url") || undefined };
     case "video":
       return {
-        kind: "video", youtube_id: s("youtube_id"), key_points: (c.key_points as string[]) ?? [],
+        kind: "video", youtube_id: s("youtube_id"), start_seconds: typeof c.start_seconds === "number" ? c.start_seconds : undefined, key_points: (c.key_points as string[]) ?? [],
         // Pause-point questions without their answers (checked on the server, like every quiz).
         pause_points: ((c.pause_points as { at_seconds: number; prompt: string; options: string[] }[]) ?? [])
           .map(({ at_seconds, prompt, options }) => ({ at_seconds, prompt, options })).sort((a, b) => a.at_seconds - b.at_seconds),

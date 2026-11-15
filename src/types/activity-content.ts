@@ -18,6 +18,7 @@ export const activityContentSchemas = {
   slide: z.object({ heading: text, body: text, code: text.optional(), output: text.optional(), image_url: z.union([z.literal(""), z.url()]).optional() }),
   video: z.object({
     youtube_id: text, key_points: strings,
+    start_seconds: z.number().int().nonnegative().optional(), // where the lesson's part of the video begins
     pause_points: z.array(z.object({
       at_seconds: z.number().nonnegative(), prompt: text, options: strings.min(2), answer: z.number().int().nonnegative(),
     }).refine((v) => v.answer < v.options.length, "Choose an answer from the options.")),
