@@ -1,20 +1,17 @@
-import Link from "next/link";
 import { leaveClass } from "@/app/join/actions";
-import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/logo";
 import type { Student } from "@/server/student-session";
 
 export function StudentHeader({ student }: { student: Student }) {
+  const [first, ...rest] = student.displayName.split(" ");
+  const short = rest.length ? `${first} ${rest[rest.length - 1][0]}.` : first;
   return (
-    <header className="border-b bg-background">
-      <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
-        <Link href="/learn" className="font-semibold">
-          Coding in Color <span className="font-normal text-muted-foreground">Launchpad</span>
-        </Link>
-        <span className="ml-auto text-sm text-muted-foreground">
-          {student.displayName} · {student.school}, {student.className}
-        </span>
+    <header className="print:hidden">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-2 px-6 py-5 sm:px-12">
+        <Logo href="/learn" />
+        <span className="ml-auto text-base">{short} · {student.className}</span>
         <form action={leaveClass}>
-          <Button type="submit" variant="outline" size="sm">Leave</Button>
+          <button type="submit" className="cursor-pointer border-0 bg-transparent p-0 text-base font-medium text-[#047D13] underline-offset-4 hover:underline">Sign out</button>
         </form>
       </div>
     </header>

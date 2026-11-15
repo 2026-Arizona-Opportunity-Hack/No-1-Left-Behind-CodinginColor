@@ -43,7 +43,7 @@ export function ModuleEditor({ module: m }: { module: ModuleTree }) {
         <h2 id="lessons-h" className="text-xl font-semibold">Lessons</h2>
         <ol className="space-y-2">
           {m.lessons.map((l, i) => (
-            <li key={l.id} className="flex flex-wrap items-center gap-2 rounded-xl border p-3">
+            <li key={l.id} className="flex flex-wrap items-center gap-2 rounded-2xl bg-card p-3">
               <Link href={`/admin/curriculum/lesson/${l.id}`} className="min-w-0 flex-1 font-medium underline-offset-4 hover:underline">
                 {i + 1}. {l.title} <span className="text-sm font-normal text-muted-foreground">· {l.activities.length} steps</span>
               </Link>

@@ -5,7 +5,7 @@ export function Feedback({ result }: { result: AnswerResult | null }) {
   if (!result) return null;
   return (
     <p role="status" aria-live="polite"
-      className={`rounded-lg border p-3 ${result.correct ? "border-green-700 bg-green-50 text-green-900" : "border-amber-600 bg-amber-50 text-amber-900"}`}>
+      className={`rounded-[18px] px-5 py-4 ${result.correct ? "bg-[#DDF3E3] text-foreground" : "bg-[#FFEBD2] text-[#5C3200]"}`}>
       <span aria-hidden="true" className="mr-1 font-bold">{result.correct ? "✓" : "↻"}</span>
       {result.message}
     </p>
@@ -14,6 +14,6 @@ export function Feedback({ result }: { result: AnswerResult | null }) {
 
 export function CodeBlock({ code, label }: { code: string; label?: string }) {
   return (
-    <pre aria-label={label} className="overflow-auto rounded-lg bg-zinc-950 p-4 font-mono text-sm leading-6 text-zinc-100">{code}</pre>
+    <pre aria-label={label} className="overflow-auto rounded-[18px] bg-[#0F2E1C] px-5 py-4 font-mono text-[17px] leading-[1.75] text-[#E6F4EA]">{code}</pre>
   );
 }

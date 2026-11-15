@@ -120,7 +120,7 @@ export function Playground() {
         </h2>
         <pre
           aria-live="polite"
-          className="min-h-40 overflow-auto rounded-lg bg-zinc-950 p-4 font-mono text-sm leading-6 whitespace-pre-wrap text-zinc-100"
+          className="min-h-40 overflow-auto rounded-lg bg-[#0F2E1C] p-4 font-mono text-sm leading-6 whitespace-pre-wrap text-[#E6F4EA]"
         >
           {run ? run.output || (run.error || run.timedOut ? "" : "(Your code didn't print anything.)") : "Press Run to see what your code prints."}
           {run?.truncated && "\n… (output cut off: that's a lot of printing!)"}

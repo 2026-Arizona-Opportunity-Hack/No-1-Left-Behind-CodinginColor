@@ -17,7 +17,7 @@ export default async function AdminHome() {
       <h1 className="text-3xl font-semibold tracking-tight">Hi {staff.displayName}</h1>
       <dl className="grid gap-4 sm:grid-cols-3">
         {[["Units in the curriculum", modules], ["Classes", classes], ["Students", students]].map(([label, value]) => (
-          <div key={label} className="rounded-xl border p-5">
+          <div key={label} className="rounded-2xl bg-card p-5">
             <dt className="text-sm text-muted-foreground">{label}</dt>
             <dd className="mt-1 text-3xl font-semibold tabular-nums">{value}</dd>
           </div>

@@ -25,10 +25,10 @@ export default async function ApiKeysPage() {
           The API only returns totals and averages, <strong>never student names</strong>.</p>
       </div>
       {keys.ok ? <KeysManager keys={keys.data} /> : <p role="alert">{keys.error}</p>}
-      <section aria-labelledby="how-h" className="space-y-3 rounded-2xl border p-5">
+      <section aria-labelledby="how-h" className="space-y-3 rounded-3xl bg-card p-5">
         <h2 id="how-h" className="text-xl font-semibold">How to use a key</h2>
         <p>Send it in the <code className="rounded bg-muted px-1">x-api-key</code> header. For example:</p>
-        <pre className="overflow-auto rounded-lg bg-zinc-950 p-4 font-mono text-sm text-zinc-100">{`curl -H "x-api-key: YOUR_KEY" https://cic-launchpad.vercel.app/api/v1/classes`}</pre>
+        <pre className="overflow-auto rounded-lg bg-[#0F2E1C] p-4 font-mono text-sm text-[#E6F4EA]">{`curl -H "x-api-key: YOUR_KEY" https://cic-launchpad.vercel.app/api/v1/classes`}</pre>
         <ul className="space-y-1 text-sm">
           {ENDPOINTS.map(([path, what]) => <li key={path}><code className="rounded bg-muted px-1">GET {path}</code> {what}</li>)}
         </ul>

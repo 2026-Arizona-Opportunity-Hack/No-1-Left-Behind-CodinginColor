@@ -12,5 +12,5 @@ export function AutoRefresh({ seconds = 20 }: { seconds?: number }) {
     }, seconds * 1000);
     return () => clearInterval(id);
   }, [router, seconds]);
-  return <p className="text-sm text-muted-foreground">Updates every {seconds} seconds</p>;
+  return <span>Live · updates every {seconds} seconds</span>;
 }

@@ -14,19 +14,19 @@ export function LoginForm({ next }: { next: string | null }) {
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <Input id="email" name="email" type="email" autoComplete="email" required defaultValue={state.email}
-          aria-invalid={Boolean(state.error)} aria-describedby={state.error ? "login-error" : undefined} className="h-11" />
+          aria-invalid={Boolean(state.error)} aria-describedby={state.error ? "login-error" : undefined} className="h-14" />
       </div>
       <div className="space-y-2">
         <Label htmlFor="password">Password</Label>
         <Input id="password" name="password" type="password" autoComplete="current-password" required
-          aria-invalid={Boolean(state.error)} aria-describedby={state.error ? "login-error" : undefined} className="h-11" />
+          aria-invalid={Boolean(state.error)} aria-describedby={state.error ? "login-error" : undefined} className="h-14" />
       </div>
       {state.error && (
         <p id="login-error" role="alert" className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-900">
           {state.error}
         </p>
       )}
-      <Button type="submit" size="lg" className="h-11 w-full text-base" disabled={pending}>
+      <Button type="submit" size="lg" className="h-14 w-full text-lg" disabled={pending}>
         {pending ? "Signing in…" : "Sign in"}
       </Button>
     </form>
