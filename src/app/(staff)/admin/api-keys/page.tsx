@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: "API keys · CIC Launchpad" };
 const ENDPOINTS = [
   ["/api/v1/classes", "Every class with student count and completion %"],
   ["/api/v1/classes/{id}/summary", "One class: completion, active students, behind count, learning gain"],
-  ["/api/v1/learning-gain?classId=&moduleId=&concept=", "Learning gain (pre → post) with how many students it's based on"],
+  ["/api/v1/learning-gain?classId=&moduleId=&concept=", "How much students improved (before vs after a unit), with how many students it's based on"],
   ["/api/v1/concepts/mastery?classId=", "Per topic: % who got it and % who are stuck"],
 ];
 

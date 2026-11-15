@@ -74,14 +74,14 @@ async function CourseMapPage() {
 
           {pre && (
             <div className="flex flex-wrap items-center gap-4 rounded-3xl bg-sky px-6 py-4 text-sky-ink">
-              <p className="flex-1"><b className="font-semibold">Take the pre-test first.</b> A few questions, not graded.</p>
-              <Link href={`/learn/test/${pre.m.id}/pre`}>Start pre-test</Link>
+              <p className="flex-1"><b className="font-semibold">Start with a warm-up quiz.</b> A few questions, not graded.</p>
+              <Link href={`/learn/test/${pre.m.id}/pre`}>Start the warm-up quiz</Link>
             </div>
           )}
           {post && (
             <div className="flex flex-wrap items-center gap-4 rounded-3xl bg-ontrack px-6 py-4 text-ontrack-ink">
               <p className="flex-1"><b className="font-semibold">You finished {post.m.title}!</b> See how much you grew.</p>
-              <Link href={`/learn/test/${post.m.id}/post`}>Take the post-test</Link>
+              <Link href={`/learn/test/${post.m.id}/post`}>Take the final quiz</Link>
             </div>
           )}
         </div>
@@ -113,7 +113,7 @@ function UnitCard({ unit, nextId, tests }: { unit: MapModule; nextId?: string; t
         <h2 id={`unit-${unit.id}`} className="flex items-center gap-2.5 text-xl font-semibold"><span aria-hidden="true" className={`flex size-8 items-center justify-center rounded-full text-base font-bold ${UNIT_TINT[(unit.position - 1) % UNIT_TINT.length]}`}>{unit.position}</span><span className="sr-only">{unit.position} · </span>{unit.title}</h2>
         <span className="self-center text-[15px] text-muted-foreground">
           {unit.isStart ? "Your teacher says start here · " : ""}{unit.doneCount} of {unit.lessons.length} done
-          {tests?.pre === "done" ? " · ✓ Pre-test" : ""}{tests?.post === "done" ? " · ✓ Post-test" : ""}
+          {tests?.pre === "done" ? " · ✓ Warm-up quiz" : ""}{tests?.post === "done" ? " · ✓ Final quiz" : ""}
         </span>
       </div>
       <ol className="m-0 list-none p-0">

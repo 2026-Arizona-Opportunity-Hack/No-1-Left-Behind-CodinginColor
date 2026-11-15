@@ -91,11 +91,11 @@ export function ModuleEditor({ module: m }: { module: ModuleTree }) {
 
       <section aria-labelledby="tests-h" className="flex flex-wrap items-center gap-4 rounded-3xl bg-lilac p-6 text-lilac-ink">
         <div className="mr-auto">
-          <h2 id="tests-h" className="text-xl font-semibold">Pre-test and post-test</h2>
-          <p>Students take one before the unit and one after. Comparing them shows how much they learned.</p>
+          <h2 id="tests-h" className="text-xl font-semibold">Before and after quizzes</h2>
+          <p>Students take a warm-up quiz before the unit and a final quiz after it. Comparing them shows how much they learned.</p>
         </div>
-        <Link href={`/admin/curriculum/${m.id}/test/pre`} className={buttonVariants({ variant: "outline" })}>Edit pre-test</Link>
-        <Link href={`/admin/curriculum/${m.id}/test/post`} className={buttonVariants({ variant: "outline" })}>Edit post-test</Link>
+        <Link href={`/admin/curriculum/${m.id}/test/pre`} className={buttonVariants({ variant: "outline" })}>Edit warm-up quiz</Link>
+        <Link href={`/admin/curriculum/${m.id}/test/post`} className={buttonVariants({ variant: "outline" })}>Edit final quiz</Link>
       </section>
     </div>
   );
