@@ -4,6 +4,7 @@ import { buildClassroom, buildMastery, doneActivityIds, type ClassData, type Cur
 import type { ConceptMastery } from "@/lib/mastery";
 import { isUuid } from "@/lib/validate";
 import { createClient } from "@/lib/supabase/server";
+import { fetchAll } from "@/server/fetch-all";
 import type { StatusEvent } from "@/lib/student-status";
 import type { Classroom, StudentActivityDetail, StudentDetail } from "@/types/dashboard";
 import { fail, ok, type Result } from "@/types/result";
@@ -16,17 +17,6 @@ type Db = SupabaseClient;
 const NOT_FOUND = "We couldn't find that. It may belong to another teacher's class.";
 const SAVE_FAILED = "We couldn't save that. Please try again.";
 const one = <T>(x: T | T[] | null | undefined): T | null => (Array.isArray(x) ? (x[0] ?? null) : (x ?? null));
-
-/** Reads every page of a query (the database returns at most 1,000 rows per request). */
-async function fetchAll<T>(page: (from: number, to: number) => PromiseLike<{ data: T[] | null; error: unknown }>): Promise<T[]> {
-  const rows: T[] = [];
-  for (let from = 0; ; from += 1000) {
-    const { data, error } = await page(from, from + 999);
-    if (error) throw new Error("Could not read class data.");
-    rows.push(...(data ?? []));
-    if (!data || data.length < 1000) return rows;
-  }
-}
 
 /** Published lessons in course order, each with its activities in order. */
 async function loadCurriculum(db: Db): Promise<CurriculumLesson[]> {
