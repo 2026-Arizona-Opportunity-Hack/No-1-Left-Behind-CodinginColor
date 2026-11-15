@@ -1,3 +1,4 @@
+import { can } from "@/lib/permissions";
 import { getStaff } from "@/server/auth";
 import { getResults } from "@/server/results";
 
@@ -5,7 +6,7 @@ import { getResults } from "@/server/results";
 // Staff only; the database limits teachers to their own classes.
 export async function GET(request: Request) {
   const staff = await getStaff();
-  if (!staff || staff.role === "reviewer") return new Response("Sign in as a teacher or CIC staff.", { status: 401 });
+  if (!can(staff,"results.read")) return new Response("Sign in as a teacher or CIC staff.", { status: 401 });
   const url = new URL(request.url);
   const r = await getResults(url.searchParams.get("unit") ?? undefined, url.searchParams.get("class") ?? undefined);
   const unit = r.units.find((u) => u.id === r.unitId)?.title ?? "unit";

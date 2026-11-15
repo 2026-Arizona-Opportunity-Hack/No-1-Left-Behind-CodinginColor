@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ACTIVITY_LABEL } from "@/lib/activity-labels";
 import { STATUS_DISPLAY, formatDuration } from "@/lib/status-display";
 import { createClient } from "@/lib/supabase/server";
-import { requireStaff } from "@/server/auth";
+import { requirePermission } from "@/server/auth";
 import { getClassroom, getStudentDetail } from "@/server/dashboard";
 import type { StudentActivityDetail } from "@/types/dashboard";
 import { saveStartModule, skipLesson, toggleUnlock } from "./actions";
@@ -28,7 +28,7 @@ const STEP_STATUS = {
 export default async function StudentPage({ params }: Props) {
   await connection(); // per-user, live data: render at request time
   const { classId, studentId } = await params;
-  await requireStaff(["instructor", "admin"], `/teach/${classId}/students/${studentId}`);
+  await requirePermission("classes.manage", `/teach/${classId}/students/${studentId}`);
   const supabase = await createClient();
   const [detail, room, curriculum] = await Promise.all([
     getStudentDetail(studentId),

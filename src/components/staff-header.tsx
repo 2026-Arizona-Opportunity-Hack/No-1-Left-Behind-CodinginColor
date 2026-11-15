@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { signOut } from "@/app/login/actions";
 import { Logo } from "@/components/logo";
-import { ROLE_LABEL, STAFF_NAV } from "@/lib/roles";
+import { staffHome, staffNavigation } from "@/lib/permissions";
 import type { Staff } from "@/server/auth";
 
 export function StaffHeader({ staff }: { staff: Staff }) {
   return (
     <header className="print:hidden">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-3 px-6 py-5 sm:px-10">
-        <Logo href={STAFF_NAV[staff.role][0].href} />
+        <Logo href={staffHome(staff)} />
         <nav aria-label="Main" className="flex flex-wrap gap-1">
-          {STAFF_NAV[staff.role].map((item) => (
+          {staffNavigation(staff).map((item) => (
             <Link key={item.href} href={item.href}
               className="rounded-full px-3 py-2 text-base font-medium whitespace-nowrap text-foreground no-underline hover:bg-card focus-visible:outline-2">
               {item.label}
@@ -18,7 +18,7 @@ export function StaffHeader({ staff }: { staff: Staff }) {
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-3 text-base whitespace-nowrap">
-          <span className="rounded-full bg-card px-3 py-1 font-medium">{ROLE_LABEL[staff.role]}</span>
+          <span className="rounded-full bg-card px-3 py-1 font-medium">{staff.roleName}</span>
           <span className="hidden xl:inline">{staff.displayName}</span>
           <form action={signOut}>
             <button type="submit" className="h-10 cursor-pointer rounded-full border-2 border-primary bg-card px-4 text-base font-bold text-foreground hover:bg-secondary">Sign out</button>

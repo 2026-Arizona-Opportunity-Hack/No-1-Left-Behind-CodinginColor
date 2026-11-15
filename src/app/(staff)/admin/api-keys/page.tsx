@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
-import { requireStaff } from "@/server/auth";
+import { requirePermission } from "@/server/auth";
 import { listApiKeys } from "@/server/api-keys";
 import { KeysManager } from "./keys-manager";
 
@@ -18,7 +18,7 @@ const ENDPOINTS = [
 
 export default async function ApiKeysPage() {
   await connection(); // per-user, live data: render at request time
-  await requireStaff(["admin"], "/admin/api-keys");
+  await requirePermission("api_keys.manage", "/admin/api-keys");
   const keys = await listApiKeys();
   return (
     <div className="space-y-6">

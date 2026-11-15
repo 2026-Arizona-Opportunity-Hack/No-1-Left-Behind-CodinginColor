@@ -2,7 +2,8 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { ROLE_HOME, safeNextPath, type StaffRole } from "@/lib/roles";
+import { safeNextPath } from "@/lib/roles";
+import { staffHome } from "@/lib/permissions";
 
 export type SignInState = { error?: string; email?: string };
 
@@ -21,7 +22,9 @@ export async function signIn(_prev: SignInState, formData: FormData): Promise<Si
     await supabase.auth.signOut();
     return { error: "Your account isn't set up yet. Ask CIC staff to give you access.", email };
   }
-  redirect(safeNextPath(formData.get("next")) ?? ROLE_HOME[profile.role as StaffRole]);
+  const { data: role } = await supabase.from("staff_roles").select("permissions").eq("id", profile.role).single();
+  if (!role) return { error: "Staff access is not ready. Ask CIC staff to finish setting up permissions.", email };
+  redirect(safeNextPath(formData.get("next")) ?? staffHome({ role: profile.role, permissions: role.permissions }));
 }
 
 export async function signOut() {
