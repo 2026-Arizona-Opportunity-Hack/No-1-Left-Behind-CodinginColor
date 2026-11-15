@@ -54,7 +54,8 @@ export async function reportCodeCheck(activityId: string, passed: number, total:
   if (activity.type !== "code_exercise" && activity.type !== "fix_bug") throw new Error(NOT_ALLOWED);
   const tests = (activity.content.tests as unknown[]) ?? [];
   const p = Math.max(0, Math.min(Number(passed) || 0, tests.length));
-  const allPassed = p === tests.length && Number(total) === tests.length;
+  // With no checks to pass, turning in real code is what completes the step (an empty editor never does).
+  const allPassed = p === tests.length && Number(total) === tests.length && (tests.length > 0 || String(code).trim().length > 0);
   await recordEvent(student, activity, {
     event_type: "check", correct: allPassed, tests_passed: p, tests_total: tests.length,
     payload: { code: String(code).slice(0, 10000) },
