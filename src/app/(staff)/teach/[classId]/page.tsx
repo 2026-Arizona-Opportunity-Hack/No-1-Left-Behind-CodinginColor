@@ -51,38 +51,43 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
         <CopyLinkButton classCode={cls.class_code} />
       </div>
 
-      <div className="flex flex-wrap items-center gap-x-8 gap-y-5">
-        <div>
-          <h1 className="text-4xl leading-none font-bold tracking-tight sm:text-5xl">{cls.name}</h1>
-          <p className="mt-1.5 text-muted-foreground">
-            {cls.school} · Today: {today?.lesson_title ?? "no class"}{today ? ` · ${attendance.present} here, ${attendance.absent} absent` : ""} · Code <span className="font-mono font-bold text-foreground">{cls.class_code}</span>
-          </p>
-        </div>
-        <dl className="flex flex-wrap gap-x-6 gap-y-3">
-          {([["needs_help", "! Needs help"], ["behind", "◷ Behind"], ["not_started", "○ Not started"], ["on_track", "✓ On track"]] as const).map(([k, label]) => (
-            <div key={k} className="flex flex-col-reverse"><dt className="text-base whitespace-nowrap">{label}</dt><dd className="m-0 text-4xl leading-none font-bold tabular-nums">{counts[k]}</dd></div>
+      <div>
+        <h1 className="text-4xl leading-none font-bold tracking-tight sm:text-5xl">{cls.name}</h1>
+        <p className="mt-2 text-muted-foreground">
+          {cls.school} · Today: {today?.lesson_title ?? "no class"}{today ? ` · ${attendance.present} here, ${attendance.absent} absent` : ""} · Code <span className="font-mono font-bold text-foreground">{cls.class_code}</span>
+        </p>
+      </div>
+
+      <div className="grid items-stretch gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+        <dl className="m-0 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {(Object.keys(COUNT_TILE) as (keyof typeof COUNT_TILE)[]).map((k) => (
+            <div key={k} className={`flex flex-col-reverse justify-end gap-1 rounded-[22px] px-5 py-4 ${COUNT_TILE[k].tone}`}>
+              <dt className="text-base font-medium">{COUNT_TILE[k].label}</dt>
+              <dd className="m-0 text-4xl leading-none font-bold tabular-nums">{counts[k]}</dd>
+            </div>
           ))}
         </dl>
-        <div aria-label="Class topics" className="flex w-full flex-col gap-2 rounded-[20px] bg-card px-5 py-3.5 text-[15px] sm:ml-auto sm:w-[250px]">
+        <section aria-labelledby="topics-h" className="flex flex-col gap-2.5 rounded-[22px] bg-card px-5 py-4 text-[15px]">
+          <h2 id="topics-h" className="text-base font-semibold">Where the class is stuck</h2>
           {mastery.ok && mastery.data.length ? mastery.data.slice(0, 3).map((m) => (
             <div key={m.concept_tag}>
-              <div className="flex justify-between"><b className="font-semibold capitalize">{m.concept_tag}</b><span>{m.percent_struggling}% stuck</span></div>
-              <div aria-hidden="true" className="mt-1 h-2 rounded-full bg-background"><div className="h-full rounded-full bg-[#C2452F]" style={{ width: `${m.percent_struggling}%` }} /></div>
+              <div className="flex justify-between gap-3"><span className="font-medium capitalize">{m.concept_tag}</span><span className="tabular-nums">{m.percent_struggling}% stuck</span></div>
+              <div aria-hidden="true" className="mt-1 h-2 rounded-full bg-background"><div className="h-full rounded-full bg-[#C2452F]" style={{ width: `${m.percent_struggling ? Math.max(m.percent_struggling, 3) : 0}%` }} /></div>
             </div>
           )) : <p className="text-muted-foreground">Topic results appear once students start answering.</p>}
-        </div>
+        </section>
       </div>
 
       {!students.length && <p className="rounded-3xl bg-card p-10 text-center text-lg">No students in this class yet. Add them from <Link href="/teach/new">Set up a class</Link>.</p>}
 
       <div className="grid items-start gap-5 lg:grid-cols-3">
         <section aria-labelledby="help-col" className="flex flex-col gap-2.5">
-          <h2 id="help-col" className="text-xl font-semibold">! Needs help · {counts.needs_help}</h2>
+          <h2 id="help-col" className={COL_HEAD + " bg-help text-help-ink"}>! Needs help · {counts.needs_help}</h2>
           {by("needs_help").map(card)}
           {!counts.needs_help && <p className="rounded-[22px] bg-card px-5 py-4 text-muted-foreground">Nobody is stuck right now.</p>}
         </section>
         <section aria-labelledby="behind-col" className="flex flex-col gap-2.5">
-          <h2 id="behind-col" className="text-xl font-semibold">◷ Behind · {counts.behind}</h2>
+          <h2 id="behind-col" className={COL_HEAD + " bg-behind text-behind-ink"}>◷ Behind · {counts.behind}</h2>
           {by("behind").map(card)}
           {counts.behind > 1 && !by("behind").every((s) => catchUp.get(s.id)) && (
             <form action={assignCatchUpAction}>
@@ -99,7 +104,7 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
           )}
         </section>
         <section aria-labelledby="ok-col" className="flex flex-col gap-2.5">
-          <h2 id="ok-col" className="text-xl font-semibold">✓ On track · {counts.on_track}</h2>
+          <h2 id="ok-col" className={COL_HEAD + " bg-ontrack text-ontrack-ink"}>✓ On track · {counts.on_track}</h2>
           {shownOnTrack.map(card)}
           {onTrack.length > shownOnTrack.length && <Link href={`/teach/${cls.id}?show=all`} className="px-5 py-1.5">Show {onTrack.length - shownOnTrack.length} more on track</Link>}
         </section>
@@ -108,11 +113,21 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
   );
 }
 
+const COL_HEAD = "self-start rounded-full px-4 py-1.5 text-lg font-semibold";
+
+const COUNT_TILE = {
+  needs_help: { label: "! Needs help", tone: "bg-help text-help-ink" },
+  behind: { label: "◷ Behind", tone: "bg-behind text-behind-ink" },
+  not_started: { label: "○ Not started", tone: "border-2 border-dashed border-[#7FA08B] bg-card" },
+  on_track: { label: "✓ On track", tone: "bg-ontrack text-ontrack-ink" },
+};
+
+// Tinted card + a coloured left edge, so the status reads at a glance (the words say it too).
 const TONE = {
-  needs_help: "bg-[#FDE4DF] text-[#4A1008]",
-  behind: "bg-[#FFEBD2] text-[#4A2800]",
-  not_started: "bg-card text-foreground",
-  on_track: "bg-card text-foreground",
+  needs_help: "bg-help text-help-ink border-l-[6px] border-[#C2452F]",
+  behind: "bg-behind text-behind-ink border-l-[6px] border-[#C77700]",
+  not_started: "bg-card text-foreground border-l-[6px] border-[#7FA08B]",
+  on_track: "bg-card text-foreground border-l-[6px] border-[#0DB031]",
 };
 
 function StudentCard({ s, classId, sessionId, now, catchUp }: { s: ClassroomStudent; classId: string; sessionId?: string; now: number; catchUp: CatchUp }) {

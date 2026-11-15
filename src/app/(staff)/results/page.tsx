@@ -26,7 +26,7 @@ export default async function ResultsPage({ searchParams }: { searchParams: Prom
     <div className="space-y-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight">Learning results</h1>
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Learning results</h1>
           <p className="text-muted-foreground">Learning gain = post-test % − pre-test %, counting only students who took both. {staff.role === "instructor" ? "Your classes only." : "All classes."}</p>
         </div>
         <form className="flex flex-wrap items-end gap-2" method="get">
@@ -43,15 +43,15 @@ export default async function ResultsPage({ searchParams }: { searchParams: Prom
       {!r.unitId ? <p className="rounded-xl border border-dashed p-8 text-center text-muted-foreground">No test results yet. They appear once students take a pre-test and a post-test.</p> : (
         <>
           <section aria-label="Headline" className="grid gap-4 md:grid-cols-[2fr_1fr]">
-            <div className="rounded-3xl bg-card p-6">
-              <p className="text-sm text-muted-foreground">{unitTitle}</p>
+            <div className="rounded-3xl bg-ontrack p-6 text-ontrack-ink">
+              <p className="text-sm font-medium">{unitTitle}</p>
               <p className="text-5xl font-semibold tracking-tight tabular-nums">
                 {top ? <>{signed(top.avg_gain)} points <span className="text-3xl">on <span className="capitalize">{top.concept_tag}</span></span></> : "Not enough data yet"}
               </p>
-              {top && <p className="mt-2 text-muted-foreground">Based on {top.n} students · {pct(top.avg_pre_pct)} → {pct(top.avg_post_pct)}</p>}
+              {top && <p className="mt-2">Based on {top.n} students · {pct(top.avg_pre_pct)} → {pct(top.avg_post_pct)}</p>}
             </div>
-            <div className="space-y-2 rounded-3xl bg-card p-6">
-              <p className="text-sm text-muted-foreground">Whole unit</p>
+            <div className="space-y-2 rounded-3xl bg-sky p-6 text-sky-ink">
+              <p className="text-sm font-medium">Whole unit</p>
               <p className="text-3xl font-semibold tabular-nums">{signed(r.overall.avg_gain)} points</p>
               <p className="text-sm">{pct(r.overall.avg_pre_pct)} → {pct(r.overall.avg_post_pct)} · {r.overall.n} students</p>
               <Missing gain={r.overall} />
@@ -67,10 +67,10 @@ export default async function ResultsPage({ searchParams }: { searchParams: Prom
                     <span className="tabular-nums">{pct(t.avg_pre_pct)} → {pct(t.avg_post_pct)} (<strong>{signed(t.avg_gain)}</strong>) · {t.n} students</span></p>
                   <div className="relative mt-2 h-3 rounded-full bg-muted" aria-hidden="true">
                     {t.avg_pre_pct !== null && t.avg_post_pct !== null && (
-                      <div className="absolute h-3 rounded-full bg-green-700/30" style={{ left: `${Math.min(t.avg_pre_pct, t.avg_post_pct)}%`, width: `${Math.abs(t.avg_post_pct - t.avg_pre_pct)}%` }} />
+                      <div className="absolute h-3 rounded-full bg-[#0DB031]/40" style={{ left: `${Math.min(t.avg_pre_pct, t.avg_post_pct)}%`, width: `${Math.abs(t.avg_post_pct - t.avg_pre_pct)}%` }} />
                     )}
                     {t.avg_pre_pct !== null && <div className="absolute top-0 size-3 rounded-full border-2 border-zinc-500 bg-white" style={{ left: `calc(${t.avg_pre_pct}% - 6px)` }} />}
-                    {t.avg_post_pct !== null && <div className="absolute top-0 size-3 rounded-full bg-green-700" style={{ left: `calc(${t.avg_post_pct}% - 6px)` }} />}
+                    {t.avg_post_pct !== null && <div className="absolute top-0 size-3 rounded-full bg-[#047D13]" style={{ left: `calc(${t.avg_post_pct}% - 6px)` }} />}
                   </div>
                 </li>
               ))}
@@ -80,9 +80,9 @@ export default async function ResultsPage({ searchParams }: { searchParams: Prom
 
           <section aria-labelledby="class-h" className="space-y-3">
             <h2 id="class-h" className="text-xl font-semibold">By class</h2>
-            <div className="overflow-x-auto rounded-2xl border">
+            <div className="overflow-x-auto rounded-2xl border bg-card">
               <table className="w-full min-w-[36rem] text-left text-sm">
-                <thead className="border-b bg-muted/50"><tr>{["Class", "Pre-test", "Post-test", "Gain", "Students", "Missing tests"].map((h) => <th key={h} scope="col" className="p-3 font-medium">{h}</th>)}</tr></thead>
+                <thead className="border-b bg-lilac text-lilac-ink"><tr>{["Class", "Pre-test", "Post-test", "Gain", "Students", "Missing tests"].map((h) => <th key={h} scope="col" className="p-3 font-medium">{h}</th>)}</tr></thead>
                 <tbody>{r.classes.map((c) => (
                   <tr key={c.id} className="border-b last:border-0">
                     <th scope="row" className="p-3 font-medium">{c.school} · {c.name}</th>
@@ -116,7 +116,7 @@ export default async function ResultsPage({ searchParams }: { searchParams: Prom
 function Missing({ gain }: { gain: GainSummary }) {
   if (!gain.missing_pre && !gain.missing_post) return null;
   return (
-    <p className="rounded-md border border-amber-600 bg-amber-50 p-2 text-sm text-amber-900">
+    <p className="rounded-2xl bg-behind p-3 text-sm text-behind-ink">
       ⚠ {[gain.missing_post && `${gain.missing_post} missing a post-test`, gain.missing_pre && `${gain.missing_pre} missing a pre-test`].filter(Boolean).join(", ")}. They aren&apos;t counted in the gain.
     </p>
   );

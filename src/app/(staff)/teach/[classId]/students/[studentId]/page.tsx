@@ -128,7 +128,7 @@ export default async function StudentPage({ params }: Props) {
             <details key={lesson.id} open={touched && doneCount < steps.length} className="rounded-2xl bg-card p-4">
               <summary className="cursor-pointer font-medium">
                 Unit {m.position} · {lesson.title}
-                <span className="ml-2 text-sm font-normal text-muted-foreground">{doneCount} of {steps.length} steps done</span>
+                <span className={`ml-2 rounded-full px-2.5 py-0.5 text-sm font-medium ${!touched ? "bg-background text-muted-foreground" : doneCount === steps.length ? "bg-ontrack text-ontrack-ink" : "bg-sun text-sun-ink"}`}>{!touched ? "Not started" : doneCount === steps.length ? "✓ " : ""}{touched ? `${doneCount} of ${steps.length} steps done` : ""}</span>
               </summary>
               <ol className="mt-3 space-y-3">
                 {steps.map(({ a, s }) => {
