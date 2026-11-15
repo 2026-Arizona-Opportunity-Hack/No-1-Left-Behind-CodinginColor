@@ -21,7 +21,7 @@ export function StaffHeader({ staff }: { staff: Staff }) {
           <span className="rounded-full bg-card px-3 py-1 font-medium">{ROLE_LABEL[staff.role]}</span>
           <span className="hidden xl:inline">{staff.displayName}</span>
           <form action={signOut}>
-            <button type="submit" className="cursor-pointer border-0 bg-transparent p-0 text-base font-medium text-[#047D13] underline-offset-4 hover:underline">Sign out</button>
+            <button type="submit" className="h-10 cursor-pointer rounded-full border-2 border-primary bg-card px-4 text-base font-bold text-foreground hover:bg-secondary">Sign out</button>
           </form>
         </div>
       </div>
