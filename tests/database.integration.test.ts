@@ -14,6 +14,16 @@ describe.skipIf(!url)("disposable migrated and seeded database", () => {
   it("runs instructor class setup and cross-instructor isolation flows", () => {
     expect(sql("-f", "supabase/tests/classes.sql")).toContain("ROLLBACK");
   });
+  it("enforces dynamic role creation, revocation, reassignment and last-admin protection", () => {
+    expect(sql("-f", "supabase/tests/staff-roles.sql")).toContain("ROLLBACK");
+  });
+  it("imports, reviews and publishes custom-role curriculum without erasing student history", () => {
+    expect(sql("-f", "supabase/tests/curriculum-import.sql")).toContain("ROLLBACK");
+  });
+  it("provides both quiz kinds for every published demo unit", () => {
+    const missing=sql("-Atc", "select count(*) from public.modules m where m.status='published' and (select count(*) from public.assessments a where a.module_id=m.id and a.reviewed and exists(select 1 from public.assessment_questions q where q.assessment_id=a.id))<>2").trim();
+    expect(missing).toBe("0");
+  });
   it("validates ALL materialized seed activities, including generated slides/questions", () => {
     const rows = JSON.parse(sql("-Atc", "select jsonb_agg(jsonb_build_object('type',type,'content',content,'teaching_guide',teaching_guide,'hints',hints)) from public.activities"));
     expect(rows.length).toBeGreaterThanOrEqual(24);
