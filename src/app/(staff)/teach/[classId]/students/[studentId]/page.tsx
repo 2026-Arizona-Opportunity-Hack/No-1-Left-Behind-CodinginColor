@@ -23,9 +23,9 @@ const STEP_STATUS = {
 };
 
 export default async function StudentPage({ params }: Props) {
+  await connection(); // per-user, live data: render at request time
   const { classId, studentId } = await params;
   await requireStaff(["instructor", "admin"], `/teach/${classId}/students/${studentId}`);
-  await connection();
   const supabase = await createClient();
   const [detail, room, curriculum] = await Promise.all([
     getStudentDetail(studentId),

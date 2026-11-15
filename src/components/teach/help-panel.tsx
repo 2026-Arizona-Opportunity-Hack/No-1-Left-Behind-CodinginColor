@@ -34,7 +34,7 @@ export function HelpPanel(p: HelpPanelProps) {
   }, [p.code, p.checks]);
 
   return (
-    <section id="help" aria-labelledby="help-h" className="scroll-mt-4 rounded-2xl border-2 border-red-700 p-5">
+    <section id="help" aria-labelledby="help-h" className="scroll-mt-4 rounded-[28px] border-2 border-[#C2452F] bg-card p-6 sm:p-8">
       <h2 id="help-h" className="text-xl font-semibold">Help me teach this</h2>
       <p className="text-muted-foreground">{p.studentLabel} is stuck on <strong>step {p.stepNumber}: {p.stepTitle}</strong> in {p.lessonTitle}.</p>
       <div className="mt-4 grid gap-5 lg:grid-cols-2">

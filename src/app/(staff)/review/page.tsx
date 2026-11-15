@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireStaff } from "@/server/auth";
 import { ACTIVITY_LABEL } from "@/lib/activity-labels";
@@ -13,6 +14,7 @@ type Module = { id: string; title: string; description: string | null; position:
 // Read-only curriculum browser: the external reviewer's view (P0), also used by teachers and CIC staff.
 // The database decides what's visible: reviewers and teachers only ever get published content.
 export default async function CurriculumPage() {
+  await connection(); // per-user, live data: render at request time
   const staff = await requireStaff(["reviewer", "instructor", "admin"], "/review");
   const supabase = await createClient();
   const { data } = await supabase

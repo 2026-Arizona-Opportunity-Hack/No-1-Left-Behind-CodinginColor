@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireStaff } from "@/server/auth";
@@ -6,6 +7,7 @@ import { requireStaff } from "@/server/auth";
 export const metadata: Metadata = { title: "CIC staff · CIC Launchpad" };
 
 export default async function AdminHome() {
+  await connection(); // per-user, live data: render at request time
   const staff = await requireStaff(["admin"], "/admin");
   const supabase = await createClient();
   const count = async (table: string) =>

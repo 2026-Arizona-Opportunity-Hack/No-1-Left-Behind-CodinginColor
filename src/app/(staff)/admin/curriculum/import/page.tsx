@@ -9,8 +9,8 @@ import { ImportForm } from "./import-form";
 export const metadata: Metadata = { title: "Import a lesson · CIC Launchpad" };
 
 export default async function ImportPage() {
+  await connection(); // per-user, live data: render at request time
   await requireStaff(["admin"], "/admin/curriculum/import");
-  await connection();
   const { data } = await (await createClient()).from("modules").select("id, title").order("position");
   return (
     <div className="mx-auto max-w-2xl space-y-6">

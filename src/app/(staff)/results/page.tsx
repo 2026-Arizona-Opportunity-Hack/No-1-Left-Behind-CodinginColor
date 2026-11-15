@@ -11,8 +11,8 @@ const pct = (v: number | null) => (v === null ? "—" : `${Math.round(v)}%`);
 const signed = (v: number | null) => (v === null ? "—" : `${v >= 0 ? "+" : ""}${Math.round(v)}`);
 
 export default async function ResultsPage({ searchParams }: { searchParams: Promise<{ unit?: string; class?: string }> }) {
+  await connection(); // per-user, live data: render at request time
   const staff = await requireStaff(["instructor", "admin"], "/results");
-  await connection();
   const q = await searchParams;
   const r = await getResults(q.unit, q.class);
   const top = r.byTopic.find((t) => t.avg_gain !== null);

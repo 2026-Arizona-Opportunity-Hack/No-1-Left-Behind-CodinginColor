@@ -14,8 +14,8 @@ const ENDPOINTS = [
 ];
 
 export default async function ApiKeysPage() {
+  await connection(); // per-user, live data: render at request time
   await requireStaff(["admin"], "/admin/api-keys");
-  await connection();
   const keys = await listApiKeys();
   return (
     <div className="space-y-6">

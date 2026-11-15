@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { Suspense } from "react";
 import { StaffHeader } from "@/components/staff-header";
 import { getStaff } from "@/server/auth";
@@ -13,6 +14,7 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
 }
 
 async function StaffShell({ children }: { children: React.ReactNode }) {
+  await connection(); // staff pages are per-user and live; Supabase's sign-in check also reads the clock
   const staff = await getStaff();
   return (
     <>

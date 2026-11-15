@@ -7,8 +7,8 @@ import { ClassWizard, type WizardModule } from "./wizard";
 export const metadata: Metadata = { title: "Set up a class · CIC Launchpad" };
 
 export default async function NewClassPage() {
+  await connection(); // per-user, live data: render at request time
   await requireStaff(["instructor", "admin"], "/teach/new");
-  await connection();
   const supabase = await createClient();
   const { data } = await supabase
     .from("modules")

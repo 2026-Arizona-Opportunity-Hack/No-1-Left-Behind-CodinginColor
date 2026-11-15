@@ -18,9 +18,9 @@ type CatchUp = "assigned" | "caught_up" | undefined;
 // The live classroom (Calm Mint design): three columns a teacher reads at a glance:
 // Needs help · Behind (+ not started) · On track. Every status has a symbol and a word.
 export default async function LiveClassroom({ params, searchParams }: Props) {
+  await connection(); // per-user, live data: render at request time
   const { classId } = await params;
   await requireStaff(["instructor", "admin"], `/teach/${classId}`);
-  await connection(); // always fresh: this page is live
   const showAll = (await searchParams).show === "all";
   const [room, mastery, catchUp] = await Promise.all([getClassroom(classId), getTopicMastery(classId), getCatchUpState(classId)]);
 
@@ -48,19 +48,19 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
         <CopyLinkButton classCode={cls.class_code} />
       </div>
 
-      <div className="grid items-center gap-8 lg:grid-cols-[auto_1fr_330px]">
+      <div className="flex flex-wrap items-center gap-x-8 gap-y-5">
         <div>
           <h1 className="text-5xl leading-none font-bold tracking-tight">{cls.name}</h1>
           <p className="mt-1.5 text-muted-foreground">
             {cls.school} · Today: {today?.lesson_title ?? "no class"}{today ? ` · ${attendance.present} here, ${attendance.absent} absent` : ""} · Code <span className="font-mono font-bold text-foreground">{cls.class_code}</span>
           </p>
         </div>
-        <dl className="flex flex-wrap justify-center gap-8">
+        <dl className="flex gap-x-6">
           {([["needs_help", "! Needs help"], ["behind", "◷ Behind"], ["not_started", "○ Not started"], ["on_track", "✓ On track"]] as const).map(([k, label]) => (
-            <div key={k} className="flex flex-col-reverse"><dt className="text-base">{label}</dt><dd className="m-0 text-5xl leading-none font-bold tabular-nums">{counts[k]}</dd></div>
+            <div key={k} className="flex flex-col-reverse"><dt className="text-base whitespace-nowrap">{label}</dt><dd className="m-0 text-4xl leading-none font-bold tabular-nums">{counts[k]}</dd></div>
           ))}
         </dl>
-        <div aria-label="Class topics" className="flex flex-col gap-2 rounded-[20px] bg-card px-5 py-3.5 text-[15px]">
+        <div aria-label="Class topics" className="flex w-full flex-col gap-2 rounded-[20px] bg-card px-5 py-3.5 text-[15px] sm:ml-auto sm:w-[250px]">
           {mastery.ok && mastery.data.length ? mastery.data.slice(0, 3).map((m) => (
             <div key={m.concept_tag}>
               <div className="flex justify-between"><b className="font-semibold capitalize">{m.concept_tag}</b><span>{m.percent_struggling}% stuck</span></div>
@@ -121,7 +121,11 @@ function StudentCard({ s, classId, sessionId, now, catchUp }: { s: ClassroomStud
         <span className="text-[15px] tabular-nums">{s.percent_complete}% done</span>
       </div>
       <p className={`text-[15px] ${muted}`}>
-        {s.current ? `${s.current.lesson_title} · step ${s.current.step}` : "No lesson yet"} · {formatDuration(s.time_on_task_ms)} on task · active {timeAgo(s.last_active_at, now)}
+        {[
+          s.current ? `${s.current.lesson_title} · step ${s.current.step}` : null,
+          s.time_on_task_ms ? `${formatDuration(s.time_on_task_ms)} on task` : null,
+          s.last_active_at ? `active ${timeAgo(s.last_active_at, now)}` : "No activity yet",
+        ].filter(Boolean).join(" · ")}
       </p>
       {s.reasons.length > 0 && s.status !== "on_track" && <p className="mt-1.5 font-semibold">{s.reasons.join(" · ")}</p>}
       {catchUp === "caught_up" && <p className="mt-1.5 font-semibold text-[#047D13]">✓ Caught up</p>}

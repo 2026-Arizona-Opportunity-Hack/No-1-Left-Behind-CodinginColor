@@ -9,8 +9,8 @@ import { ModuleList } from "./module-list";
 export const metadata: Metadata = { title: "Edit curriculum · CIC Launchpad" };
 
 export default async function CurriculumEditorPage() {
+  await connection(); // per-user, live data: render at request time
   await requireStaff(["admin"], "/admin/curriculum");
-  await connection();
   const modules = await listModules();
   return (
     <div className="space-y-6">
