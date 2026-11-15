@@ -1,0 +1,23 @@
+import { Suspense } from "react";
+import { StaffHeader } from "@/components/staff-header";
+import { getStaff } from "@/server/auth";
+
+// Shared shell for staff pages. Each page still checks its own allowed roles with requireStaff().
+// Everything here depends on who is signed in (cookies), so it renders at request time inside Suspense.
+export default function StaffLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={<p role="status" className="mx-auto w-full max-w-6xl px-4 py-8 text-muted-foreground sm:px-6">Loading…</p>}>
+      <StaffShell>{children}</StaffShell>
+    </Suspense>
+  );
+}
+
+async function StaffShell({ children }: { children: React.ReactNode }) {
+  const staff = await getStaff();
+  return (
+    <>
+      {staff && <StaffHeader staff={staff} />}
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6">{children}</main>
+    </>
+  );
+}

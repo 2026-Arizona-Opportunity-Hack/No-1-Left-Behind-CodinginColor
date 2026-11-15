@@ -1,0 +1,34 @@
+"use client";
+
+import { useActionState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { signIn, type SignInState } from "./actions";
+
+export function LoginForm({ next }: { next: string | null }) {
+  const [state, action, pending] = useActionState<SignInState, FormData>(signIn, {});
+  return (
+    <form action={action} className="space-y-4" noValidate>
+      {next && <input type="hidden" name="next" value={next} />}
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" name="email" type="email" autoComplete="email" required defaultValue={state.email}
+          aria-invalid={Boolean(state.error)} aria-describedby={state.error ? "login-error" : undefined} className="h-11" />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="password">Password</Label>
+        <Input id="password" name="password" type="password" autoComplete="current-password" required
+          aria-invalid={Boolean(state.error)} aria-describedby={state.error ? "login-error" : undefined} className="h-11" />
+      </div>
+      {state.error && (
+        <p id="login-error" role="alert" className="rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-900">
+          {state.error}
+        </p>
+      )}
+      <Button type="submit" size="lg" className="h-11 w-full text-base" disabled={pending}>
+        {pending ? "Signing in…" : "Sign in"}
+      </Button>
+    </form>
+  );
+}
