@@ -21,6 +21,7 @@ export default async function AdminHome() {
   const [modules, classes, students] = await Promise.all([count("modules"), count("classes"), count("students")]);
 
   const actions = [
+    { href: "/admin/roles", title: "Manage staff access", text: "Add roles such as Mentor, choose permissions and assign staff without changing code." },
     { href: "/results", title: "See learning results", text: "How much students improved, by topic, class and student. Download it as a spreadsheet for grant reports." },
     { href: "/admin/curriculum", title: "Edit the curriculum", text: "Change units, lessons and steps, and choose what students can see. No coding needed." },
     { href: "/admin/curriculum/import", title: "Make a lesson from slides or a video", text: "Upload a PowerPoint or paste a YouTube link, and AI writes the questions, an exercise and a teacher guide. You check it first." },
