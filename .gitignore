@@ -33,3 +33,6 @@ Thumbs.db
 *.tsbuildinfo
 next-env.d.ts
 /coverage
+
+# Claude Code agent worktrees (local only)
+.claude/worktrees/
