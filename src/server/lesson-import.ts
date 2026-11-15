@@ -28,7 +28,22 @@ Return ONLY a JSON object, no other text, with exactly these keys:
 }
 Rules: 2 or 3 pause_points at moments the transcript has just explained an idea (at_seconds from the timestamps).
 "answer" is the 0-based index of the correct option. Exercise tests compare printed output exactly; give 1-3 tests.
-Use only Python 3 standard features. Never include personal information.`;
+Use only Python 3 standard features. Never include personal information.
+Plain text only: no Markdown, no code fences, no backticks. Put code on its own lines inside "prompt" using real
+line breaks. Keep every answer option on ONE line (write outputs like "1, 2, 3").`;
+
+/** Removes Markdown the AI sometimes adds anyway, and keeps answer options on one line. */
+function tidy(value: unknown, inOptions = false): unknown {
+  if (typeof value === "string") {
+    const t = value.replace(/```[a-zA-Z]*\n?/g, "").replace(/`([^`]*)`/g, "$1").trim();
+    return inOptions ? t.replace(/\\n|\n/g, ", ") : t;
+  }
+  if (Array.isArray(value)) return value.map((v) => tidy(v, inOptions));
+  if (value && typeof value === "object") {
+    return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, tidy(v, k === "options" || inOptions)]));
+  }
+  return value;
+}
 
 const draftSchema = z.object({
   title: z.string().min(1).max(120),
@@ -52,7 +67,7 @@ export async function importVideoLesson(input: {
   else if (!input.transcript?.length) note = "We couldn't read this video's captions, so we built a starter lesson with your video to fill in.";
   else {
     const transcript = input.transcript.map((l) => `[${Math.floor(l.seconds / 60)}:${String(l.seconds % 60).padStart(2, "0")}] ${l.text}`).join("\n").slice(0, 14000);
-    const parsed = draftSchema.safeParse(await chatJSON(SYSTEM, `Video title: ${input.videoTitle ?? "(unknown)"}\n\nTranscript:\n${transcript}`));
+    const parsed = draftSchema.safeParse(tidy(await chatJSON(SYSTEM, `Video title: ${input.videoTitle ?? "(unknown)"}\n\nTranscript:\n${transcript}`)));
     if (parsed.success) draft = parsed.data;
     else note = "The AI's draft was incomplete, so we built a starter lesson instead. Try again or fill it in.";
   }
