@@ -14,16 +14,16 @@ _Last audited: Sat Nov 14, 5:15 PM. Built so far: live deployment, Python runner
 | 5 | **Pretest and post-test pairs per module**; **learning gain per student and per class** | `assessments` (pre/post per module) + responses; gain = post % − pre %; per student, per class (and per topic as our extra) | Student test screens; Admin & teacher results | 🟡 Tables + demo pre/post tests and answers loaded; no test screens and no learning-gain calculation yet |
 | 6 | **Progress tracking**: per-activity completion, scores, **time on task**; a **late-joining student sees exactly where to start** | `activity_events` (complete, correct, duration_ms); course map shows a "Start here" marker based on the instructor's start point / class pace | Course map; Teacher dashboard columns | 🟡 Activity log + lesson progress tables and a late-joiner start point exist; nothing records time yet, no "Start here" marker |
 | 7 | **Instructor dashboard**: roster, per-student progress, **stuck** and **not-started** lists | Live classroom roster + filters "Needs help (stuck)" and "Not started" | Teacher: Live classroom | ⬜ Demo data for stuck / not-started students is loaded; no dashboard screen |
-| 8 | **Roster CSV import** | Upload CSV → preview → create students + personal join codes | Teacher: Create class wizard | ⬜ |
+| 8 | **Roster CSV import** | Upload CSV → preview → create students + personal join codes | Teacher: Create class wizard | 🟡 CSV parser, code helpers and class setup server functions implemented (#9); migration pending, wizard screens owned by Shrey |
 | 9 | **Read API, key-authenticated**, for progress and assessment data | `x-api-key` JSON REST endpoints, documented in README with curl examples | Admin: API keys | ⬜ API-keys table only |
 
 ## Success criteria (also checked by judges)
 | Criterion | How we meet it | Status |
 |---|---|---|
-| A teacher with no CS background runs a module by **sharing a link** | Each class has a **shareable class link** (URL with the class code pre-filled) + printable join cards | ⬜ |
+| A teacher with no CS background runs a module by **sharing a link** | Each class has a **shareable class link** (URL with the class code pre-filled) + printable join cards | 🟡 Link helper + personal code generation implemented (#9); printable card screen pending |
 | Student works through a module **self-paced** and the next module unlocks | Lesson player + sequential unlock | ⬜ |
 | Student who joins a week late **catches up** without re-teaching | Instructor start point + catch-up path | ⬜ (start point stored in database only) |
-| Instructor sets up a class, imports a roster CSV and **assigns a module in under 10 minutes** | 3-step wizard incl. "Assign module(s)" + schedule; time it in rehearsal | ⬜ Needs a "modules assigned to a class" table we don't have yet |
+| Instructor sets up a class, imports a roster CSV and **assigns a module in under 10 minutes** | 3-step wizard incl. "Assign module(s)" + schedule; time it in rehearsal | 🟡 Class assignment table + atomic setup functions implemented (#9); Shrey must apply migration and wire wizard; rehearsal pending |
 | Learning gain per student and per class **without a spreadsheet** | Auto-computed results pages | ⬜ |
 | **External K12 teacher/district admin can log in and review** the curriculum | Reviewer role + browser | 🟡 Reviewer access rules done; no sign-in or browser screen |
 | CIC's dashboard pulls **cohort completion and learning gain** via read API | `/api/v1/classes/{id}/summary`, `/api/v1/learning-gain` | ⬜ |
