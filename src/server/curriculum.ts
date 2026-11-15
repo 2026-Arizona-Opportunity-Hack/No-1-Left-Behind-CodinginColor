@@ -111,9 +111,11 @@ export function getAssessment(moduleId: string, kind: "pre" | "post") {
   return staffResult(async (): Promise<Assessment> => {
     const db = await createClient();
     const { data, error } = await db.from("assessments").select("id, assessment_questions(*)")
-      .eq("module_id", idSchema.parse(moduleId)).eq("kind", kindSchema.parse(kind)).single();
+      .eq("module_id", idSchema.parse(moduleId)).eq("kind", kindSchema.parse(kind)).maybeSingle();
     if (error) databaseError(error);
-    return { id: data!.id, questions: data!.assessment_questions.map((q) => ({ id: q.id, position: q.position, concept_tag: q.concept_tag, ...quizSchema.parse(q.content) })).sort((a, b) => a.position - b.position) };
+    // A new module has no test yet: return an empty one for the editor to fill in (saveAssessment creates it).
+    if (!data) return { id: null, questions: [] };
+    return { id: data.id, questions: data.assessment_questions.map((q) => ({ id: q.id, position: q.position, concept_tag: q.concept_tag, ...quizSchema.parse(q.content) })).sort((a, b) => a.position - b.position) };
   });
 }
 export function saveAssessment(moduleId: string, kind: "pre" | "post", questions: z.input<typeof questionSchema>[]) {

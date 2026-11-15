@@ -93,6 +93,71 @@ personal code through the app's server). Row Level Security limits each role:
 Add user), then in the SQL editor run:
 `update profiles set role = 'admin' where id = (select id from auth.users where email = 'you@example.org');`
 
+## Read API (for CIC's dashboard)
+
+A small, read-only JSON API so CIC's own dashboard can pull class completion and learning gain
+**without a login**. Every request needs an API key. **The API never returns student names or ids**:
+only counts and percentages.
+
+**Create a key.** A CIC admin opens *Admin → API keys*, names the key (for example "CIC dashboard") and clicks
+Create. The key (`cic_` + 32 letters and numbers) is shown **once**; copy it then. Only a hash is stored, so a
+lost key can't be recovered, only revoked and replaced. Revoking takes effect immediately.
+*Until the admin screen ships, an admin can add one in the Supabase SQL editor (pick your own 32 random letters/numbers):*
+`insert into api_keys (name, key_hash) values ('CIC dashboard', encode(sha256(convert_to('cic_YOUR32CHARACTERS', 'UTF8')), 'hex'));`
+
+**Use it.** Send the key in the `x-api-key` header. Responses are JSON and are never cached.
+
+```bash
+export CIC_API_KEY=cic_...           # your key
+export CIC_URL=https://cic-launchpad.vercel.app
+```
+
+| Endpoint | What it returns |
+|---|---|
+| `GET /api/v1/classes` | Every class: student count and completion % |
+| `GET /api/v1/classes/{id}/summary` | One class: completion, active students, behind count, learning gain |
+| `GET /api/v1/learning-gain?classId=&moduleId=&concept=` | Learning gain (all filters optional) |
+| `GET /api/v1/concepts/mastery?classId=` | Per concept: % mastered and % struggling (`classId` required) |
+
+Example responses below show the shape; the numbers are illustrative.
+
+```bash
+curl -H "x-api-key: $CIC_API_KEY" "$CIC_URL/api/v1/classes"
+```
+```json
+[{ "id": "c0000000-0000-0000-0000-000000000003", "name": "Period 3", "school": "Maryvale High", "students": 12, "completion_pct": 41 }]
+```
+
+```bash
+curl -H "x-api-key: $CIC_API_KEY" "$CIC_URL/api/v1/classes/c0000000-0000-0000-0000-000000000003/summary"
+```
+```json
+{ "id": "c0000000-0000-0000-0000-000000000003", "name": "Period 3", "school": "Maryvale High", "students": 12,
+  "completion_pct": 41, "active_last_7_days": 12, "behind_count": 2,
+  "learning_gain": { "avg_pre_pct": 42.5, "avg_post_pct": 74.1, "avg_gain": 31.6, "n": 9, "missing_pre": 0, "missing_post": 3 } }
+```
+
+```bash
+curl -H "x-api-key: $CIC_API_KEY" "$CIC_URL/api/v1/learning-gain?classId=c0000000-0000-0000-0000-000000000003"
+```
+```json
+{ "avg_pre_pct": 42.5, "avg_post_pct": 74.1, "avg_gain": 31.6, "n": 9, "missing_pre": 0, "missing_post": 3,
+  "by_concept": [{ "concept_tag": "loops", "avg_pre_pct": 38, "avg_post_pct": 80, "avg_gain": 42, "n": 9 }] }
+```
+Learning gain is post-test % minus pre-test %, in percentage points. Only students who took **both** tests
+are averaged (`n`); `missing_pre` / `missing_post` count students with only one test. When nobody has both, the
+averages are `null`. Add `&concept=loops` to get just that concept (no `by_concept`).
+
+```bash
+curl -H "x-api-key: $CIC_API_KEY" "$CIC_URL/api/v1/concepts/mastery?classId=c0000000-0000-0000-0000-000000000003"
+```
+```json
+[{ "concept_tag": "loops", "percent_mastered": 38, "percent_struggling": 38, "n": 8 }]
+```
+
+**Errors** are `{ "error": "..." }` in plain words: `401` missing, wrong or revoked key; `400` a bad or missing
+parameter; `404` no class with that id; `500` the service isn't available.
+
 ## Deploy
 
 The app runs on Vercel's free plan. Every merge to `main` deploys to production through
@@ -173,7 +238,7 @@ always use student IDs for identity. No read function returns personal-code hash
 4. Build the shareable link with `classJoinUrl(origin, class_code)` from
    `src/lib/join-codes.ts`: `/join?class=MARY-P3`.
 
-**Shrey must apply `20261115003549_class_setup.sql`.** It creates `class_modules`,
+**Shrey must apply `20261115020000_class_setup.sql`.** It creates `class_modules`,
 RLS and `configure_class`; seed additions assign all three modules to both demo
 classes. Neither migration has been pushed to the live project. These functions
 use the signed-in staff session, never a secret/service key. Classes allow at

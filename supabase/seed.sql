@@ -178,14 +178,17 @@ begin
     if rec.loops_step > 0 then
       for step in 1 .. least(rec.loops_step, 9) loop
         if step < rec.loops_step or rec.loops_s = 'completed' then
-          insert into public.activity_events (student_id, class_id, activity_id, lesson_id, event_type, correct, concept_tag, created_at)
+          -- time on task: 30 s to 4 min per finished step
+          insert into public.activity_events (student_id, class_id, activity_id, lesson_id, event_type, correct, concept_tag, duration_ms, created_at)
           values (sid, rec.class_id, format('30000000-0000-0000-0000-%s', lpad(step::text, 12, '0'))::uuid,
                   loops, 'complete', true, 'loops',
+                  30000 + ((n * 7919 + step * 104729) % 210000),
                   now() - make_interval(mins => 40 - step * 4 + (n % 3)));
         else
-          insert into public.activity_events (student_id, class_id, activity_id, lesson_id, event_type, concept_tag, created_at)
+          -- current step: 1 to 2.5 min so far (stuck students stay under the 5-minute rule; their flags come from wrong tries / hints)
+          insert into public.activity_events (student_id, class_id, activity_id, lesson_id, event_type, concept_tag, duration_ms, created_at)
           values (sid, rec.class_id, format('30000000-0000-0000-0000-%s', lpad(step::text, 12, '0'))::uuid,
-                  loops, 'view', 'loops', now() - make_interval(mins => 9 + (n % 4)));
+                  loops, 'view', 'loops', 60000 + (n % 4) * 30000, now() - make_interval(mins => 9 + (n % 4)));
         end if;
       end loop;
     end if;
@@ -194,8 +197,8 @@ begin
     if rec.story = 'stuck_checks' then
       for step in 1 .. 3 loop
         insert into public.activity_events (student_id, class_id, activity_id, lesson_id, event_type, correct,
-          tests_passed, tests_total, concept_tag, payload, created_at)
-        values (sid, rec.class_id, '30000000-0000-0000-0000-000000000004', loops, 'check', false, 2, 3, 'loops',
+          tests_passed, tests_total, concept_tag, duration_ms, payload, created_at)
+        values (sid, rec.class_id, '30000000-0000-0000-0000-000000000004', loops, 'check', false, 2, 3, 'loops', 40000,
           jsonb_build_object('code', E'# Print the numbers 1 to 5\nfor number in range(1, 5):\n    print(number)\n'),
           now() - make_interval(mins => 8 - step * 2));
       end loop;

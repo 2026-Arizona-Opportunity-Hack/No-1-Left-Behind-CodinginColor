@@ -11,11 +11,11 @@ _Last audited: Sat Nov 14, 5:15 PM. Built so far: live deployment, Python runner
 | 2 | **Four roles** with role-based access: student, instructor, CIC admin, **external reviewer (read-only)** | Supabase auth for admin/instructor/reviewer + join-code sessions for students; RLS policies; reviewer sees published curriculum only, cannot edit | Role-based nav; Reviewer curriculum browser | 🟡 Database access rules for admin / instructor / reviewer are live and tested (signed-out visitors see nothing); no sign-in screen, student join or role menus yet |
 | 3 | **Content model: module → lesson → activity**; module template = video or slides, check-for-understanding question, worksheet or exercise, exit question; **modules unlock in sequence** | Tables `modules`, `lessons`, `activities`; a "new lesson from template" button pre-creates the 4 parts; lock until previous module completed (+ instructor override) | Course map (locked modules), Lesson player | 🟡 Tables built and filled with demo data (3 units, 8 lessons, full Loops lesson); template server function implemented (#8); course map, lesson player, unlock logic and template button pending |
 | 4 | **Digital worksheets**: each printed worksheet becomes an on-platform activity the student completes and **submits** | Activity type `worksheet` (short-answer / fill-in fields), Submit button, saved to the student's record, viewable by the instructor | Lesson player: Worksheet step; Teacher: student work view | ⬜ "Worksheet" exists as a step type in the database only; no worksheet in the demo lesson, no screen, no Submit |
-| 5 | **Pretest and post-test pairs per module**; **learning gain per student and per class** | `assessments` (pre/post per module) + responses; gain = post % − pre %; per student, per class (and per topic as our extra) | Student test screens; Admin & teacher results | 🟡 Tables + demo pre/post tests and answers loaded; no test screens and no learning-gain calculation yet |
+| 5 | **Pretest and post-test pairs per module**; **learning gain per student and per class** | `assessments` (pre/post per module) + responses; gain = post % − pre %; per student, per class (and per topic as our extra) | Student test screens; Admin & teacher results | 🟡 Tables + demo pre/post tests and answers loaded; learning-gain math done and tested (`src/lib/learning-gain.ts`); no test screens or results pages yet |
 | 6 | **Progress tracking**: per-activity completion, scores, **time on task**; a **late-joining student sees exactly where to start** | `activity_events` (complete, correct, duration_ms); course map shows a "Start here" marker based on the instructor's start point / class pace | Course map; Teacher dashboard columns | 🟡 Activity log + lesson progress tables and a late-joiner start point exist; nothing records time yet, no "Start here" marker |
-| 7 | **Instructor dashboard**: roster, per-student progress, **stuck** and **not-started** lists | Live classroom roster + filters "Needs help (stuck)" and "Not started" | Teacher: Live classroom | ⬜ Demo data for stuck / not-started students is loaded; no dashboard screen |
+| 7 | **Instructor dashboard**: roster, per-student progress, **stuck** and **not-started** lists | Live classroom roster + filters "Needs help (stuck)" and "Not started" | Teacher: Live classroom | 🟡 Logic done and tested (`getClassroom`: roster, stuck / behind / not-started, time on task, attendance, start point, unlocks, mastery); no dashboard screen yet |
 | 8 | **Roster CSV import** | Upload CSV → preview → create students + personal join codes | Teacher: Create class wizard | 🟡 CSV parser, code helpers and class setup server functions implemented (#9); migration pending, wizard screens owned by Shrey |
-| 9 | **Read API, key-authenticated**, for progress and assessment data | `x-api-key` JSON REST endpoints, documented in README with curl examples | Admin: API keys | ⬜ API-keys table only |
+| 9 | **Read API, key-authenticated**, for progress and assessment data | `x-api-key` JSON REST endpoints, documented in README with curl examples | Admin: API keys | 🟡 4 endpoints + key auth + key functions built, documented in README; not yet run against the live database; no admin screen yet |
 
 ## Success criteria (also checked by judges)
 | Criterion | How we meet it | Status |
@@ -26,7 +26,7 @@ _Last audited: Sat Nov 14, 5:15 PM. Built so far: live deployment, Python runner
 | Instructor sets up a class, imports a roster CSV and **assigns a module in under 10 minutes** | 3-step wizard incl. "Assign module(s)" + schedule; time it in rehearsal | 🟡 Class assignment table + atomic setup functions implemented (#9); Shrey must apply migration and wire wizard; rehearsal pending |
 | Learning gain per student and per class **without a spreadsheet** | Auto-computed results pages | ⬜ |
 | **External K12 teacher/district admin can log in and review** the curriculum | Reviewer role + browser | 🟡 Reviewer access rules done; no sign-in or browser screen |
-| CIC's dashboard pulls **cohort completion and learning gain** via read API | `/api/v1/classes/{id}/summary`, `/api/v1/learning-gain` | ⬜ |
+| CIC's dashboard pulls **cohort completion and learning gain** via read API | `/api/v1/classes/{id}/summary`, `/api/v1/learning-gain` | 🟡 Endpoints built; need a live-data check with a real key |
 
 ## P1: at least one (we plan several)
 - [~] 🟡 Code runner with auto-grading and instant feedback (Pyodide + test cases): **works and is live at /try** ("2 of 3 checks passed", hints, 5-second stop); not yet inside a lesson
@@ -36,7 +36,7 @@ _Last audited: Sat Nov 14, 5:15 PM. Built so far: live deployment, Python runner
 
 ## Shared requirements
 - [~] 🟡 Role-based auth, **no shared passwords**, least privilege: database rules done and tested; sign-in screens not built
-- [ ] Read API with key auth, **documented** for CIC's dashboard owner
+- [~] 🟡 Read API with key auth, **documented** for CIC's dashboard owner: README "Read API" section written; pending a live-data check
 - [x] ✅ Hosting within **$20/month** (+$250 one-time): Vercel free + Supabase free = $0, auto-deploy on every merge
 - [x] ✅ Data minimization: students = **name, school, class only** (enforced by the database design; join codes stored only as scrambled hashes)
 - [ ] Every outbound message/reminder drafted by system, **sent by a human** (applies if we add any notifications)

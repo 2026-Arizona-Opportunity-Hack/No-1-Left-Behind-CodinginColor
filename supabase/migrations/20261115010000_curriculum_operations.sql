@@ -130,3 +130,28 @@ begin
 end $$;
 create trigger module_publish_check before insert or update of status on public.modules
   for each row execute function public.check_module_publish();
+
+-- Same human-review gate for a single lesson (e.g. publishing a lesson inside an already
+-- published module), and for AI-drafted steps added to or moved into a live lesson.
+create function public.check_lesson_publish() returns trigger
+language plpgsql security invoker set search_path = '' as $$
+begin
+  if new.status = 'published' and (tg_op = 'INSERT' or old.status is distinct from new.status)
+     and exists (select 1 from public.activities where lesson_id = new.id and ai_suggested) then
+    raise exception 'Review and save all AI-drafted activities before publishing this lesson.';
+  end if;
+  return new;
+end $$;
+create trigger lesson_publish_check before insert or update of status on public.lessons
+  for each row execute function public.check_lesson_publish();
+
+create function public.check_activity_review() returns trigger
+language plpgsql security invoker set search_path = '' as $$
+begin
+  if new.ai_suggested and exists (select 1 from public.lessons where id = new.lesson_id and status = 'published') then
+    raise exception 'AI-drafted activities can only be added to draft lessons. Review them before publishing.';
+  end if;
+  return new;
+end $$;
+create trigger activity_review_check before insert or update of ai_suggested, lesson_id on public.activities
+  for each row execute function public.check_activity_review();
