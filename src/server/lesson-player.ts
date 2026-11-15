@@ -20,7 +20,7 @@ const ACTIVITY_COLUMNS = "id, lesson_id, position, type, title, content, concept
 async function lessonIsOpen(student: Student, lessonId: string) {
   const map = await getCourseMap(student);
   const unit = map.modules.find((m) => m.lessons.some((l) => l.id === lessonId));
-  return unit?.unlocked ? { map, unit } : null;
+  return unit?.materialUnlocked ? { map, unit } : null;
 }
 
 export async function getPlayerLesson(student: Student, lessonId: string): Promise<PlayerLesson | null> {
@@ -35,7 +35,7 @@ export async function getPlayerLesson(student: Student, lessonId: string): Promi
   const doneIds = new Set((done.data ?? []).map((e) => e.activity_id));
 
   // Next lesson: the following one in this unit, else the first lesson of the next open unit.
-  const lessons = open.map.modules.filter((m) => m.unlocked).flatMap((m) => m.lessons);
+  const lessons = open.map.modules.filter((m) => m.materialUnlocked).flatMap((m) => m.lessons);
   const next = lessons[lessons.findIndex((l) => l.id === lessonId) + 1] ?? null;
 
   return {
