@@ -1,97 +1,128 @@
-# No 1 Left Behind — Coding in Color
+# CIC Launchpad
 
-Built at [ASU Fall Hackathon 2026 | Phoenix Hackathon for Nonprofits: Nov 14-15](https://www.ohack.dev/hack/fall-2026) for the public good (MIT license).
+**Interactive coding lessons for [Coding in Color](https://www.codingincolor.net), so no student is left behind.**
 
-> **⚠️ This is your team's ONE repository — all code goes here.** Please don't create
-> another repo (personal or org). Judges, the Team Dashboard's code-activity card,
-> the public project page and the nonprofit all read **this** repo; work pushed
-> anywhere else is invisible to them and won't count. Everyone on the team should be
-> a collaborator here — ask an organizer in Slack if someone can't push.
+Coding in Color (CIC) teaches computer science to Arizona high schoolers whose schools don't offer it. Its lessons
+live in slide decks and printed worksheets, so a partner-school teacher needs real training to run them, nobody knows
+which module a student is on, and a student who misses a week falls behind. CIC Launchpad puts that curriculum on a
+link: **students learn self-paced** with quizzes, worksheets and Python that runs in the browser; **teachers see who's
+stuck** in real time; and **CIC measures learning gain** per class and topic for grant reports.
 
 | | |
 |---|---|
-| **Nonprofit** | [Coding in Color](https://www.ohack.dev/nonprofit/YIXYdYCoxIZC08uQ5DL3) |
-| **Problem statement** | [Curriculum & Student Progress Platform (CIC Problem 1)](https://www.ohack.dev/project/d09466fadf1b11f18e63deadc507a848) |
-| **Team page** | [No 1 Left Behind](https://www.ohack.dev/hack/fall-2026/team/3f13cefee07a11f1884cdeadb145c312) · [Team Dashboard](https://www.ohack.dev/hack/fall-2026/manageteam) (story, demo video, submit) |
-| **Slack** | team: [#no_1_left_behind](https://opportunity-hack.slack.com/app_redirect?channel=no_1_left_behind) · nonprofit: [#npo-coding-in-color](https://opportunity-hack.slack.com/app_redirect?channel=npo-coding-in-color) · help: [#ask-a-mentor](https://opportunity-hack.slack.com/archives/C01E5CGDQ74) |
-| **Created by** | Greg V [Staff/Mentor] |
+| **Live app** | https://cic-launchpad.vercel.app |
+| **Try it as a student** | Open https://cic-launchpad.vercel.app/join?class=MARY-P3 and type the demo code **7KQ2MX** |
+| **Built for** | [Coding in Color · Problem 1: Curriculum & Student Progress Platform](https://www.ohack.dev/project/d09466fadf1b11f18e63deadc507a848) |
+| **Built at** | [Opportunity Hack · ASU Fall Hackathon 2026](https://www.ohack.dev/hack/fall-2026) by team [No 1 Left Behind](https://www.ohack.dev/hack/fall-2026/team/3f13cefee07a11f1884cdeadb145c312) · MIT license |
 
-## Final day
+All names and codes in the demo data are made up.
 
-Start recording your demo video by **Sun Nov 15, 12:00 PM MST** — hacking ends at **Sun Nov 15, 2:00 PM MST**, and a demo you recorded with time to spare beats a feature you finished at 1:59.
+## What each person can do
 
-- Sun Nov 15, 11:00 AM MST — Presentation Feedback Hour
-- **Sun Nov 15, 12:00 PM MST — Start recording your demo video**
-- Sun Nov 15, 12:30 PM MST — Judges Arrive
-- **Sun Nov 15, 2:00 PM MST — 🛑 Submission Deadline: Hacking ends**
-- Sun Nov 15, 2:05 PM MST — Judging Round 1
-- Sun Nov 15, 3:40 PM MST — Judging Final Round
-- Sun Nov 15, 4:30 PM MST — Closing Ceremony: Winners Announced
+**Students** (ages 14–18, Chromebooks and phones). No email, no password, no account.
+- Join with a **class code + personal code** from a printed card, or the class link (`/join?class=CODE`).
+- Follow a **course map**: units unlock in order; "Continue where you left off" or "Start here".
+- Work through lessons step by step: slides, video, quick checks, predict-the-output, fix-the-bug, fill-in-the-blank,
+  put-the-lines-in-order, **coding exercises with Python that runs in the browser** ("2 of 3 checks passed"),
+  **digital worksheets** they submit, and an exit question. Hints one at a time.
+- Take a **pre-test** and **post-test** per unit and see their growth by topic.
+- A no-login Python playground is at `/try`.
 
-## Before hacking ends — the submission checklist
+**Teachers** (often with no CS background).
+- **Set up a class in under 10 minutes** (`/teach/new`): name it, upload a roster CSV (duplicate names show as
+  "Alex R." / "Alex M."), pick units, set the schedule, **print join cards** and copy the class link.
+- **Live classroom**: every student's lesson and step, % done, **time on task**, last active, and clear
+  **Needs help · Behind · Not started** lists with the reason in plain words ("3 wrong tries on step 4").
+  Attendance, topic bars ("38% stuck on loops"), refreshes every 20 seconds.
+- **Student page**: their work step by step, latest code, worksheet answers; **start a late joiner** at the right
+  unit, **unlock a unit early**, or skip a lesson (recorded as skipped, never as completed).
+- **Results**: learning gain for their classes.
 
-Everything is submitted from your [Team Dashboard](https://www.ohack.dev/hack/fall-2026/manageteam); judges read the dashboard, this README and your demo video.
+**CIC staff** (admins).
+- **Edit the curriculum without engineering** (`/admin/curriculum`): units, lessons from CIC's template
+  (intro → quick check → worksheet or coding exercise → exit question), every step type as a simple form,
+  teaching guides, hints, pre/post tests, Draft → Publish.
+- **Results** (`/results`): "+37 points on Loops" style headlines with how many students it's based on,
+  gain by topic, class and student, missing-test warnings, **CSV download**.
+- **API keys** for CIC's own dashboard (see [Read API](#read-api-for-cics-dashboard)).
 
-- [ ] **Code pushed** to this repo, in small PRs (see `AGENTS.md`) — judges and future recruiters read the history
-- [ ] **Project story** written on the dashboard (`#project`): the problem, who it helps, what you built, what's next
-- [ ] **Demo video** (4 minutes or less) on YouTube, Vimeo, Loom or Google Drive, linked on the dashboard (`#demo`) — show it working, not slides
-- [ ] **Submit** on the dashboard (you can keep editing until the close)
-- [ ] This README filled in below: team, tech stack, how to run it, live link if you have one
-- Optional: a [DevPost entry](https://opportunity-hack-2026-arizona.devpost.com/) — the dashboard is the submission of record.
+**External reviewers** (district staff, K-12 teachers): a read-only view of the published curriculum and
+teaching guides (`/review`), clearly marked "View only".
 
-Judges score **Scope, Documentation, Polish and Security**, plus a separate **Accessibility** prize — the rubric is at [ohack.dev/hackathon-judging-criteria](https://www.ohack.dev/hackathon-judging-criteria). Document your work as GitHub Issues as you go: that's how you get public credit for it.
+## Privacy and security
 
-## Team
+- **Students are minors, so we store only name, school and class.** Roster uploads drop every other column.
+  No student email, password or account.
+- **Personal join codes are stored only as hashes**; the plain code is shown once, on the printed card.
+  A student session is a signed, httpOnly cookie that lasts one school day.
+- **Least privilege, enforced by the database** (Supabase Row Level Security), not only by the pages:
+  teachers can only see their own classes, reviewers only published curriculum, signed-out visitors nothing.
+  Admin-only actions are checked in the page, the server action and the database.
+- **Quiz and test answers never reach the browser**: they're checked on the server. Each test can be taken once.
+- **Student Python runs in the student's browser** (a sandboxed worker, stopped after 5 seconds), never on our server.
+- **The read API returns totals and averages only, never student names or ids**, and needs a key that is stored as a hash.
+- **AI never sees student data** (see [AI drafting](#ai-drafting)), and a human must review every AI draft before
+  students see it; the database refuses to publish unreviewed AI content.
+- Secrets live in environment variables only (`.env.example` lists them); a commit hook blocks keys from git.
 
-<!-- Replace with real people; link GitHub profiles so this repo works as your portfolio -->
-- [Name](https://github.com/username) — role
-- [Name](https://github.com/username) — role
+## Accessibility
 
-## What we built
+Lighthouse accessibility: **100** on the home, join, sign-in, playground, course map and lesson pages.
+Everything works with a keyboard (visible focus, the lesson moves focus to each new step, "put the lines in order"
+uses buttons instead of drag-and-drop). Status is never shown by color alone: every state has an icon and a word.
+Every input has a label, errors are announced to screen readers, and text meets WCAG AA contrast.
 
-**CIC Launchpad** turns Coding in Color's existing slide decks (or a YouTube link) into interactive coding lessons. Students learn in a friendly split screen with quick quizzes and Python that runs in the browser. Teachers see who's stuck and get a "Help me teach this" guide, students who miss a week get a catch-up path, and CIC sees learning gain per topic through a dashboard and a key-protected read API.
+## Run it on your computer
 
-## Tech stack
-
-- Frontend: Next.js (App Router) + TypeScript, Tailwind CSS, shadcn/ui
-- Backend: Next.js server routes on Vercel
-- Database: Supabase (Postgres + Row Level Security, auth for staff and teachers)
-- In-browser Python: Pyodide in a Web Worker (no server-side code execution)
-- AI (lesson drafting only, never student data): any OpenAI-compatible endpoint
-
-## Run it locally
+You need Node.js 22+ and a free [Supabase](https://supabase.com) project.
 
 ```bash
 git clone https://github.com/2026-Arizona-Opportunity-Hack/No-1-Left-Behind-CodinginColor.git
 cd No-1-Left-Behind-CodinginColor
-cp .env.example .env.local   # fill in your own values; never commit it
+cp .env.example .env.local   # fill in the values below; never commit this file
 npm install
 npm run dev                  # http://localhost:3000
 ```
 
+| Variable | Where to get it |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase → Project Settings → API Keys (public by design) |
+| `SUPABASE_SECRET_KEY` | Same page, **Secret keys**. Server only; never share it |
+| `SESSION_SECRET` | Any long random text: `openssl rand -hex 32` |
+| `AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL` | Optional, for AI drafting. Leave `AI_API_KEY` empty to turn AI off |
+
+Checks: `npm test` (unit tests), `npm run lint`, `npm run build`.
+
 ## Database (Supabase)
 
-The schema lives in [`supabase/migrations/`](supabase/migrations/) and is applied with the Supabase CLI:
+The tables and access rules live in [`supabase/migrations/`](supabase/migrations/); demo data in
+[`supabase/seed.sql`](supabase/seed.sql).
 
 ```bash
 supabase login
 supabase link --project-ref <your-project-ref>   # leave the password blank
-supabase db push
+supabase db push                                  # tables + access rules
+supabase db query --remote -f supabase/seed.sql   # optional: demo course, 2 classes, 24 made-up students
 ```
-
-**Roles.** Staff sign in with Supabase Auth; students never get accounts (they join with a class code +
-personal code through the app's server). Row Level Security limits each role:
 
 | Role | Can see and do |
 |---|---|
 | CIC admin | Everything: curriculum, all classes, results, API keys |
 | Instructor | Published curriculum; only their own classes, students, attendance and progress |
 | External reviewer | Published curriculum and teaching guides, read-only |
+| Student | Only their own lessons and progress, through the app's server |
 | Anyone not signed in | Nothing |
 
-**First admin.** New staff accounts start as reviewers. Create your account (Supabase → Authentication →
-Add user), then in the SQL editor run:
-`update profiles set role = 'admin' where id = (select id from auth.users where email = 'you@example.org');`
+**Adding staff.** In Supabase → Authentication → Users → *Add user* (tick *Auto Confirm*). Turn off public sign-ups
+(Authentication → Sign In / Providers) so only people you add can sign in. New accounts start as read-only
+reviewers. To change a role, run in the SQL editor:
+
+```sql
+update profiles set role = 'admin'      -- or 'instructor' / 'reviewer'
+where id = (select id from auth.users where email = 'person@example.org');
+```
+
+The demo seed gives both demo classes to `teacher@launchpad.test` if that account exists.
 
 ## Read API (for CIC's dashboard)
 
@@ -102,8 +133,6 @@ only counts and percentages.
 **Create a key.** A CIC admin opens *Admin → API keys*, names the key (for example "CIC dashboard") and clicks
 Create. The key (`cic_` + 32 letters and numbers) is shown **once**; copy it then. Only a hash is stored, so a
 lost key can't be recovered, only revoked and replaced. Revoking takes effect immediately.
-*Until the admin screen ships, an admin can add one in the Supabase SQL editor (pick your own 32 random letters/numbers):*
-`insert into api_keys (name, key_hash) values ('CIC dashboard', encode(sha256(convert_to('cic_YOUR32CHARACTERS', 'UTF8')), 'hex'));`
 
 **Use it.** Send the key in the `x-api-key` header. Responses are JSON and are never cached.
 
@@ -169,92 +198,45 @@ To set it up on a new Vercel account:
 2. Copy `orgId` and `projectId` from `.vercel/project.json` into repo variables
    `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` (GitHub → Settings → Secrets and variables → Actions → Variables).
 3. Create a token at vercel.com/account/tokens and save it as the repo secret `VERCEL_TOKEN`.
-4. Add the app's environment variables (see `.env.example`) in Vercel → Project → Settings → Environment Variables.
+4. Add the environment variables from the table above in Vercel → Project → Settings → Environment Variables.
 
 To deploy by hand instead: `vercel deploy --prod`.
 
-## Links
+## Cost
 
-- Live demo: https://cic-launchpad.vercel.app
-- Demo video:
-- Design / docs:
+| Service | Plan | Cost |
+|---|---|---|
+| Vercel (hosting) | Hobby | $0 |
+| Supabase (database + staff sign-in) | Free: 500 MB database, 50,000 monthly active users | $0 |
+| Pyodide (Python in the browser) | Open source, served from a CDN | $0 |
+| AI drafting (optional) | Any OpenAI-compatible provider; a lesson draft costs cents | ~$0–5/month |
 
-## After the hackathon
+Well under OHack's **$20/month** limit. Supabase's free plan pauses a project after a week with no activity;
+upgrade to Pro ($25/month) or keep it active once CIC uses it daily.
 
-Winning teams finish the project with the nonprofit — the [Definition of Done](https://www.ohack.dev/about/completion) (deployed, nonprofit sign-off, docs, open source) is tracked on your team page. Keep the repo public and the README honest; recruiters do read these.
+## AI drafting
 
-Need a hand this weekend? [#ask-a-mentor](https://opportunity-hack.slack.com/archives/C01E5CGDQ74) on Slack, or ask in [#no_1_left_behind](https://opportunity-hack.slack.com/app_redirect?channel=no_1_left_behind) and a mentor will drop in.
+AI is optional and only drafts *curriculum* from slide text, video captions or exercise text: **never student
+names, codes or answers**. Every AI-drafted step is marked "Suggested: please review", and nothing AI-drafted can be
+published until a person reviews and saves it. Set `AI_BASE_URL`, `AI_API_KEY` and `AI_MODEL` for any
+OpenAI-compatible provider. During the hackathon we used the OHack gateway (`https://ai.ohack.dev/v1`,
+model `gpt-oss-120b`), whose keys stop working on **Sun Nov 15, 6 PM AZ**; after that, CIC sets its own key.
+Without a key, AI features switch off and manual authoring works as normal.
 
-### Curriculum editor integration (#8)
+## For developers
 
-`src/server/curriculum.ts` exposes the handoff's named functions for modules,
-lessons, activities and pre/post assessments. All return `Result<T>` (`ok/data`
-or `ok/error`). Import these from a Server Component or call them through a
-`"use server"` action; they use the staff member's cookie session and RLS.
-`getModuleTree` returns module fields plus `lessons`, each with `activities`.
-`createLessonFromTemplate` returns the new lesson; reload its tree for the four
-steps. Mutations return the saved row, reorder/delete return `null`, and
-`saveAssessment` returns `{ id }`. Missing assessments return an error until saved.
-Activity content types, Zod schemas and `emptyContent(type)` live in
-`src/types/activity-content.ts`. Starters are structurally valid drafts for staff
-editing. Saving an activity's validated `content` marks its AI draft reviewed;
-a title-only change does not. Tests with existing student responses cannot be
-replaced, to preserve learning results.
+- `src/app`: pages. `(staff)/` = teacher, admin and reviewer screens; `learn/` and `join/` = student screens; `api/v1/` = read API
+- `src/server`: server-only logic (`auth`, `student-session`, `lesson-player`, `dashboard`, `classes`, `curriculum`, `results`)
+- `src/lib`: pure helpers with unit tests (course map unlocking, student status rules, learning gain, roster CSV, join codes, Python runner)
+- `supabase/`: migrations (tables + access rules), seed, SQL tests
+- `docs/`: CIC's brief, product spec, P0 checklist, build plan, [developer notes](docs/developer-notes.md), [sample roster](docs/sample-roster.csv)
 
-**Shrey must apply `20261115010000_curriculum_operations.sql` before wiring the
-editor.** It adds atomic saves and enforces the publish rules in Postgres.
-Do not push migrations from a developer session. The seed now publishes modules
-after creating their lessons so it also satisfies that gate.
+## Team: No 1 Left Behind
 
-Run `npm test`, `npm run lint`, and `npm run build`. On a disposable migrated and
-seeded Supabase/local Postgres database, run
-`psql "$TEST_DATABASE_URL" -X -v ON_ERROR_STOP=1 -f supabase/tests/curriculum.sql`.
-The SQL tests use synthetic staff, run under `authenticated`, verify admin
-publishing plus instructor/reviewer denial, and roll everything back. Never run
-the seed against production to test a change: it resets the demo records.
+- Shrey Bishnoi ([@shrey-Bish](https://github.com/shrey-Bish)): student experience, teacher and admin screens, deployment
+- Maulik Jadav ([@maulik-jadav](https://github.com/maulik-jadav)): curriculum authoring and class setup logic
+- Dhanush ([@dkoyi](https://github.com/dkoyi)): teacher dashboard rules, learning gain, read API
+- Poulami: design, documentation, demo
+- Greg
 
-### Class setup integration (#9)
-
-`src/server/classes.ts` exposes `listMyClasses`, `createClass`, `addStudents`,
-`resetJoinCode`, `assignModules`, `setSchedule`, and `getClassSetup`, all returning
-`Result<T>`. `assignModules` and `setSchedule` return `null` on success.
-`getClassSetup` returns `{ class, students, modules, sessions }`; modules contain
-the module fields with their class-assigned `position` and `assigned_at`.
-Student labels are derived in stable roster order and are display text only;
-always use student IDs for identity. No read function returns personal-code hashes.
-
-1. Parse the uploaded text using `parseRosterCsv` from `src/lib/roster-csv.ts`.
-   Display its warnings and line-numbered errors. **Block import while any errors
-   remain**, then preview its `rows` before calling `addStudents(classId, rows)`.
-   Only name and optional school survive parsing or server validation.
-2. Keep the successful `addStudents` / `resetJoinCode` response long enough to
-   print personal join cards. Plain codes are returned only by that save, never
-   stored. Reset a code if a card is lost; the old code stops working.
-3. Call `assignModules` with published module IDs in the desired order, then
-   `setSchedule` with `{ session_date: "YYYY-MM-DD", lesson_id }` entries.
-   Assignment and schedule replacement are atomic. Scheduling uses Phoenix dates,
-   preserves sessions before today, and permits only published lessons from
-   assigned modules. Clear upcoming sessions before unassigning their module.
-4. Build the shareable link with `classJoinUrl(origin, class_code)` from
-   `src/lib/join-codes.ts`: `/join?class=MARY-P3`.
-
-**Shrey must apply `20261115020000_class_setup.sql`.** It creates `class_modules`,
-RLS and `configure_class`; seed additions assign all three modules to both demo
-classes. Neither migration has been pushed to the live project. These functions
-use the signed-in staff session, never a secret/service key. Classes allow at
-most 200 students; failed roster batches save nothing.
-
-For all database integration tests, use a **disposable**, migrated and seeded
-database with Supabase's auth schema/default grants, then run:
-
-```sh
-TEST_DATABASE_URL=postgresql://... npm test
-```
-
-Without that variable, `npm test` runs unit/server-contract tests and skips the
-four database tests. Database tests exercise RLS and all materialized seed content,
-including the actual stored Jaylen join-code hash. `supabase/tests/classes.sql`
-can also be run directly with `psql`, just like the curriculum SQL test above.
-The database tests require a database-owner test connection to create synthetic
-auth users and switch roles; their transactions always roll back. Never point
-these tests at the live project.
+Built with mentors from Opportunity Hack. Questions: [#npo-coding-in-color](https://opportunity-hack.slack.com/app_redirect?channel=npo-coding-in-color) on the OHack Slack.
