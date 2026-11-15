@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { ActivityForm } from "@/components/curriculum/activity-form";
-import { DragHandle, useDragReorder } from "@/components/curriculum/drag-reorder";
+import { DRAG_HINT, DragHandle, useDragReorder } from "@/components/curriculum/drag-reorder";
 import { SaveMessage, StatusBadge, moved, useSave } from "@/components/curriculum/use-save";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,6 +44,7 @@ export function LessonEditor({ lesson, unit, activities }: { lesson: Lesson; uni
       )}
       <SaveMessage message={message} />
 
+      <p className="text-sm text-muted-foreground">{DRAG_HINT}</p>
       <ol className="space-y-3">
         {activities.map((a, i) => (
           <li key={a.id} {...drag.rowProps(a.id)} className={`rounded-2xl ${drag.rowClass(a.id)}`}>

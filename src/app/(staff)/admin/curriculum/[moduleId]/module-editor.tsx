@@ -6,7 +6,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { DragHandle, useDragReorder } from "@/components/curriculum/drag-reorder";
+import { DRAG_HINT, DragHandle, useDragReorder } from "@/components/curriculum/drag-reorder";
 import { SaveMessage, StatusBadge, moved, useSave } from "@/components/curriculum/use-save";
 import type { ModuleTree } from "@/types/curriculum";
 import { createLessonAction, deleteLessonAction, reorderLessonsAction, setLessonStatusAction, setModuleStatusAction, updateModuleAction } from "../actions";
@@ -43,6 +43,7 @@ export function ModuleEditor({ module: m }: { module: ModuleTree }) {
 
       <section aria-labelledby="lessons-h" className="space-y-3">
         <h2 id="lessons-h" className="text-xl font-semibold">Lessons</h2>
+        <p className="text-sm text-muted-foreground">{DRAG_HINT}</p>
         <ol className="space-y-2">
           {m.lessons.map((l, i) => (
             <li key={l.id} {...drag.rowProps(l.id)} className={`flex flex-wrap items-center gap-2 rounded-2xl bg-card p-3 ${drag.rowClass(l.id)}`}>
