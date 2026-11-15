@@ -17,13 +17,14 @@ const STAGES: Record<Source, string[]> = {
 };
 
 const DONE: Record<Source, string> = {
-  youtube: "AI wrote the key points, questions that pause the video, a quick check, a coding exercise, a last question and a guide for teachers.",
-  slides: "Your slides are the first steps, word for word. AI added a quick check, a coding exercise, a last question and a guide for teachers.",
+  youtube: "AI wrote the key points, questions that pause the video, a quick check, a coding exercise, a last question and a guide for teachers, and paired pre-test/post-test quizzes.",
+  slides: "Your slides are the first steps, word for word. AI added a quick check, a coding exercise, a last question and a guide for teachers, and paired pre-test/post-test quizzes.",
 };
 
 export function ImportForm({ units, aiOn }: { units: { id: string; title: string }[]; aiOn: boolean }) {
   const [source, setSource] = useState<Source>("slides");
-  const [unit, setUnit] = useState(units[0]?.id ?? "");
+  const [unit, setUnit] = useState("new");
+  const [moduleTitle, setModuleTitle] = useState("");
   const [link, setLink] = useState("");
   const [paste, setPaste] = useState("");
   const [showPaste, setShowPaste] = useState(false);
@@ -44,6 +45,7 @@ export function ImportForm({ units, aiOn }: { units: { id: string; title: string
     setDeck(null); setFileError(null); setResult(null);
     if (!file) return;
     try {
+      if (file.size > 20 * 1024 * 1024) throw new Error("Choose a PowerPoint file smaller than 20 MB.");
       const slides = readPptx(new Uint8Array(await file.arrayBuffer()));
       if (!slides.length) throw new Error("We couldn't find any words on those slides. Slides that are only pictures can't be read.");
       setDeck({ name: file.name, slides });
@@ -60,6 +62,7 @@ export function ImportForm({ units, aiOn }: { units: { id: string; title: string
           ? `${DONE[source]} Each AI part is marked "Made by AI: please check". Read it, fix anything, and save it. Students only see the lesson once you choose "Show to students".`
           : result.note}</p>
         {result.usedAi && result.note && <p className="text-sm">{result.note}</p>}
+        <Link href={`/admin/curriculum/${result.moduleId}`} className={buttonVariants({ variant: "outline", size: "lg" })}>Review unit and quizzes</Link>
         <Link href={`/admin/curriculum/lesson/${result.lessonId}`} className={buttonVariants({ size: "lg" })}>Check the lesson</Link>
       </div>
     );
@@ -73,8 +76,8 @@ export function ImportForm({ units, aiOn }: { units: { id: string; title: string
       setResult(null); setStage(0);
       start(async () => {
         const r = source === "slides"
-          ? await importFromSlides(unit, deck!.name, deck!.slides)
-          : await importFromYouTube(unit, link, showPaste ? paste : "");
+          ? await importFromSlides(unit === "new" ? null : unit, deck!.name, deck!.slides, moduleTitle)
+          : await importFromYouTube(unit === "new" ? null : unit, link, showPaste ? paste : "", moduleTitle);
         if (!r.ok && "needTranscript" in r && r.needTranscript) setShowPaste(true);
         setResult(r);
       });
@@ -132,9 +135,12 @@ export function ImportForm({ units, aiOn }: { units: { id: string; title: string
       <div className="space-y-1">
         <Label htmlFor="unit">Add it to unit</Label>
         <select id="unit" value={unit} onChange={(e) => setUnit(e.target.value)} className="h-11 w-full rounded-md border bg-background px-2">
+          <option value="new">Create a new curriculum unit</option>
           {units.map((u) => <option key={u.id} value={u.id}>{u.title}</option>)}
         </select>
       </div>
+
+      {unit === "new" && <div className="space-y-1"><Label htmlFor="new-unit-title">New curriculum title</Label><Input id="new-unit-title" value={moduleTitle} onChange={(e) => setModuleTitle(e.target.value)} placeholder="Use the deck or video title" maxLength={200} /></div>}
 
       <p className="text-sm text-muted-foreground">Only the {source === "slides" ? "words on your slides are" : "video's words are"} sent to the AI. Never anything about students.</p>
       <Button type="submit" size="lg" disabled={pending || !ready || !unit}>{pending ? "Building your lesson…" : "Build my lesson"}</Button>

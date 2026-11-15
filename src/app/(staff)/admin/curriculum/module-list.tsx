@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SaveMessage, StatusBadge, moved, useSave } from "@/components/curriculum/use-save";
-import { createModuleAction, reorderModulesAction, setModuleStatusAction } from "./actions";
+import { createModuleAction, deleteModuleAction, reorderModulesAction, setModuleStatusAction } from "./actions";
 
 type Row = { id: string; title: string; description: string | null; position: number; status: string; lesson_count: number };
 
@@ -24,6 +24,7 @@ export function ModuleList({ modules }: { modules: Row[] }) {
               <p className="text-sm text-muted-foreground">{m.lesson_count} lessons{m.description ? ` · ${m.description}` : ""}</p>
             </div>
             <StatusBadge status={m.status} />
+            <Button size="sm" variant="destructive" disabled={pending} onClick={() => { if(confirm(`Delete "${m.title}" and its lessons? Assigned units or units with student work must be hidden instead.`)) save(() => deleteModuleAction(m.id), "Unit deleted"); }}>Delete</Button>
             <Button size="sm" variant="outline" disabled={pending}
               onClick={() => save(() => setModuleStatusAction(m.id, m.status === "published" ? "draft" : "published"), m.status === "published" ? "Hidden from students" : "Students can see it now")}>
               {m.status === "published" ? "Hide from students" : "Show to students"}

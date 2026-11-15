@@ -75,3 +75,18 @@ can also be run directly with `psql`, just like the curriculum SQL test above.
 The database tests require a database-owner test connection to create synthetic
 auth users and switch roles; their transactions always roll back. Never point
 these tests at the live project.
+
+## Mentor feedback follow-up (Nov 15)
+
+Added configurable staff roles, capability-based navigation/actions and matching
+RLS; atomic source imports with reviewed pre/post assessment pairs; safe removal
+of unused curriculum; and an assigned student course path that always displays
+pre-test, material and post-test, including locked stages. The Calm Mint CSS and
+font configuration are unchanged. See README's mentor-feedback section for the
+rollout order, required settings and remaining live rehearsal.
+
+Database tests cover a fresh schema and an upgrade over existing demo data. The
+upgrade adds quiz pairs only for the two known demo modules that lacked them;
+it preserves all existing assessment questions, responses, events and progress.
+Do not reseed the live project. The two new migrations have not been applied to
+the shared database from this checkout.
