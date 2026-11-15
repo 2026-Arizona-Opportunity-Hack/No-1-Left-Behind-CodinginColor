@@ -79,9 +79,9 @@ export function LessonPlayer({ lesson, catchUp }: { lesson: PlayerLesson; catchU
 
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+      <div className="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-2.5 sm:grid-cols-[1fr_auto_1fr]">
         <Link href="/learn" className="text-base text-foreground no-underline"><span aria-hidden="true" className="font-mono font-extrabold text-[#0DB031]">&lt;</span> {lesson.title}</Link>
-        <nav aria-label="Lesson steps" className="flex flex-wrap items-center justify-center gap-2.5">
+        <nav aria-label="Lesson steps" className="col-span-2 row-start-2 flex flex-wrap items-center justify-center gap-2.5 sm:col-span-1 sm:col-start-2 sm:row-start-1">
           {steps.map((a, i) => (
             <button key={a.id} type="button" onClick={() => goTo(i)} disabled={!reachable(i)}
               aria-current={i === index ? "step" : undefined}
@@ -93,11 +93,12 @@ export function LessonPlayer({ lesson, catchUp }: { lesson: PlayerLesson; catchU
             </button>
           ))}
         </nav>
-        <span className="justify-self-end text-base text-muted-foreground">Step {index + 1} of {steps.length}</span>
+        <span className="col-start-2 row-start-1 justify-self-end text-base whitespace-nowrap text-muted-foreground sm:col-start-3">Step {index + 1} of {steps.length}</span>
       </div>
 
-      <div className="grid flex-1 gap-8 lg:grid-cols-[minmax(0,420px)_1fr] lg:gap-12">
-        <div className="flex flex-col pt-2 lg:pt-6">
+      {/* Phone: info, then the step card, then Back/Next. Desktop: info and buttons on the left, card on the right. */}
+      <div className="grid flex-1 grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,420px)_1fr] lg:grid-rows-[1fr_auto] lg:gap-x-12 lg:gap-y-6">
+        <div className="flex flex-col pt-2 lg:col-start-1 lg:row-start-1 lg:pt-6">
           {(current.title && current.title !== ACTIVITY_LABEL[current.type] || !current.isCore) && (
             <p className="text-base font-semibold text-[#047D13]">{current.title && current.title !== ACTIVITY_LABEL[current.type] ? ACTIVITY_LABEL[current.type] : ""}{current.isCore ? "" : " · Extra (optional)"}</p>
           )}
@@ -118,7 +119,11 @@ export function LessonPlayer({ lesson, catchUp }: { lesson: PlayerLesson; catchU
               )}
             </div>
           )}
-          <div className="min-h-6 flex-1" />
+        </div>
+        <section aria-labelledby="step-heading" className="flex min-w-0 flex-col gap-4 rounded-[28px] bg-card p-4 sm:p-6 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+          <StepBody activity={current} props={props} runner={runner} />
+        </section>
+        <div className="lg:col-start-1 lg:row-start-2">
           {error && <p role="alert" className="mb-3 rounded-2xl bg-[#FDE4DF] p-4 text-[#4A1008]">{error}</p>}
           <div className="flex flex-wrap items-center gap-3.5">
             {index > 0 && <Button variant="outline" size="lg" onClick={() => goTo(index - 1)}>Back</Button>}
@@ -129,9 +134,6 @@ export function LessonPlayer({ lesson, catchUp }: { lesson: PlayerLesson; catchU
             {!canContinue && <span className="text-[15px] text-muted-foreground">Unlocks when you finish this step</span>}
           </div>
         </div>
-        <section aria-labelledby="step-heading" className="flex flex-col gap-4 rounded-[28px] bg-card p-4 sm:p-6">
-          <StepBody activity={current} props={props} runner={runner} />
-        </section>
       </div>
     </div>
   );
@@ -150,7 +152,7 @@ function CaughtUp({ lessonTitle, catchUp }: { lessonTitle: string; catchUp: Catc
       {state === "saving" && <p role="status">Saving…</p>}
       {state === "done" && <>
         <p aria-hidden="true" className="font-mono text-6xl leading-none font-extrabold text-[#0DB031]">&gt;&gt;&gt;</p>
-        <h1 id="caught-up-heading" className="text-6xl leading-none font-bold tracking-tight sm:text-8xl">You&apos;re caught up!</h1>
+        <h1 id="caught-up-heading" className="text-5xl leading-none font-bold tracking-tight sm:text-8xl">You&apos;re caught up!</h1>
         <p className="max-w-xl text-2xl text-muted-foreground">You finished the recap and the core exercises for {lessonTitle}. Your teacher can see it.</p>
         <div className="mt-6 flex flex-wrap gap-3.5">
           {catchUp.todayLesson && <Link href={`/learn/${catchUp.todayLesson.id}`} className={buttonVariants({ size: "lg" })}>Rejoin your class: {catchUp.todayLesson.title}</Link>}
