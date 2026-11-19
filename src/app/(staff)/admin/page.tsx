@@ -8,7 +8,8 @@ import { requireStaff } from "@/server/auth";
 export const instant = false;
 
 // A coloured arrow per card so the choices are easy to tell apart.
-const ARROW = ["bg-primary-foreground text-primary", "bg-sky text-sky-ink", "bg-lilac text-lilac-ink", "bg-sun text-sun-ink", "bg-ontrack text-ontrack-ink"];
+// Six colours for six cards: with only five, the sixth card wrapped back to the white one and its arrow vanished.
+const ARROW = ["bg-primary-foreground text-primary", "bg-sky text-sky-ink", "bg-lilac text-lilac-ink", "bg-sun text-sun-ink", "bg-ontrack text-ontrack-ink", "bg-help text-help-ink"];
 
 export const metadata: Metadata = { title: "CIC staff · CIC Launchpad" };
 
@@ -31,15 +32,21 @@ export default async function AdminHome() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-5xl font-bold tracking-tight">Hi {staff.displayName}</h1>
-      <dl className="grid max-w-2xl grid-cols-3 gap-3">
-        {([["Units", modules, "bg-sky text-sky-ink"], ["Classes", classes, "bg-lilac text-lilac-ink"], ["Students", students, "bg-sun text-sun-ink"]] as const).map(([label, value, tone]) => (
-          <div key={label} className={`flex flex-col-reverse gap-1 rounded-[22px] px-5 py-4 ${tone}`}>
-            <dt className="text-base font-medium">{label}</dt>
-            <dd className="m-0 text-5xl leading-none font-bold tabular-nums">{value}</dd>
-          </div>
+      <h1 className="flex items-center gap-4 text-5xl font-bold tracking-tight"><span aria-hidden="true" className="font-mono font-extrabold text-[#0DB031]">&gt;</span>Hi {staff.displayName}</h1>
+      {/* Same three columns as the cards below, so the tiles and the cards line up. Each tile opens its list. */}
+      <ul className="grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
+        {([["Units", modules, "/admin/curriculum", "bg-sky text-sky-ink"], ["Classes", classes, "/teach", "bg-lilac text-lilac-ink"], ["Students", students, "/teach", "bg-sun text-sun-ink"]] as const).map(([label, value, href, tone]) => (
+          <li key={label}>
+            <Link href={href} className={`flex items-center justify-between gap-3 rounded-[28px] px-7 py-5 no-underline hover:brightness-95 ${tone}`}>
+              <span className="flex items-baseline gap-4">
+                <span className="text-6xl leading-none font-bold tabular-nums">{value}</span>
+                <span className="text-xl font-semibold">{label}</span>
+              </span>
+              <span aria-hidden="true" className="font-mono text-3xl font-extrabold">&gt;</span>
+            </Link>
+          </li>
         ))}
-      </dl>
+      </ul>
       <ul className="grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
         {actions.map((a, i) => (
           <li key={a.href}>

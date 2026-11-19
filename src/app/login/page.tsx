@@ -15,7 +15,7 @@ type Props = { searchParams: Promise<{ next?: string }> };
 export default function LoginPage({ searchParams }: Props) {
   return (
     <div className="flex flex-1 flex-col">
-      <header className="px-6 py-7 sm:px-14"><Logo /></header>
+      <header className="mx-auto w-full max-w-6xl px-6 py-7 sm:px-14"><Logo /></header>
       <main className="flex flex-1 items-center justify-center px-4 pb-16">
         <div className="flex w-full max-w-[480px] flex-col gap-6 rounded-[28px] bg-card p-8 sm:p-11">
           <div>

@@ -15,7 +15,7 @@ type Props = { searchParams: Promise<{ class?: string }> };
 export default function JoinPage({ searchParams }: Props) {
   return (
     <div className="flex flex-1 flex-col">
-      <header className="px-6 py-7 sm:px-14"><Logo /></header>
+      <header className="mx-auto w-full max-w-6xl px-6 py-7 sm:px-14"><Logo /></header>
       <main className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-12 px-6 pb-16 sm:px-14 lg:grid-cols-[1fr_540px]">
         <div>
           <h1 className="text-5xl leading-tight font-bold tracking-tight sm:text-6xl">Join your class</h1>

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function TryPage() {
   return (
     <div className="flex flex-1 flex-col">
-      <header className="px-6 py-5 sm:px-12"><Logo /></header>
+      <header className="mx-auto w-full max-w-6xl px-6 py-6 sm:px-12"><Logo /></header>
       <main className="mx-auto w-full max-w-6xl flex-1 px-6 pb-12 sm:px-12">
         <h1 className="text-5xl font-bold tracking-tight">Try Python</h1>
         <p className="mt-2 text-lg text-muted-foreground">
