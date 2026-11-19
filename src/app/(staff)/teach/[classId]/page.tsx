@@ -48,33 +48,39 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center gap-x-8 gap-y-2">
-        <Link href="/teach" className="flex-1 text-base text-foreground no-underline"><span aria-hidden="true" className="font-mono font-extrabold text-[#0DB031]">&lt;</span> My classes</Link>
+        <Link href="/teach" className="flex min-h-11 flex-1 items-center text-xl font-medium text-foreground no-underline"><span aria-hidden="true" className="font-mono font-extrabold text-[#0DB031]">&lt;</span> My classes</Link>
         <span className="flex items-center gap-2 text-base"><i aria-hidden="true" className="size-2.5 rounded-full bg-[#0DB031]" /><AutoRefresh /></span>
         <CopyLinkButton classCode={cls.class_code} />
       </div>
 
       <div>
-        <h1 className="text-4xl leading-none font-bold tracking-tight sm:text-5xl">{cls.name}</h1>
-        <p className="mt-2 text-muted-foreground">
+        <h1 className="text-4xl leading-none font-bold tracking-tight sm:text-[52px]">{cls.name}</h1>
+        <p className="mt-2 text-xl text-muted-foreground">
           {cls.school} · Today: {today?.lesson_title ?? "no class"}{today ? ` · ${attendance.present} here, ${attendance.absent} absent` : ""} · Class code <span className="font-mono font-bold text-foreground">{cls.class_code}</span>
         </p>
       </div>
 
       {!students.length ? (
-        <p className="rounded-3xl bg-card p-10 text-center text-lg">No students in this class yet. Add them from <Link href="/teach/new">Set up a class</Link>.</p>
+        <p className="rounded-[20px] bg-card p-10 text-center text-lg border border-border">No students in this class yet. Add them from <Link href="/teach/new">Set up a class</Link>.</p>
       ) : (
         <>
           {/* One plain sentence first: the whole class at a glance. */}
           <p className="text-2xl leading-snug">
             {counts.needs_help
-              ? <b className="font-semibold text-[#B3261E]">{plural(counts.needs_help, "student needs", "students need")} help.</b>
+              ? <b className="font-semibold text-[#CF1F14]">{plural(counts.needs_help, "student needs", "students need")} help.</b>
               : <b className="font-semibold">Nobody needs help right now.</b>}
-            {counts.behind ? <> <b className="font-semibold text-[#9A6700]">{plural(counts.behind, "is", "are")} behind.</b></> : null}
+            {counts.behind ? <> <b className="font-semibold text-[#7A4B00]">{plural(counts.behind, "is", "are")} behind.</b></> : null}
             {counts.not_started ? ` ${counts.not_started} ${counts.not_started === 1 ? "hasn't" : "haven't"} started.` : null}
             {" "}<b className="font-semibold text-[#047D13]">{counts.on_track} {counts.on_track === 1 ? "is" : "are"} doing fine.</b>
           </p>
 
-          <section aria-label="Students" className="flex flex-col divide-y divide-border rounded-[24px] bg-card px-5">
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="rounded-[20px] border border-[#8E1111] bg-help p-5 text-help-ink"><b className="text-4xl">{counts.needs_help}</b><br />Needs help</div>
+            <div className="rounded-[20px] border border-behind-ink bg-behind p-5 text-behind-ink"><b className="text-4xl">{counts.behind}</b><br />Behind</div>
+            <div className="rounded-[20px] border border-border bg-ontrack p-5 text-ontrack-ink"><b className="text-4xl">{counts.on_track}</b><br />Doing fine</div>
+          </div>
+
+          <section aria-label="Students" className="flex flex-col divide-y divide-border rounded-[20px] border border-border bg-card px-5">
             {by("needs_help").map(row)}
             {by("behind").map(row)}
             {by("not_started").map(row)}
@@ -82,7 +88,7 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
               <form action={assignCatchUpAction} className="py-3.5">
                 <input type="hidden" name="classId" value={cls.id} />
                 <input type="hidden" name="studentIds" value={behindWithout.map((x) => x.id).join(",")} />
-                <button type="submit" className="h-11 cursor-pointer rounded-full border-2 border-primary bg-card px-5 font-semibold hover:bg-secondary">Give a catch-up to all {behindWithout.length} who are behind</button>
+                <button type="submit" className="h-11 cursor-pointer rounded-[10px] border-2 border-primary bg-card px-5 font-semibold hover:bg-secondary">Give a catch-up to all {behindWithout.length} who are behind</button>
               </form>
             )}
             {fine.length > 0 && (
@@ -106,8 +112,8 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
 // One line per student. Only the status word is coloured (red needs help, yellow behind, green doing fine);
 // the word and symbol say it too, so colour is never the only signal.
 const LOOK = {
-  needs_help: { word: "! Needs help", color: "text-[#B3261E]" },
-  behind: { word: "◷ Behind", color: "text-[#9A6700]" },
+  needs_help: { word: "! Needs help", color: "text-[#CF1F14]" },
+  behind: { word: "◷ Behind", color: "text-[#7A4B00]" },
   not_started: { word: "○ Not started", color: "text-muted-foreground" },
   on_track: { word: "✓ Doing fine", color: "text-[#047D13]" },
 };
@@ -122,19 +128,19 @@ function StudentRow({ s, classId, sessionId, now, catchUp }: { s: ClassroomStude
       <p className="m-0 min-w-0">
         <span className={`font-semibold ${look.color}`}>{look.word}</span>
         <span> · {why}</span>
-        <span className="block text-sm text-muted-foreground">
+        <span className="block text-base text-muted-foreground">
           {[`${s.percent_complete}% done`, s.time_on_task_ms ? `working for ${formatDuration(s.time_on_task_ms)}` : null,
             s.last_active_at ? `active ${timeAgo(s.last_active_at, now)}` : null].filter(Boolean).join(" · ")}
         </span>
       </p>
       <div className="flex flex-wrap items-center gap-3 sm:justify-end">
         {s.status === "needs_help" && (
-          <Link href={`/teach/${classId}/students/${s.id}#help`} className="inline-flex h-11 items-center rounded-full bg-primary px-5 text-base font-semibold text-primary-foreground no-underline hover:bg-[#047D13]">Help me teach this</Link>
+          <Link href={`/teach/${classId}/students/${s.id}#help`} className="inline-flex h-11 items-center rounded-[10px] bg-primary px-5 text-base font-semibold text-primary-foreground no-underline hover:bg-[#047D13]">Help me teach this</Link>
         )}
         {s.status === "behind" && !catchUp && (
           <form action={assignCatchUpAction}>
             <input type="hidden" name="classId" value={classId} /><input type="hidden" name="studentIds" value={s.id} />
-            <button type="submit" className="h-11 cursor-pointer rounded-full border-2 border-primary bg-card px-5 text-base font-semibold text-foreground hover:bg-secondary">Give catch-up</button>
+            <button type="submit" className="h-11 cursor-pointer rounded-[10px] border-2 border-primary bg-card px-5 text-base font-semibold text-foreground hover:bg-secondary">Give catch-up</button>
           </form>
         )}
         {catchUp === "assigned" && <span className="font-semibold">✓ Catch-up given</span>}
@@ -146,7 +152,7 @@ function StudentRow({ s, classId, sessionId, now, catchUp }: { s: ClassroomStude
             <input type="hidden" name="studentId" value={s.id} />
             <input type="hidden" name="status" value={s.present_today === false ? "present" : "absent"} />
             <button type="submit" aria-label={`${s.label}: ${s.present_today === false ? "absent, mark present" : "here, mark absent"}`}
-              className="cursor-pointer border-0 bg-transparent p-0 text-[15px] font-medium text-foreground underline underline-offset-2">
+              className="cursor-pointer border-0 bg-transparent p-0 text-base font-medium text-foreground underline underline-offset-2">
               {s.present_today === false ? "✗ Absent" : "✓ Here"}
             </button>
           </form>

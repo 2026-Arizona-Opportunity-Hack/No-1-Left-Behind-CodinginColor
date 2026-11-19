@@ -79,22 +79,20 @@ export function Playground() {
   const allPassed = summary && summary.passed === summary.total;
 
   return (
-    <div className="mt-6 grid gap-6 lg:grid-cols-2">
+    <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
       <section aria-labelledby="code-heading" className="space-y-3">
         <Label id="code-heading" htmlFor="code" className="text-base">
           Your code
         </Label>
-        <CodeEditor value={code} onChange={setCode} label="Your code" onRun={handleRun} minLines={7} />
+        <CodeEditor value={code} onChange={setCode} label="Your code" onRun={handleRun} minLines={9} fileName="loops.py" toolbar={<>
+          <Button size="sm" variant="ghost" className="border-[#2C5A3F] text-[#E6F4EA] hover:bg-[#0F2E1C] hover:text-white" onClick={() => setCode(STARTER_CODE)} disabled={busy || code === STARTER_CODE}>Start over</Button>
+          <Button size="sm" variant="yellow" onClick={handleRun} disabled={busy}>Run <span aria-hidden="true" className="font-mono">&gt;</span></Button>
+          <Button size="sm" variant="outline" onClick={handleCheck} disabled={busy}>Check my code</Button>
+        </>} />
         <Label htmlFor="stdin">Input (one answer per line, for input())</Label>
         <Textarea id="stdin" value={stdin} onChange={(e) => setStdin(e.target.value)} className="min-h-16 font-mono" />
         <div className="flex flex-wrap items-center gap-3">
-          <Button size="lg" variant="outline" onClick={handleRun} disabled={busy}>
-            Run
-          </Button>
-          <Button size="lg" onClick={handleCheck} disabled={busy}>
-            Check my code
-          </Button>
-          <span role="status" className="text-sm text-muted-foreground">
+          <span role="status" className="text-base text-muted-foreground">
             {status === "loading" && "Getting Python ready…"}
             {status === "running" && "Running…"}
             {status === "load-failed" && "Python couldn't load. Check your internet and refresh the page."}
@@ -108,16 +106,16 @@ export function Playground() {
         </h2>
         <pre
           aria-live="polite"
-          className="min-h-40 overflow-auto rounded-2xl bg-card px-5 py-4 font-mono text-[17px] leading-relaxed whitespace-pre-wrap"
+          className="min-h-40 overflow-auto rounded-xl bg-card px-5 py-4 font-mono text-[17px] leading-relaxed whitespace-pre-wrap border border-border"
         >
           {run ? run.output || (run.error || run.timedOut ? "" : "(Your code didn't print anything.)") : "Press Run to see what your code prints."}
           {run?.truncated && "\n… (output cut off: that's a lot of printing!)"}
         </pre>
         {run && (run.error || run.timedOut) && (
-          <div role="alert" className="rounded-2xl bg-help p-4 text-help-ink">
+          <div role="alert" className="rounded-xl bg-help p-4 text-help-ink">
             <p className="font-medium">{friendlyError(run)}</p>
             {run.error?.traceback && (
-              <details className="mt-2 text-sm">
+              <details className="mt-2 text-base">
                 <summary className="cursor-pointer">Show Python&apos;s message</summary>
                 <pre className="mt-2 font-mono whitespace-pre-wrap">{run.error.traceback}</pre>
               </details>
@@ -138,7 +136,7 @@ export function Playground() {
                   <span>
                     <span className="sr-only">{r.passed ? "Passed: " : "Not yet: "}</span>
                     {r.label}
-                    {r.message && <span className="block text-sm text-muted-foreground">{r.message}</span>}
+                    {r.message && <span className="block text-base text-muted-foreground">{r.message}</span>}
                   </span>
                 </li>
               ))}

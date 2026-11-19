@@ -43,18 +43,18 @@ export function ClassWizard({ modules }: { modules: WizardModule[] }) {
   return (
     <div className="mx-auto max-w-3xl space-y-6 print:hidden">
       <div>
-        <h1 className="text-4xl font-bold tracking-tight">Set up a class</h1>
-        <p className="text-muted-foreground">Four short steps. Most teachers finish in under 10 minutes.</p>
+        <h1 className="text-4xl font-bold tracking-tight sm:text-[52px]">Set up a class</h1>
+        <p className="mt-2 text-xl text-muted-foreground">Four short steps. Most teachers finish in under 10 minutes.</p>
       </div>
       <ol aria-label="Steps" className="flex flex-wrap gap-2">
         {STEPS.map((s, i) => (
           <li key={s} aria-current={i === step ? "step" : undefined}
-            className={`rounded-full border-2 px-3 py-1 text-sm font-medium ${i === step ? "border-primary bg-primary text-primary-foreground" : i < step ? "border-[#047D13] text-[#047D13]" : "border-border text-muted-foreground"}`}>
+            className={`inline-flex min-h-9 items-center rounded-[10px] border-2 px-3.5 text-base font-bold ${i === step ? "border-primary bg-primary text-primary-foreground" : i < step ? "border-primary bg-[#D6F2DE] text-primary" : "border-dashed border-muted-foreground text-muted-foreground"}`}>
             {i < step ? "✓" : i + 1}. {s}
           </li>
         ))}
       </ol>
-      <section aria-live="polite" className="rounded-3xl bg-card p-6">
+      <section aria-live="polite" className="rounded-[20px] border border-border bg-card p-6 sm:p-7">
         {step === 0 && (
           <ClassStep pending={pending} onSave={(name, school) =>
             save(() => createClassStep(name, school), (d) => { setCls({ ...d, name, school }); setStep(1); })} />
@@ -73,8 +73,17 @@ export function ClassWizard({ modules }: { modules: WizardModule[] }) {
             onSkip={() => setStep(4)} />
         )}
       </section>
-      {error && <p role="alert" className="rounded-2xl bg-help p-4 text-help-ink">{error}</p>}
+      {error && <p role="alert" className="rounded-xl bg-help p-4 text-help-ink">{error}</p>}
     </div>
+  );
+}
+
+function StepTitle({ n, children }: { n: number; children: string }) {
+  return (
+    <h2 className="mb-1 flex items-center gap-2.5 text-[26px] leading-tight font-bold">
+      <span aria-hidden="true" className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-xl text-primary-foreground">{n}</span>
+      <span className="sr-only">{n}. </span>{children}
+    </h2>
   );
 }
 
@@ -83,7 +92,7 @@ function ClassStep({ onSave, pending }: { onSave: (name: string, school: string)
   const [school, setSchool] = useState("");
   return (
     <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(name, school); }}>
-      <h2 className="text-xl font-semibold">1. Name your class</h2>
+      <StepTitle n={1}>Name your class</StepTitle>
       <div className="space-y-2">
         <Label htmlFor="class-name">Class name</Label>
         <Input id="class-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Period 3" required className="h-11" />
@@ -92,7 +101,7 @@ function ClassStep({ onSave, pending }: { onSave: (name: string, school: string)
         <Label htmlFor="school">School</Label>
         <Input id="school" value={school} onChange={(e) => setSchool(e.target.value)} placeholder="e.g. Maryvale High" required className="h-11" />
       </div>
-      <p className="text-sm text-muted-foreground">We&apos;ll make a class code your students type to join.</p>
+      <p className="text-base text-muted-foreground">We&apos;ll make a class code your students type to join.</p>
       <Button type="submit" size="lg" disabled={pending || !name.trim() || !school.trim()}>{pending ? "Creating…" : "Create class"}</Button>
     </form>
   );
@@ -105,33 +114,34 @@ function RosterStep({ onSave, pending }: { onSave: (rows: RosterCsv["rows"]) => 
   const labels = useMemo(() => (parsed ? displayLabels(parsed.rows.map((r) => r.name)) : []), [parsed]);
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold">2. Add your students</h2>
+      <StepTitle n={2}>Add your students</StepTitle>
       <p className="text-muted-foreground">
         Type or paste your students&apos; names below, one per line. Or upload a spreadsheet saved as CSV
         (in Excel or Google Sheets: File → Download → CSV) with a column called <strong>name</strong>.
         We only keep each student&apos;s name.
       </p>
-      <div className="space-y-2">
-        <Label htmlFor="roster-file">Upload a spreadsheet (optional)</Label>
-        <Input id="roster-file" type="file" accept=".csv,text/csv" className="h-11"
+      <div className="space-y-2 rounded-[18px] border-2 border-dashed border-primary bg-[#F7FCF8] p-6 text-center">
+        <Label htmlFor="roster-file" className="justify-center text-xl font-bold">Upload a spreadsheet (optional)</Label>
+        <p className="text-base text-muted-foreground">A .csv file with a column called name.</p>
+        <Input id="roster-file" type="file" accept=".csv,text/csv" className="mx-auto h-auto max-w-sm py-2.5"
           onChange={async (e) => { const f = e.target.files?.[0]; if (f) setText(await f.text()); }} />
       </div>
       <div className="space-y-2">
         <Label htmlFor="roster-text">Student names, one per line</Label>
-        <Textarea id="roster-text" value={text} onChange={(e) => setText(e.target.value)} className="min-h-28 font-mono text-sm"
+        <Textarea id="roster-text" value={text} onChange={(e) => setText(e.target.value)} className="min-h-28 font-mono text-base"
           placeholder={"Alex Rivera\nAlex Morales\nMaria Garcia"} />
       </div>
       {parsed && (
         <div className="space-y-3">
-          {parsed.warnings.map((w) => <p key={w} className="rounded-2xl bg-sun p-4 text-sm text-sun-ink">{w}</p>)}
+          {parsed.warnings.map((w) => <p key={w} className="rounded-xl bg-behind p-4 text-base text-behind-ink">{w}</p>)}
           {parsed.errors.length > 0 && (
-            <ul role="alert" className="space-y-1 rounded-2xl bg-help p-4 text-sm text-help-ink">
+            <ul role="alert" className="space-y-1 rounded-xl bg-help p-4 text-base text-help-ink">
               {parsed.errors.map((e) => <li key={`${e.line}${e.message}`}>Line {e.line}: {e.message}</li>)}
             </ul>
           )}
           {parsed.rows.length > 0 && (
             <div className="max-h-72 overflow-auto rounded-lg border">
-              <table className="w-full text-left text-sm">
+              <table className="w-full text-left text-base">
                 <caption className="sr-only">Your students</caption>
                 <thead className="sticky top-0 bg-muted"><tr><th scope="col" className="p-2">Name</th><th scope="col" className="p-2">Shown as</th><th scope="col" className="p-2">School</th></tr></thead>
                 <tbody>{parsed.rows.map((r, i) => (
@@ -154,18 +164,18 @@ function UnitsStep({ modules, chosen, setChosen, onSave, pending }: {
 }) {
   return (
     <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(); }}>
-      <h2 className="text-xl font-semibold">3. Pick the units this class will do</h2>
+      <StepTitle n={3}>Pick the units this class will do</StepTitle>
       <p className="text-muted-foreground">Students unlock them in this order.</p>
       <fieldset className="space-y-2">
         <legend className="sr-only">Units</legend>
         {modules.map((m) => (
-          <label key={m.id} className="flex cursor-pointer items-center gap-3 rounded-lg border p-3 has-focus-visible:outline-2">
-            <input type="checkbox" className="size-5" checked={chosen.includes(m.id)}
+          <label key={m.id} className="flex cursor-pointer items-center gap-3.5 rounded-[18px] border-2 border-border bg-white p-4 has-checked:border-primary has-checked:bg-secondary has-focus-visible:outline-3 has-focus-visible:outline-offset-2 has-focus-visible:outline-[#047D13]">
+            <input type="checkbox" className="size-6" checked={chosen.includes(m.id)}
               onChange={(e) => setChosen(e.target.checked
                 ? modules.filter((x) => x.id === m.id || chosen.includes(x.id)).map((x) => x.id)
                 : chosen.filter((id) => id !== m.id))} />
-            <span><span className="font-medium">Unit {m.position}: {m.title}</span>
-              <span className="block text-sm text-muted-foreground">{m.lessons.map((l) => l.title).join(" · ")}</span></span>
+            <span><span className="font-bold">Unit {m.position}: {m.title}</span>
+              <span className="block text-base text-muted-foreground">{m.lessons.map((l) => l.title).join(" · ")}</span></span>
           </label>
         ))}
       </fieldset>
@@ -197,15 +207,15 @@ function ScheduleStep({ modules, onSave, onSkip, pending }: {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold">4. When will you teach each lesson?</h2>
+      <StepTitle n={4}>When will you teach each lesson?</StepTitle>
       <p className="text-muted-foreground">This sets the class pace, so we can spot students who fall behind. You can skip it and do it later.</p>
-      <div className="flex flex-wrap items-end gap-3 rounded-lg bg-muted/50 p-3">
+      <div className="flex flex-wrap items-end gap-4 rounded-[18px] bg-secondary p-4">
         <div className="space-y-1"><Label htmlFor="start">First class</Label>
           <Input id="start" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="h-10" /></div>
-        <fieldset className="flex flex-wrap gap-2"><legend className="mb-1 text-sm font-medium">Class days</legend>
+        <fieldset className="flex flex-wrap gap-2"><legend className="mb-1 text-base font-bold">Class days</legend>
           {WEEKDAYS.map((w, i) => i > 0 && i < 6 && (
-            <label key={w} className="flex items-center gap-1 rounded border bg-background px-2 py-1 text-sm">
-              <input type="checkbox" checked={days.includes(i)} onChange={(e) => setDays(e.target.checked ? [...days, i] : days.filter((x) => x !== i))} />{w}
+            <label key={w} className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-xl border-2 border-primary bg-white px-4 font-bold has-checked:bg-primary has-checked:text-primary-foreground has-focus-visible:outline-3 has-focus-visible:outline-offset-2 has-focus-visible:outline-[#047D13]">
+              <input type="checkbox" className="sr-only" checked={days.includes(i)} onChange={(e) => setDays(e.target.checked ? [...days, i] : days.filter((x) => x !== i))} />{days.includes(i) && <span aria-hidden="true">✓</span>}{w}
             </label>
           ))}
         </fieldset>
@@ -235,9 +245,9 @@ function JoinCards({ cls, cards }: { cls: { id: string; class_code: string; name
   return (
     <div className="space-y-6">
       <div className="space-y-3 print:hidden">
-        <h1 className="text-4xl font-bold tracking-tight">✓ {cls.name} is ready</h1>
+        <h1 className="text-4xl font-bold tracking-tight sm:text-[52px]">✓ {cls.name} is ready</h1>
         <p className="text-lg">Class code <span className="font-mono font-semibold">{cls.class_code}</span>. Print these cards and hand one to each student.</p>
-        <p className="rounded-2xl bg-sun p-4 text-sun-ink">
+        <p className="rounded-xl bg-behind p-4 text-behind-ink">
           Personal codes are shown <strong>only now</strong>. If a card gets lost, you can give that student a new code from the classroom.
         </p>
         <div className="flex flex-wrap gap-3">
@@ -248,14 +258,14 @@ function JoinCards({ cls, cards }: { cls: { id: string; class_code: string; name
       </div>
       <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 print:grid-cols-2 print:gap-2">
         {cards.map((c) => (
-          <li key={c.id} className="break-inside-avoid rounded-xl border-2 border-dashed p-5 print:p-4">
-            <p className="text-sm text-muted-foreground">Coding in Color · {cls.school}, {cls.name}</p>
+          <li key={c.id} className="break-inside-avoid rounded-[10px] border-2 border-dashed p-5 print:p-4">
+            <p className="text-base text-muted-foreground">Coding in Color · {cls.school}, {cls.name}</p>
             <p className="mt-1 text-xl font-semibold">{c.label}</p>
             <dl className="mt-3 grid grid-cols-2 gap-2">
-              <div><dt className="text-xs text-muted-foreground">Class code</dt><dd className="font-mono text-lg font-semibold">{cls.class_code}</dd></div>
-              <div><dt className="text-xs text-muted-foreground">Your personal code</dt><dd className="font-mono text-lg font-semibold tracking-widest">{c.join_code}</dd></div>
+              <div><dt className="text-sm text-muted-foreground">Class code</dt><dd className="font-mono text-lg font-semibold">{cls.class_code}</dd></div>
+              <div><dt className="text-sm text-muted-foreground">Your personal code</dt><dd className="font-mono text-lg font-semibold tracking-widest">{c.join_code}</dd></div>
             </dl>
-            <p className="mt-3 text-xs text-muted-foreground">Go to the class link your teacher shares, or /join, and type both codes. Keep your code private.</p>
+            <p className="mt-3 text-sm text-muted-foreground">Go to the class link your teacher shares, or /join, and type both codes. Keep your code private.</p>
           </li>
         ))}
       </ul>

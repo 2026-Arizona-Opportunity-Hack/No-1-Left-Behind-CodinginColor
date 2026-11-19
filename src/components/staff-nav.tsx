@@ -16,8 +16,8 @@ export function StaffNav({ items }: { items: { href: string; label: string }[] }
         const here = item.href === current;
         return (
           <Link key={item.href} href={item.href} aria-current={here ? "page" : undefined}
-            className={`inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 py-2 text-lg font-semibold whitespace-nowrap no-underline ${here ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-card"}`}>
-            {here && <span aria-hidden="true" className="font-mono font-extrabold text-[#9BE8AB]">&gt;</span>}
+            className={`inline-flex min-h-11 items-center gap-1.5 rounded-[10px] px-[18px] py-2 text-lg font-bold whitespace-nowrap no-underline ${here ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-card"}`}>
+            {here && <span aria-hidden="true" className="font-mono font-extrabold text-[#A8E6B8]">&gt;</span>}
             {item.label}
           </Link>
         );

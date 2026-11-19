@@ -22,12 +22,12 @@ export function LoginForm({ next }: { next: string | null }) {
           aria-invalid={Boolean(state.error)} aria-describedby={state.error ? "login-error" : undefined} className="h-14" />
       </div>
       {state.error && (
-        <p id="login-error" role="alert" className="rounded-2xl bg-help p-4 text-sm text-help-ink">
+        <p id="login-error" role="alert" className="rounded-xl bg-help p-4 text-base text-help-ink">
           {state.error}
         </p>
       )}
       <Button type="submit" size="lg" className="h-14 w-full text-lg" disabled={pending}>
-        {pending ? "Signing in…" : "Sign in"}
+        {pending ? "Signing in…" : <>Sign in <span aria-hidden="true" className="flex size-7 items-center justify-center rounded-full bg-[#A8E6B8] font-mono text-base text-primary">&gt;</span></>}
       </Button>
     </form>
   );

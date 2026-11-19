@@ -18,5 +18,5 @@ export default async function ModulePage({ params }: { params: Promise<{ moduleI
   if (!tree.ok) return <div className="space-y-2"><p role="alert">{tree.error}</p><Link href="/admin/curriculum" className="underline">All units</Link></div>;
   const [pre,post]=await Promise.all([getAssessment(moduleId,"pre"),getAssessment(moduleId,"post")]);
   const quizzes=[{kind:"Pre-test",result:pre},{kind:"Post-test",result:post}];
-  return <div className="space-y-4"><div className="flex flex-wrap gap-3">{quizzes.map(({kind,result}) => <p key={kind} className="rounded-full bg-sun px-4 py-2 text-sm text-sun-ink">{kind}: {result.ok ? `${result.data.questions.length} questions · ${result.data.reviewed ? "reviewed" : "review and save before publishing"}` : result.error}</p>)}</div><ModuleEditor key={tree.data.updated_at} module={tree.data} /></div>;
+  return <div className="space-y-4"><div className="flex flex-wrap gap-3">{quizzes.map(({kind,result}) => <p key={kind} className="rounded-lg bg-behind px-4 py-2 text-base text-behind-ink">{kind}: {result.ok ? `${result.data.questions.length} questions · ${result.data.reviewed ? "reviewed" : "review and save before publishing"}` : result.error}</p>)}</div><ModuleEditor key={tree.data.updated_at} module={tree.data} /></div>;
 }

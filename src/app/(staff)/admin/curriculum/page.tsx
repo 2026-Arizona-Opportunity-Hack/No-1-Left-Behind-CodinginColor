@@ -19,10 +19,10 @@ export default async function CurriculumEditorPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
       <div>
-        <h1 className="text-4xl font-bold tracking-tight">Edit curriculum</h1>
-        <p className="text-muted-foreground">Students go through units in this order. They only see the units and lessons you choose to show them.</p>
+        <h1 className="flex items-center gap-3 text-4xl font-bold tracking-tight sm:text-[52px]"><span aria-hidden="true" className="font-mono text-[#0DB031]">&gt;</span>Edit curriculum</h1>
+        <p className="text-xl text-muted-foreground">Students go through units in this order. They only see the units and lessons you choose to show them.</p>
       </div>
-      <Link href="/admin/curriculum/import" className={buttonVariants({ size: "lg" })}>Add curriculum from slides or video</Link>
+      <Link href="/admin/curriculum/import" className={buttonVariants({ size: "lg" }) + " h-auto min-h-[60px] max-w-full py-2 text-center whitespace-normal"}>Add curriculum from slides or video</Link>
       </div>
       {modules.ok ? <ModuleList modules={modules.data} /> : <p role="alert">{modules.error}</p>}
     </div>

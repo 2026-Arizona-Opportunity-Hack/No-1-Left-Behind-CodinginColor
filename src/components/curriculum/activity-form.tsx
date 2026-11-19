@@ -45,16 +45,16 @@ export function ActivityForm({ activity }: { activity: Activity }) {
     <div className="space-y-1">
       <Label htmlFor={id(k)}>{label}</Label>
       {opts.area || opts.code
-        ? <Textarea id={id(k)} value={str(k)} onChange={(e) => set(k, e.target.value)} spellCheck={!opts.code} className={opts.code ? "min-h-24 font-mono text-[15px]" : "min-h-20"} />
+        ? <Textarea id={id(k)} value={str(k)} onChange={(e) => set(k, e.target.value)} spellCheck={!opts.code} className={opts.code ? "min-h-24 font-mono text-base" : "min-h-20"} />
         : <Input id={id(k)} value={str(k)} onChange={(e) => set(k, e.target.value)} className="h-10" />}
-      {opts.help && <p className="text-xs text-muted-foreground">{opts.help}</p>}
+      {opts.help && <p className="text-sm text-muted-foreground">{opts.help}</p>}
     </div>
   );
   const lines = (k: string, label: string, help?: string) => (
     <div className="space-y-1">
       <Label htmlFor={id(k)}>{label}</Label>
       <Textarea id={id(k)} value={toLines(content[k])} onChange={(e) => set(k, e.target.value.split("\n"))} className="min-h-20" />
-      <p className="text-xs text-muted-foreground">{help ?? "One per line."}</p>
+      <p className="text-sm text-muted-foreground">{help ?? "One per line."}</p>
     </div>
   );
 
@@ -82,7 +82,7 @@ export function ActivityForm({ activity }: { activity: Activity }) {
           <Input id={id("title")} value={title} onChange={(e) => setTitle(e.target.value)} className="h-10" /></div>
         <div className="space-y-1"><Label htmlFor={id("topic")}>Topic (one word, e.g. loops)</Label>
           <Input id={id("topic")} value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="e.g. loops" className="h-10" /></div>
-        <label className="flex items-end gap-2 pb-2 text-sm"><input type="checkbox" checked={isCore} onChange={(e) => setIsCore(e.target.checked)} className="size-4" />
+        <label className="flex items-end gap-2 pb-2 text-base"><input type="checkbox" checked={isCore} onChange={(e) => setIsCore(e.target.checked)} className="size-4" />
           Required <span className="text-muted-foreground">(untick to make it optional; catch-up skips optional steps)</span></label>
       </div>
 
@@ -101,8 +101,8 @@ export function ActivityForm({ activity }: { activity: Activity }) {
       {t === "fill_blank" && <>{text("prompt", "Instructions")}{text("template", "Code with a blank", { code: true, help: "Write ____ (four underscores) where the blank goes." })}{lines("answers", "Answers we accept (one per line)")}</>}
       {t === "parsons" && <>{text("prompt", "Instructions")}
         <div className="space-y-1"><Label htmlFor={id("lines")}>The lines in the right order</Label>
-          <Textarea id={id("lines")} value={toLines(content.lines)} onChange={(e) => set("lines", e.target.value.split("\n"))} className="min-h-24 font-mono text-[15px]" />
-          <p className="text-xs text-muted-foreground">One line of code per line, with its indentation. Students get them shuffled.</p></div></>}
+          <Textarea id={id("lines")} value={toLines(content.lines)} onChange={(e) => set("lines", e.target.value.split("\n"))} className="min-h-24 font-mono text-base" />
+          <p className="text-sm text-muted-foreground">One line of code per line, with its indentation. Students get them shuffled.</p></div></>}
       {(t === "code_exercise" || t === "fix_bug") && <>
         {text("prompt", "Instructions", { area: true })}
         <div className="space-y-1">
@@ -111,19 +111,19 @@ export function ActivityForm({ activity }: { activity: Activity }) {
         </div>
         <fieldset className="space-y-2"><legend className="font-semibold">How we check the student&apos;s code (when they press &quot;Check my code&quot;)</legend>
           {checks.length === 0 && (
-            <p className="rounded-2xl bg-sun p-3 text-sun-ink">No checks yet. Students will only turn in their code, and it won&apos;t be graded. Add at least one check to grade it.</p>
+            <p className="rounded-xl bg-behind p-3 text-behind-ink">No checks yet. Students will only turn in their code, and it won&apos;t be graded. Add at least one check to grade it.</p>
           )}
           {checks.length > 0 && (
-            <div aria-hidden="true" className="hidden grid-cols-[1fr_1.2fr_1.4fr_auto] gap-2 px-3 text-sm font-semibold text-muted-foreground sm:grid">
+            <div aria-hidden="true" className="hidden grid-cols-[1fr_1.2fr_1.4fr_auto] gap-2 px-3 text-base font-semibold text-muted-foreground sm:grid">
               <span>What it checks</span><span>What the code should print</span><span>Hint if it&apos;s wrong</span><span className="w-9" />
             </div>
           )}
           {checks.map((c, i) => (
-            <div key={i} className="grid items-start gap-2 rounded-2xl border-2 border-border p-3 sm:grid-cols-[1fr_1.2fr_1.4fr_auto]">
+            <div key={i} className="grid items-start gap-2 rounded-xl border-2 border-border p-3 sm:grid-cols-[1fr_1.2fr_1.4fr_auto]">
               <div className="space-y-2">
                 <Input aria-label={`Check ${i + 1} name`} value={c.label} placeholder="What it checks, e.g. Stops at 5"
                   onChange={(e) => set("tests", checks.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
-                <select aria-label={`Check ${i + 1} type`} value={c.assert !== undefined ? "assert" : "output"} className="h-9 w-full rounded-md border bg-background px-2 text-sm"
+                <select aria-label={`Check ${i + 1} type`} value={c.assert !== undefined ? "assert" : "output"} className="h-9 w-full rounded-md border bg-background px-2 text-base"
                   onChange={(e) => set("tests", checks.map((x, j) => {
                     if (j !== i) return x;
                     const base: Check = { label: x.label, stdin: x.stdin, hint: x.hint };
@@ -134,9 +134,9 @@ export function ActivityForm({ activity }: { activity: Activity }) {
                 </select>
               </div>
               {c.assert !== undefined
-                ? <Textarea aria-label={`Check ${i + 1} Python test`} value={c.assert} className="min-h-12 font-mono text-[15px]"
+                ? <Textarea aria-label={`Check ${i + 1} Python test`} value={c.assert} className="min-h-12 font-mono text-base"
                     onChange={(e) => set("tests", checks.map((x, j) => (j === i ? { ...x, assert: e.target.value } : x)))} />
-                : <Textarea aria-label={`Check ${i + 1} expected output`} value={c.expectedOutput ?? ""} placeholder="Exactly what it should print" className="min-h-12 font-mono text-[15px]"
+                : <Textarea aria-label={`Check ${i + 1} expected output`} value={c.expectedOutput ?? ""} placeholder="Exactly what it should print" className="min-h-12 font-mono text-base"
                     onChange={(e) => set("tests", checks.map((x, j) => (j === i ? { ...x, expectedOutput: e.target.value } : x)))} />}
               <Textarea aria-label={`Check ${i + 1} hint`} value={c.hint ?? ""} placeholder="Hint if it fails" className="min-h-12"
                 onChange={(e) => set("tests", checks.map((x, j) => (j === i ? { ...x, hint: e.target.value } : x)))} />
@@ -157,7 +157,7 @@ export function ActivityForm({ activity }: { activity: Activity }) {
                 onChange={(e) => set("fields", fields.map((x, j) => (j === i ? { ...x, kind: e.target.value as Field["kind"] } : x)))}>
                 <option value="short">Short answer</option><option value="long">Long answer</option><option value="number">Number</option>
               </select>
-              <label className="flex items-center gap-1 text-sm"><input type="checkbox" checked={Boolean(f.required)}
+              <label className="flex items-center gap-1 text-base"><input type="checkbox" checked={Boolean(f.required)}
                 onChange={(e) => set("fields", fields.map((x, j) => (j === i ? { ...x, required: e.target.checked } : x)))} />Required</label>
               <Button size="sm" variant="ghost" aria-label={`Remove question ${i + 1}`} onClick={() => set("fields", fields.filter((_, j) => j !== i))}>✕</Button>
             </div>
@@ -174,7 +174,7 @@ export function ActivityForm({ activity }: { activity: Activity }) {
           <div className="space-y-1"><Label htmlFor={id("mistakes")}>Common mistakes (one per line)</Label>
             <Textarea id={id("mistakes")} value={guide.mistakes.join("\n")} onChange={(e) => setGuide({ ...guide, mistakes: e.target.value.split("\n") })} /></div>
           <div className="space-y-1"><Label htmlFor={id("example")}>Worked example</Label>
-            <Textarea id={id("example")} value={guide.example} onChange={(e) => setGuide({ ...guide, example: e.target.value })} className="font-mono text-sm" /></div>
+            <Textarea id={id("example")} value={guide.example} onChange={(e) => setGuide({ ...guide, example: e.target.value })} className="font-mono text-base" /></div>
           <div className="space-y-1"><Label htmlFor={id("ask")}>Questions to ask the student (one per line, never the answer)</Label>
             <Textarea id={id("ask")} value={guide.ask.join("\n")} onChange={(e) => setGuide({ ...guide, ask: e.target.value.split("\n") })} /></div>
           <div className="space-y-1"><Label htmlFor={id("hints")}>Hints for students (one per line, shown one at a time)</Label>

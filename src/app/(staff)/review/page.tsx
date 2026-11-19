@@ -32,9 +32,9 @@ export default async function CurriculumPage() {
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-4xl font-bold tracking-tight">Curriculum</h1>
+        <h1 className="flex items-center gap-3 text-4xl font-bold tracking-tight sm:text-[52px]"><span aria-hidden="true" className="font-mono text-[#0DB031]">&gt;</span>Curriculum</h1>
         {!can(staff,"curriculum.write") && (
-          <span className="rounded-full border px-2.5 py-0.5 text-sm font-medium">View only</span>
+          <span className="rounded-lg border px-2.5 py-0.5 text-base font-medium">View only</span>
         )}
       </div>
       {!modules.length && <p className="text-muted-foreground">No units are ready yet.</p>}
@@ -42,16 +42,16 @@ export default async function CurriculumPage() {
         <section key={m.id} aria-labelledby={`unit-${m.id}`} className="space-y-3">
           <h2 id={`unit-${m.id}`} className="text-xl font-semibold">
             Unit {m.position}: {m.title}
-            {m.status === "draft" && <span className="ml-2 text-sm font-normal text-muted-foreground">(not shown to students yet)</span>}
+            {m.status === "draft" && <span className="ml-2 text-base font-normal text-muted-foreground">(not shown to students yet)</span>}
           </h2>
           {m.description && <p className="text-muted-foreground">{m.description}</p>}
           <ol className="space-y-2">
             {m.lessons.map((l) => (
               <li key={l.id}>
-                <details className="rounded-2xl bg-card p-4">
+                <details className="rounded-xl bg-card p-4 border border-border">
                   <summary className="cursor-pointer font-medium">
                     {l.title}
-                    <span className="ml-2 text-sm font-normal text-muted-foreground">
+                    <span className="ml-2 text-base font-normal text-muted-foreground">
                       {l.activities.length} steps{l.status === "draft" ? " · not shown to students yet" : ""}
                     </span>
                   </summary>
@@ -60,7 +60,7 @@ export default async function CurriculumPage() {
                       <li key={a.id} className="rounded-lg bg-muted/50 p-3">
                         <p className="font-medium">
                           {a.position}. {a.title ?? ACTIVITY_LABEL[a.type]}{" "}
-                          <span className="text-sm font-normal text-muted-foreground">
+                          <span className="text-base font-normal text-muted-foreground">
                             {ACTIVITY_LABEL[a.type] ?? a.type}
                             {a.concept_tag ? ` · ${a.concept_tag}` : ""}
                             {a.is_core ? "" : " · Optional"}
@@ -69,7 +69,7 @@ export default async function CurriculumPage() {
                         {a.teaching_guide?.about && (
                           <details className="mt-3 text-base">
                             <summary className="cursor-pointer font-semibold text-[#047D13]">Teaching guide</summary>
-                            <div className="mt-3 space-y-3 rounded-2xl bg-card p-4">
+                            <div className="mt-3 space-y-3 rounded-xl bg-card p-4 border border-border">
                               <div><p className="font-semibold">What this is about</p><p>{a.teaching_guide.about}</p></div>
                               {!!a.teaching_guide.mistakes?.length && (
                                 <div><p className="font-medium">Common mistakes</p>

@@ -42,7 +42,7 @@ export function useDragReorder(ids: string[], onReorder: (ids: string[]) => void
 export function DragHandle(props: React.HTMLAttributes<HTMLSpanElement> & { draggable?: boolean }) {
   return (
     <span {...props} title="Drag to change the order" aria-hidden="true"
-      className="inline-flex size-10 shrink-0 cursor-grab touch-none items-center justify-center rounded-full border-2 border-primary bg-card text-primary select-none hover:bg-secondary active:cursor-grabbing">
+      className="inline-flex size-10 shrink-0 cursor-grab touch-none items-center justify-center rounded-[10px] border-2 border-primary bg-card text-primary select-none hover:bg-secondary active:cursor-grabbing">
       <svg viewBox="0 0 16 16" className="size-5" fill="currentColor">
         {[5, 11].flatMap((x) => [3, 8, 13].map((y) => <circle key={`${x}-${y}`} cx={x} cy={y} r="1.6" />))}
       </svg>

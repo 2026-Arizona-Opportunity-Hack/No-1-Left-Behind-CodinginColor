@@ -16,6 +16,8 @@ type Props = {
   people: { id: string; display_name: string | null; role: string }[];
   currentUserId: string;
 };
+const BUILT_IN = ["admin", "instructor", "reviewer"];
+
 export function RoleManager({ roles, people, currentUserId }: Props) {
   const [editing, setEditing] = useState<string | null>(null);
   const [name, setName] = useState("");
@@ -44,12 +46,13 @@ export function RoleManager({ roles, people, currentUserId }: Props) {
         aria-label="Staff roles"
       >
         {roles.map((role) => (
-          <div key={role.id} className="space-y-3 rounded-3xl bg-card p-5">
-            <h2 className="text-xl font-semibold">{role.name}</h2>
-            <p className="text-sm text-muted-foreground">
+          <div key={role.id} className={`space-y-3 rounded-[20px] bg-card p-6 ${BUILT_IN.includes(role.id) ? "border border-border" : "border-2 border-primary"}`}>
+            <span className={`inline-flex min-h-8 items-center rounded-[10px] px-3 text-base font-bold ${BUILT_IN.includes(role.id) ? (role.id === "admin" ? "bg-primary text-white" : "bg-lilac text-lilac-ink") : "border-2 border-primary bg-white text-primary"}`}>{BUILT_IN.includes(role.id) ? "Built in" : "Custom"}</span>
+            <h2 className="text-2xl font-bold">{role.name}</h2>
+            <p className="text-base text-muted-foreground">
               {people.filter((p) => p.role === role.id).length} staff assigned
             </p>
-            <ul className="list-disc space-y-1 pl-5 text-sm">
+            <ul className="list-disc space-y-1 pl-5 text-base">
               {role.permissions.map((p) => (
                 <li key={p}>{PERMISSIONS[p].label}</li>
               ))}
@@ -63,7 +66,7 @@ export function RoleManager({ roles, people, currentUserId }: Props) {
                 Edit role
               </Button>
             ) : (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-base text-muted-foreground">
                 Full access. At least one administrator is kept.
               </p>
             )}
@@ -71,7 +74,7 @@ export function RoleManager({ roles, people, currentUserId }: Props) {
         ))}
       </section>
       <form
-        className="space-y-4 rounded-3xl bg-card p-6"
+        className="space-y-4 rounded-[20px] border-2 border-primary bg-card p-6"
         onSubmit={(e) => {
           e.preventDefault();
           save(
@@ -82,7 +85,7 @@ export function RoleManager({ roles, people, currentUserId }: Props) {
         }}
       >
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold">
+          <h2 className="text-[26px] font-bold">
             {editing ? "Edit role" : "Add a role"}
           </h2>
           {editing && (
@@ -110,11 +113,11 @@ export function RoleManager({ roles, people, currentUserId }: Props) {
           ).map(([permission, definition]) => (
             <label
               key={permission}
-              className="flex items-start gap-3 rounded-2xl border border-border p-3"
+              className="flex min-h-14 items-start gap-3.5 rounded-xl border-2 border-border bg-white p-3.5 has-checked:border-primary has-checked:bg-secondary"
             >
               <input
                 type="checkbox"
-                className="mt-1"
+                className="mt-1 size-6"
                 checked={permissions.includes(permission)}
                 onChange={(e) =>
                   setPermissions((current) =>
@@ -125,8 +128,8 @@ export function RoleManager({ roles, people, currentUserId }: Props) {
                 }
               />
               <span>
-                <span className="block font-semibold">{definition.label}</span>
-                <span className="text-sm text-muted-foreground">
+                <span className="block font-bold">{definition.label} <span className="font-normal text-muted-foreground">({permissions.includes(permission) ? "allowed" : "not allowed"})</span></span>
+                <span className="text-base text-muted-foreground">
                   {definition.description}
                 </span>
               </span>
@@ -141,7 +144,7 @@ export function RoleManager({ roles, people, currentUserId }: Props) {
             <Label htmlFor="replacement">Move this role&apos;s staff to</Label>
             <select
               id="replacement"
-              className="h-11 w-full rounded-md border bg-background px-3"
+              className="h-12 w-full"
               value={replacement}
               onChange={(e) => setReplacement(e.target.value)}
             >
@@ -178,17 +181,17 @@ export function RoleManager({ roles, people, currentUserId }: Props) {
       </form>
       <SaveMessage message={message} />
       <section className="space-y-3" aria-labelledby="staff-accounts">
-        <h2 id="staff-accounts" className="text-2xl font-semibold">
+        <h2 id="staff-accounts" className="text-[28px] font-bold">
           Staff accounts
         </h2>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-base text-muted-foreground">
           Staff sign in with their own accounts. Student access uses personal
           join codes and never receives staff permissions.
         </p>
         {people.map((person) => (
           <div
             key={person.id}
-            className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-card p-4"
+            className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-card p-4 border border-border"
           >
             <span>
               {person.display_name || "Staff account"}
@@ -202,7 +205,7 @@ export function RoleManager({ roles, people, currentUserId }: Props) {
                 aria-label={`Role for ${person.display_name || person.id}`}
                 value={person.role}
                 disabled={pending}
-                className="h-11 rounded-md border bg-background px-3"
+                className="h-12 min-w-44"
                 onChange={(e) => {
                   const role = e.target.value;
                   if (confirm("Change this staff member's access?"))
