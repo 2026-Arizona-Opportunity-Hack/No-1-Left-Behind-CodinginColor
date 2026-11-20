@@ -63,10 +63,10 @@ export default async function StudentPage({ params }: Props) {
   return (
     <div className="space-y-8">
       <div className="space-y-2">
-        <Link href={`/teach/${classId}`} className="inline-block text-base text-foreground no-underline"><span aria-hidden="true" className="font-mono font-extrabold text-[#0DB031]">&lt;</span> Back to the classroom</Link>
+        <Link href={`/teach/${classId}`} className="inline-flex min-h-11 items-center gap-2 text-xl font-medium text-foreground no-underline"><span aria-hidden="true" className="font-mono font-extrabold text-[#0DB031]">&lt;</span> Back to the classroom</Link>
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-4xl font-bold tracking-tight">{row.label}</h1>
-          <span className={`inline-flex items-center gap-1 rounded-full border px-3 py-0.5 text-sm font-semibold ${status.chip}`}>
+          <h1 className="text-4xl font-bold tracking-tight sm:text-[52px]">{row.label}</h1>
+          <span className={`inline-flex min-h-8 items-center gap-1 rounded-[10px] border px-3 text-base font-bold ${status.chip}`}>
             <span aria-hidden="true">{status.icon}</span>{status.word}
           </span>
         </div>
@@ -76,6 +76,12 @@ export default async function StudentPage({ params }: Props) {
         </p>
       </div>
 
+      <dl className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        {([["Done", `${row.percent_complete}%`], ["Time on task", formatDuration(row.time_on_task_ms)], ["Status", status.word], ["Steps done", `${d.activities.filter((a) => a.status === "done").length} of ${d.activities.length}`]] as const).map(([k, v]) => (
+          <div key={k} className="rounded-[20px] border border-border bg-card px-5 py-4"><dd className="text-[34px] leading-tight font-bold">{v}</dd><dt className="text-muted-foreground">{k}</dt></div>
+        ))}
+      </dl>
+
       {stuckLesson && stuck && (
         <HelpPanel studentLabel={row.label} stepTitle={stuck.title || ACTIVITY_LABEL[stuck.type]} stepNumber={stuck.position}
           lessonTitle={stuckLesson.title} code={stuckWork?.last_code ?? null} checks={stuck.content.tests ?? []}
@@ -84,23 +90,23 @@ export default async function StudentPage({ params }: Props) {
           guideFrom={!stuck.teaching_guide?.about && fallbackGuide ? fallbackGuide.title || ACTIVITY_LABEL[fallbackGuide.type] : null} />
       )}
 
-      <section aria-labelledby="pace-heading" className="grid gap-4 rounded-3xl bg-card p-5 md:grid-cols-2">
+      <section aria-labelledby="pace-heading" className="grid gap-6 md:grid-cols-2">
         <h2 id="pace-heading" className="sr-only">Where this student works</h2>
-        <form action={saveStartModule} className="space-y-2">
+        <form action={saveStartModule} className="min-w-0 space-y-2 rounded-[20px] border border-border bg-card p-6">
           {ids}
-          <label htmlFor="moduleId" className="block font-medium">Start this student at</label>
-          <p className="text-sm text-muted-foreground">For students who joined late. Earlier units stay open but won&apos;t hold them back.</p>
+          <label htmlFor="moduleId" className="block text-[22px] font-bold">Start this student at</label>
+          <p className="text-base text-muted-foreground">For students who joined late. Earlier units stay open but won&apos;t hold them back.</p>
           <div className="flex gap-2">
-            <select id="moduleId" name="moduleId" defaultValue={d.start_module_id ?? ""} className="h-9 flex-1 rounded-md border bg-background px-2">
+            <select id="moduleId" name="moduleId" defaultValue={d.start_module_id ?? ""} className="h-12 min-w-0 flex-1">
               <option value="">The beginning (Unit 1)</option>
               {modules.map((m) => <option key={m.id} value={m.id}>Unit {m.position}: {m.title}</option>)}
             </select>
             <Button type="submit" variant="outline">Save</Button>
           </div>
         </form>
-        <div className="space-y-2">
-          <p className="font-medium">Unlock a unit early</p>
-          <p className="text-sm text-muted-foreground">Lets this student into a unit before finishing the one before it.</p>
+        <div className="min-w-0 space-y-2 rounded-[20px] border border-border bg-card p-6">
+          <p className="text-[22px] font-bold">Unlock a unit early</p>
+          <p className="text-base text-muted-foreground">Lets this student into a unit before finishing the one before it.</p>
           <ul className="space-y-1">
             {modules.slice(1).map((m) => {
               const unlocked = d.unlocked_module_ids.includes(m.id);
@@ -119,27 +125,27 @@ export default async function StudentPage({ params }: Props) {
       </section>
 
       <section aria-labelledby="work-heading" className="space-y-4">
-        <h2 id="work-heading" className="text-xl font-semibold">Their work, step by step</h2>
+        <h2 id="work-heading" className="flex items-center gap-2.5 text-[28px] font-bold"><span aria-hidden="true" className="font-mono text-[#047D13]">&gt;</span>Their work, step by step</h2>
         {modules.map((m) => m.lessons.map((lesson) => {
           const steps = lesson.activities.map((a) => ({ a, s: byActivity.get(a.id) })).filter((x): x is { a: typeof x.a; s: StudentActivityDetail } => Boolean(x.s));
           const touched = steps.some((x) => x.s.status !== "not_started");
           const doneCount = steps.filter((x) => x.s.status === "done").length;
           return (
-            <details key={lesson.id} open={touched && doneCount < steps.length} className="rounded-2xl bg-card p-4">
-              <summary className="cursor-pointer font-medium">
+            <details key={lesson.id} open={touched && doneCount < steps.length} className="rounded-[20px] border border-border bg-card p-5">
+              <summary className="min-h-11 cursor-pointer text-lg font-bold">
                 Unit {m.position} · {lesson.title}
-                <span className={`ml-2 rounded-full px-2.5 py-0.5 text-sm font-medium ${!touched ? "bg-background text-muted-foreground" : doneCount === steps.length ? "bg-ontrack text-ontrack-ink" : "bg-sun text-sun-ink"}`}>{!touched ? "Not started" : doneCount === steps.length ? "✓ " : ""}{touched ? `${doneCount} of ${steps.length} steps done` : ""}</span>
+                <span className={`ml-2 rounded-lg px-3 py-0.5 text-base font-medium ${!touched ? "bg-background text-muted-foreground" : doneCount === steps.length ? "bg-ontrack text-ontrack-ink" : "bg-[#CDEBD5] text-primary"}`}>{!touched ? "Not started" : doneCount === steps.length ? "✓ " : ""}{touched ? `${doneCount} of ${steps.length} steps done` : ""}</span>
               </summary>
               <ol className="mt-3 space-y-3">
                 {steps.map(({ a, s }) => {
                   const st = STEP_STATUS[s.status];
                   const labels = new Map((a.content.fields ?? []).map((f) => [f.id, f.label]));
                   return (
-                    <li key={a.id} className="rounded-lg bg-muted/40 p-3">
+                    <li key={a.id} className="rounded-xl bg-[#F7FCF8] p-4">
                       <p className="flex flex-wrap items-baseline gap-x-3">
                         <span className={`font-medium ${st.className}`}><span aria-hidden="true">{st.icon}</span> {st.word}</span>
                         <span className="font-medium">{s.position}. {s.title || ACTIVITY_LABEL[s.type]}</span>
-                        <span className="text-sm text-muted-foreground">
+                        <span className="text-base text-muted-foreground">
                           {ACTIVITY_LABEL[s.type]}
                           {s.correct_first_try !== null && ` · ${s.correct_first_try ? "right first try" : "not right first try"}`}
                           {s.attempts > 0 && ` · ${s.attempts} ${s.attempts === 1 ? "try" : "tries"}`}
@@ -148,11 +154,11 @@ export default async function StudentPage({ params }: Props) {
                         </span>
                       </p>
                       {s.last_code && (
-                        <details className="mt-2"><summary className="cursor-pointer text-sm font-medium">Their latest code</summary>
-                          <pre className="mt-2 overflow-auto rounded-md bg-[#0F2E1C] p-3 font-mono text-sm text-[#E6F4EA]">{s.last_code}</pre></details>
+                        <details className="mt-2"><summary className="cursor-pointer text-base font-medium">Their latest code</summary>
+                          <pre className="mt-2 overflow-auto rounded-xl border-l-4 border-[#0DB031] bg-[#0F2E1C] p-4 font-mono text-base leading-7 text-[#E6F4EA]">{s.last_code}</pre></details>
                       )}
                       {s.worksheet_answers && (
-                        <dl className="mt-2 space-y-1 rounded-md border bg-background p-3 text-sm">
+                        <dl className="mt-2 space-y-1 rounded-md border bg-background p-3 text-base">
                           <p className="font-medium">Worksheet answers</p>
                           {Object.entries(s.worksheet_answers).map(([k, v]) => (
                             <div key={k}><dt className="text-muted-foreground">{labels.get(k) ?? k}</dt><dd className="whitespace-pre-wrap">{v || "—"}</dd></div>
@@ -167,7 +173,7 @@ export default async function StudentPage({ params }: Props) {
                 <form action={skipLesson} className="mt-3">
                   {ids}{hidden("lessonId", lesson.id)}
                   <Button type="submit" size="sm" variant="ghost">Skip this lesson for {row.label}</Button>
-                  <span className="ml-2 text-xs text-muted-foreground">Marked as skipped, never as completed.</span>
+                  <span className="ml-2 text-sm text-muted-foreground">Marked as skipped, never as completed.</span>
                 </form>
               )}
             </details>

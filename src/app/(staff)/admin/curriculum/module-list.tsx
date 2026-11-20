@@ -18,14 +18,14 @@ export function ModuleList({ modules }: { modules: Row[] }) {
   const drag = useDragReorder(ids, (next) => save(() => reorderModulesAction(next), "Order saved"), pending);
   return (
     <div className="space-y-6">
-      <p className="text-sm text-muted-foreground">{DRAG_HINT}</p>
+      <p className="text-base text-muted-foreground">{DRAG_HINT}</p>
       <ol className="space-y-3">
         {modules.map((m, i) => (
-          <li key={m.id} {...drag.rowProps(m.id)} className={`flex flex-wrap items-center gap-3 rounded-2xl bg-card p-4 ${drag.rowClass(m.id)}`}>
+          <li key={m.id} {...drag.rowProps(m.id)} className={`flex flex-wrap items-center gap-3 rounded-xl bg-card p-4 ${drag.rowClass(m.id)}`}>
             <DragHandle {...drag.handleProps(m.id)} />
             <div className="min-w-0 flex-1">
               <Link href={`/admin/curriculum/${m.id}`} className="text-xl font-semibold text-foreground underline-offset-4 hover:underline">Unit {i + 1}: {m.title}</Link>
-              <p className="text-sm text-muted-foreground">{m.lesson_count} lessons{m.description ? ` · ${m.description}` : ""}</p>
+              <p className="text-base text-muted-foreground">{m.lesson_count} lessons{m.description ? ` · ${m.description}` : ""}</p>
             </div>
             <StatusBadge status={m.status} />
             <Button size="sm" variant="destructive" disabled={pending} onClick={() => { if(confirm(`Delete "${m.title}" and its lessons? Assigned units or units with student work must be hidden instead.`)) save(() => deleteModuleAction(m.id), "Unit deleted"); }}>Delete</Button>
@@ -39,7 +39,7 @@ export function ModuleList({ modules }: { modules: Row[] }) {
         ))}
       </ol>
       <SaveMessage message={message} />
-      <form className="flex flex-wrap items-end gap-3 rounded-xl border border-dashed p-4"
+      <form className="flex flex-wrap items-end gap-3 rounded-[10px] border border-dashed p-4"
         onSubmit={(e) => { e.preventDefault(); save(() => createModuleAction(title, ""), "Unit created", () => setTitle("")); }}>
         <div className="flex-1 space-y-1">
           <Label htmlFor="new-unit">New unit</Label>

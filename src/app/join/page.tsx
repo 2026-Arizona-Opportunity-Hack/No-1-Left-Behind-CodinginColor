@@ -15,18 +15,20 @@ type Props = { searchParams: Promise<{ class?: string }> };
 export default function JoinPage({ searchParams }: Props) {
   return (
     <div className="flex flex-1 flex-col">
-      <header className="px-6 py-7 sm:px-14"><Logo /></header>
-      <main className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-12 px-6 pb-16 sm:px-14 lg:grid-cols-[1fr_540px]">
+      <header className="mx-auto w-full max-w-[1104px] px-5 sm:px-6 py-7"><Logo /></header>
+      <main className="mx-auto grid w-full max-w-[1104px] flex-1 items-center gap-12 px-5 sm:px-6 pb-16 lg:grid-cols-[1fr_540px]">
         <div>
-          <h1 className="text-5xl leading-tight font-bold tracking-tight sm:text-6xl">Join your class</h1>
+          <span className="inline-flex min-h-8 items-center gap-1.5 rounded-lg bg-sky px-3 text-base font-bold text-sky-ink"><span aria-hidden="true" className="font-mono">&gt;_</span> For students</span>
+          <h1 className="mt-4 text-5xl leading-tight font-bold tracking-tight sm:text-[56px]">Join your class</h1>
           <p className="mt-5 max-w-sm text-xl text-muted-foreground">Both codes are on the card your teacher gave you. No email, no password.</p>
-          <div aria-hidden="true" className="mt-11 hidden w-80 -rotate-3 rounded-2xl border-2 border-dashed border-primary bg-card px-6 py-5 sm:block">
+          <div role="img" aria-label="Example join card with a class code and a personal code" className="mt-7 hidden w-full max-w-[420px] rounded-xl border-2 border-dashed border-primary bg-card px-5 py-[18px] sm:block">
             <p className="font-semibold">Your name</p>
-            <p className="mt-3 flex justify-between text-sm text-muted-foreground"><span>Class code</span><span>Your personal code</span></p>
+            <p className="mt-3 flex justify-between text-base text-muted-foreground"><span>Class code</span><span>Your personal code</span></p>
             <p className="flex justify-between font-mono text-xl font-bold"><span>MARY-P3</span><span>7KQ2MX</span></p>
           </div>
+          <p aria-hidden="true" className="mt-2.5 hidden items-center gap-2 font-bold text-[#047D13] sm:flex"><span className="font-mono">&uarr;</span> This is what your card looks like.</p>
         </div>
-        <div className="rounded-[28px] bg-card p-8 sm:p-11">
+        <div className="rounded-[20px] border-2 border-primary bg-card p-8 sm:p-9">
           <Suspense fallback={<p role="status" className="text-muted-foreground">Loading…</p>}>
             <JoinArea searchParams={searchParams} />
           </Suspense>

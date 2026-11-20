@@ -91,8 +91,8 @@ export function VideoStep({ activity }: StepProps<"video">) {
         <div ref={host} className="size-full" title={activity.title || "Lesson video"} />
         {active && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/70 p-4">
-            <div role="dialog" aria-modal="false" aria-labelledby={`pp-${activity.id}`} className="w-full max-w-lg space-y-3 rounded-xl bg-background p-5 shadow-lg">
-              <p className="text-sm font-medium text-muted-foreground">Quick check before we continue · {mmss(active.at_seconds)}</p>
+            <div role="dialog" aria-modal="false" aria-labelledby={`pp-${activity.id}`} className="w-full max-w-lg space-y-3 rounded-[10px] bg-background p-5 border-2 border-primary">
+              <p className="text-base font-medium text-muted-foreground">Quick check before we continue · {mmss(active.at_seconds)}</p>
               <h2 id={`pp-${activity.id}`} ref={quizRef} tabIndex={-1} className="text-lg font-semibold outline-none">{active.prompt}</h2>
               <fieldset className="space-y-2">
                 <legend className="sr-only">Choose an answer</legend>
@@ -111,7 +111,7 @@ export function VideoStep({ activity }: StepProps<"video">) {
       </div>
       {pause_points.length > 0 && (
         <div>
-          <p className="text-sm text-muted-foreground">The video stops {pause_points.length} time{pause_points.length === 1 ? "" : "s"} for a quick question ({solved.length} answered).</p>
+          <p className="text-base text-muted-foreground">The video stops {pause_points.length} time{pause_points.length === 1 ? "" : "s"} for a quick question ({solved.length} answered).</p>
           <div className="relative mt-2 h-2 rounded-full bg-muted" aria-hidden="true">
             {duration > 0 && pause_points.map((q) => (
               <span key={q.at_seconds} className={`absolute -top-1 size-4 rounded-full border-2 ${solved.includes(q.at_seconds) ? "border-[#047D13] bg-[#047D13]" : "border-primary bg-background"}`}

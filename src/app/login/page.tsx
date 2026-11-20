@@ -15,11 +15,12 @@ type Props = { searchParams: Promise<{ next?: string }> };
 export default function LoginPage({ searchParams }: Props) {
   return (
     <div className="flex flex-1 flex-col">
-      <header className="px-6 py-7 sm:px-14"><Logo /></header>
+      <header className="mx-auto w-full max-w-[1104px] px-5 sm:px-6 py-7"><Logo /></header>
       <main className="flex flex-1 items-center justify-center px-4 pb-16">
-        <div className="flex w-full max-w-[480px] flex-col gap-6 rounded-[28px] bg-card p-8 sm:p-11">
+        <div className="flex w-full max-w-[480px] flex-col gap-6 rounded-[20px] border-2 border-primary bg-card p-8 sm:p-10">
           <div>
-            <h1 className="text-4xl font-bold">Sign in</h1>
+            <span className="inline-flex min-h-8 items-center gap-1.5 rounded-lg bg-lilac px-3 text-base font-bold text-lilac-ink"><span aria-hidden="true" className="font-mono">&lt;/&gt;</span> Staff and teachers</span>
+            <h1 className="mt-3.5 text-[40px] font-bold">Sign in</h1>
             <p className="mt-1 text-muted-foreground">For teachers, CIC staff and curriculum reviewers.</p>
           </div>
           <Suspense fallback={<p role="status" className="text-muted-foreground">Loading…</p>}>

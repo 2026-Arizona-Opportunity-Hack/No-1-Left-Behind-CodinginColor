@@ -17,7 +17,7 @@ export function KeysManager({ keys }: { keys: ApiKeyRow[] }) {
 
   return (
     <div className="space-y-6">
-      <form className="flex flex-wrap items-end gap-3 rounded-2xl bg-card p-4"
+      <form className="flex flex-wrap items-end gap-3 rounded-xl bg-card p-4 border border-border"
         onSubmit={(e) => { e.preventDefault(); save(() => createKeyAction(name), "Key created", (d) => { setFresh(d.key); setName(""); setCopied(false); }); }}>
         <div className="flex-1 space-y-1">
           <Label htmlFor="key-name">Name the new key (who will use it)</Label>
@@ -28,21 +28,21 @@ export function KeysManager({ keys }: { keys: ApiKeyRow[] }) {
       <SaveMessage message={message} />
 
       {fresh && (
-        <div role="status" className="space-y-3 rounded-2xl bg-sun p-5 text-sun-ink">
+        <div role="status" className="space-y-3 rounded-xl bg-behind p-5 text-behind-ink">
           <p className="font-semibold">Copy this key now. You won&apos;t see it again.</p>
-          <p className="text-sm">We only keep a scrambled version. If it&apos;s lost, revoke it and create a new one. Keep it out of email and chat; put it straight into your dashboard&apos;s settings.</p>
+          <p className="text-base">We only keep a scrambled version. If it&apos;s lost, revoke it and create a new one. Keep it out of email and chat; put it straight into your dashboard&apos;s settings.</p>
           <div className="flex flex-wrap items-center gap-2">
-            <code className="rounded bg-white px-3 py-2 font-mono text-sm break-all">{fresh}</code>
+            <code className="rounded bg-white px-3 py-2 font-mono text-base break-all">{fresh}</code>
             <Button variant="outline" onClick={async () => { await navigator.clipboard.writeText(fresh); setCopied(true); }}>{copied ? "✓ Copied" : "Copy key"}</Button>
             <Button variant="ghost" onClick={() => setFresh(null)}>I saved it, hide it</Button>
           </div>
         </div>
       )}
 
-      <div className="overflow-x-auto rounded-2xl border">
-        <table className="w-full min-w-[36rem] text-left text-sm">
+      <div tabIndex={0} role="region" aria-label="API keys table, scrolls sideways" className="overflow-x-auto rounded-xl border">
+        <table className="w-full min-w-[36rem] text-left text-base">
           <caption className="sr-only">API keys</caption>
-          <thead className="border-b bg-muted/50"><tr>{["Name", "Created", "Last used", "Status", ""].map((h, i) => <th key={i} scope="col" className="p-3 font-medium">{h}</th>)}</tr></thead>
+          <thead className="border-b bg-muted/50"><tr>{["Name", "Created", "Last used", "Status", ""].map((h, i) => <th key={i} scope="col" className="relative p-3 font-medium">{h || <span className="sr-only">Actions</span>}</th>)}</tr></thead>
           <tbody>
             {keys.map((k) => (
               <tr key={k.id} className="border-b last:border-0">

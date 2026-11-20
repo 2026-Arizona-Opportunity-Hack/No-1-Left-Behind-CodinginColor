@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { completeViewStep, logHint } from "@/app/learn/[lessonId]/actions";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { ACTIVITY_LABEL } from "@/lib/activity-labels";
+import { ACTIVITY_LABEL, ACTIVITY_TINT } from "@/lib/activity-labels";
 import { PythonRunner } from "@/lib/python/runner";
 import type { PlayerActivity, PlayerLesson } from "@/types/student-lesson";
 import { CodeStep, ParsonsStep } from "./rich-steps";
@@ -59,14 +59,14 @@ export function LessonPlayer({ lesson, catchUp }: { lesson: PlayerLesson; catchU
   if ((finished || !current) && catchUp) return <CaughtUp lessonTitle={lesson.title} catchUp={catchUp} />;
   if (finished || !current) {
     return (
-      <section aria-labelledby="done-heading" className="relative flex min-h-[70vh] flex-col items-center justify-center text-center">
-        <div aria-hidden="true" className="flex items-center gap-5 font-mono text-8xl leading-none font-extrabold text-[#0DB031] sm:text-9xl">
-          &lt;<span className="flex size-28 items-center justify-center rounded-full bg-primary text-6xl text-primary-foreground sm:size-32">✓</span>&gt;
+      <section aria-labelledby="done-heading" className="mx-auto flex w-full max-w-[760px] flex-col items-center py-8 text-center sm:py-16">
+        <div aria-hidden="true" className="flex items-center gap-4 font-mono text-7xl leading-none font-bold text-[#0DB031] sm:gap-6 sm:text-9xl">
+          &lt;<span className="flex size-20 items-center justify-center rounded-full bg-primary text-5xl text-primary-foreground sm:size-28 sm:text-6xl">✓</span>&gt;
         </div>
-        <h1 id="done-heading" className="mt-8 text-5xl font-bold tracking-tight sm:text-7xl">You finished {lesson.title}</h1>
+        <h1 id="done-heading" className="mt-8 text-4xl leading-tight font-bold tracking-tight [overflow-wrap:anywhere] sm:text-[52px]">You finished {lesson.title}</h1>
         <p className="mt-3 text-xl text-muted-foreground">{done.size} of {steps.length} steps done{steps.some((a) => !a.isCore && !done.has(a.id)) ? " (the bonus steps are optional)" : ""}.</p>
-        <div className="mt-10 flex flex-wrap justify-center gap-3.5">
-          {lesson.nextLesson && <Link href={`/learn/${lesson.nextLesson.id}`} className={buttonVariants({ size: "lg" })}>Next: {lesson.nextLesson.title} <span aria-hidden="true" className="font-mono font-extrabold">&gt;</span></Link>}
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          {lesson.nextLesson && <Link href={`/learn/${lesson.nextLesson.id}`} className={buttonVariants({ size: "lg" })}>Next: {lesson.nextLesson.title} <span aria-hidden="true" className="flex size-7 items-center justify-center rounded-full bg-[#A8E6B8] font-mono text-base text-primary">&gt;</span></Link>}
           <Link href="/learn" className={buttonVariants({ size: "lg", variant: "outline" })}>Back to my course</Link>
         </div>
       </section>
@@ -77,19 +77,31 @@ export function LessonPlayer({ lesson, catchUp }: { lesson: PlayerLesson; catchU
   const props = { activity: current, onDone: () => markDone(current.id), elapsed } as StepProps<never>;
   const lead = current.step.kind === "code" ? current.step.prompt : null;
 
+  const nav = (
+    <div>
+      {error && <p role="alert" className="mb-3 rounded-xl bg-[#FDE4DF] p-4 text-[#4A1008]">{error}</p>}
+      <div className="flex flex-wrap items-center gap-3">
+        {index > 0 && <Button variant="outline" onClick={() => goTo(index - 1)}><span aria-hidden="true">&lt;</span> Back</Button>}
+        <Button disabled={!canContinue || saving} onClick={next}
+          className="disabled:border-[#3D5C49] disabled:bg-[#C9D8CE] disabled:text-[#3D5C49] disabled:opacity-100">
+          {saving ? "Saving…" : index + 1 < steps.length ? "Next step" : "Finish lesson"} <span aria-hidden="true" className="flex size-7 items-center justify-center rounded-full bg-[#A8E6B8] font-mono text-base text-primary">&gt;</span>
+        </Button>
+      </div>
+      {!canContinue && <p className="mt-2 text-base text-muted-foreground">Unlocks when you finish this step</p>}
+    </div>
+  );
+
   return (
     <div className="flex flex-1 flex-col gap-4">
       <div className="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-2.5 sm:grid-cols-[1fr_auto_1fr]">
-        <Link href="/learn" className="text-base text-foreground no-underline"><span aria-hidden="true" className="font-mono font-extrabold text-[#0DB031]">&lt;</span> {lesson.title}</Link>
+        <Link href="/learn" className="inline-flex min-h-11 items-center gap-2 text-xl font-medium text-foreground no-underline"><span aria-hidden="true" className="font-mono font-extrabold text-[#0DB031]">&lt;</span> {lesson.title}</Link>
         <nav aria-label="Lesson steps" className="col-span-2 row-start-2 flex flex-wrap items-center justify-center gap-2.5 sm:col-span-1 sm:col-start-2 sm:row-start-1">
           {steps.map((a, i) => (
             <button key={a.id} type="button" onClick={() => goTo(i)} disabled={!reachable(i)}
               aria-current={i === index ? "step" : undefined}
               aria-label={`Step ${i + 1}: ${a.title || ACTIVITY_LABEL[a.type]}${done.has(a.id) ? " (done)" : ""}${a.isCore ? "" : " (extra)"}`}
-              className={i === index
-                ? "cursor-pointer rounded-full border-0 bg-[#FFD75E] px-3.5 py-0.5 text-[15px] font-semibold text-foreground"
-                : `size-3.5 cursor-pointer rounded-full p-0 disabled:cursor-not-allowed ${done.has(a.id) ? "border-0 bg-[#0DB031]" : "border-2 border-[#7FA08B] bg-transparent"}`}>
-              {i === index ? i + 1 : <span className="sr-only">{i + 1}</span>}
+              className={`flex size-8 cursor-pointer items-center justify-center rounded-[9px] border-2 p-0 font-mono text-base font-bold disabled:cursor-not-allowed ${i === index ? "border-primary bg-[#FFD75E] text-primary" : done.has(a.id) ? "border-primary bg-[#0DB031] text-primary" : "border-dashed border-muted-foreground bg-transparent text-muted-foreground"}`}>
+              <span aria-hidden="true">&gt;</span>
             </button>
           ))}
         </nav>
@@ -97,20 +109,21 @@ export function LessonPlayer({ lesson, catchUp }: { lesson: PlayerLesson; catchU
       </div>
 
       {/* Phone: info, then the step card, then Back/Next. Desktop: info and buttons on the left, card on the right. */}
-      <div className="grid flex-1 grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,420px)_1fr] lg:grid-rows-[1fr_auto] lg:gap-x-12 lg:gap-y-6">
-        <div className="flex flex-col pt-2 lg:col-start-1 lg:row-start-1 lg:pt-6">
+      <div className="grid flex-1 grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,320px)_1fr] lg:items-start lg:gap-x-8">
+        <div className="flex flex-col gap-0 pt-2 lg:col-start-1 lg:row-start-1 lg:pt-6">
           {(current.title && current.title !== ACTIVITY_LABEL[current.type] || !current.isCore) && (
-            <p className="text-base font-semibold text-[#047D13]">{current.title && current.title !== ACTIVITY_LABEL[current.type] ? ACTIVITY_LABEL[current.type] : ""}{current.isCore ? "" : " · Bonus (optional)"}</p>
+            <p><span className={`inline-flex min-h-8 items-center rounded-lg px-3 text-base font-bold ${ACTIVITY_TINT[current.type] ?? "bg-sky text-sky-ink"}`}>{current.title && current.title !== ACTIVITY_LABEL[current.type] ? ACTIVITY_LABEL[current.type] : ""}{current.isCore ? "" : " · Bonus (optional)"}</span></p>
           )}
           <h1 id="step-heading" ref={headingRef} tabIndex={-1} className="mt-2.5 text-4xl leading-[1.05] font-bold tracking-tight outline-none sm:text-5xl lg:text-[56px]">
             {current.title || ACTIVITY_LABEL[current.type]}
           </h1>
           {lead && <p className="mt-6 text-xl">{lead}</p>}
           {lead && <p className="mt-3.5 text-muted-foreground">Press <b className="font-semibold text-foreground">Run</b> to see what your code does. Press <b className="font-semibold text-foreground">Check my code</b> when you think it&apos;s right.</p>}
+          <div className="mt-6 hidden lg:block">{nav}</div>
           {current.hints.length > 0 && !done.has(current.id) && (
             <div className="mt-6 space-y-2.5">
               {current.hints.slice(0, hintsShown).map((h, i) => (
-                <p key={i} className="rounded-2xl bg-card p-4"><span className="font-semibold">Hint {i + 1}:</span> {h}</p>
+                <p key={i} className="rounded-xl bg-card p-4 border border-border"><span className="font-semibold">Hint {i + 1}:</span> {h}</p>
               ))}
               {hintsShown < current.hints.length && (
                 <Button variant="outline" onClick={() => { setHintsShown((n) => n + 1); logHint(current.id).catch(() => {}); }}>
@@ -120,20 +133,10 @@ export function LessonPlayer({ lesson, catchUp }: { lesson: PlayerLesson; catchU
             </div>
           )}
         </div>
-        <section aria-labelledby="step-heading" className="flex min-w-0 flex-col gap-4 self-start rounded-[28px] bg-card p-4 sm:p-6 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+        <section aria-labelledby="step-heading" className="flex min-w-0 flex-col gap-4 self-start rounded-[20px] bg-card p-4 sm:p-5 lg:col-start-2 lg:row-start-1 border border-border">
           <StepBody activity={current} props={props} runner={runner} />
         </section>
-        <div className="lg:col-start-1 lg:row-start-2">
-          {error && <p role="alert" className="mb-3 rounded-2xl bg-[#FDE4DF] p-4 text-[#4A1008]">{error}</p>}
-          <div className="flex flex-wrap items-center gap-3.5">
-            {index > 0 && <Button variant="outline" size="lg" onClick={() => goTo(index - 1)}>Back</Button>}
-            <Button size="lg" disabled={!canContinue || saving} onClick={next}
-              className="disabled:bg-[#C9DBCF] disabled:text-muted-foreground disabled:opacity-100">
-              {saving ? "Saving…" : index + 1 < steps.length ? "Next step" : "Finish lesson"} <span aria-hidden="true" className="font-mono font-extrabold">&gt;</span>
-            </Button>
-            {!canContinue && <span className="text-[15px] text-muted-foreground">Unlocks when you finish this step</span>}
-          </div>
-        </div>
+        <div className="lg:hidden">{nav}</div>
       </div>
     </div>
   );
@@ -148,22 +151,30 @@ function CaughtUp({ lessonTitle, catchUp }: { lessonTitle: string; catchUp: Catc
     catchUp.onFinish().then((ok) => setState(ok ? "done" : "not_yet"), () => setState("not_yet"));
   }, [catchUp]);
   return (
-    <section aria-labelledby="caught-up-heading" aria-live="polite" className="flex min-h-[70vh] flex-col justify-center gap-5 px-2 sm:px-16">
+    <section aria-labelledby="caught-up-heading" aria-live="polite" className="mx-auto w-full max-w-[760px] py-6 sm:py-10">
       {state === "saving" && <p role="status">Saving…</p>}
-      {state === "done" && <>
-        <p aria-hidden="true" className="font-mono text-6xl leading-none font-extrabold text-[#0DB031]">&gt;&gt;&gt;</p>
-        <h1 id="caught-up-heading" className="text-5xl leading-none font-bold tracking-tight sm:text-8xl">You&apos;re caught up!</h1>
-        <p className="max-w-xl text-2xl text-muted-foreground">You finished the recap and the core exercises for {lessonTitle}. Your teacher can see it.</p>
-        <div className="mt-6 flex flex-wrap gap-3.5">
-          {catchUp.todayLesson && <Link href={`/learn/${catchUp.todayLesson.id}`} className={buttonVariants({ size: "lg" })}>Rejoin your class: {catchUp.todayLesson.title}</Link>}
-          <Link href="/learn" className={buttonVariants({ size: "lg", variant: "outline" })}>Back to my course</Link>
+      {state === "done" && (
+        <div className="relative overflow-hidden rounded-3xl bg-primary px-6 py-10 text-center text-white sm:px-9">
+          <span aria-hidden="true" className="pointer-events-none absolute -top-28 -right-10 font-mono text-[380px] leading-none font-bold text-[#0F4527] select-none">&gt;</span>
+          <div className="relative flex flex-col items-center">
+            <span className="inline-flex min-h-8 items-center rounded-[10px] border-2 border-primary bg-white px-3 text-base font-bold text-primary">✓ Catch-up complete</span>
+            <p aria-hidden="true" className="mt-5 font-mono text-6xl leading-none font-bold text-[#0DB031]">&gt;&gt;&gt;</p>
+            <h1 id="caught-up-heading" className="mt-4 text-4xl leading-tight font-bold tracking-tight sm:text-[52px]">You&apos;re caught up!</h1>
+            <p className="mt-3 max-w-xl text-xl text-[#E0F1E5]">You finished the recap and the core exercises for {lessonTitle}. Your teacher can see it.</p>
+            <div className="mt-7 flex flex-wrap justify-center gap-3">
+              {catchUp.todayLesson && <Link href={`/learn/${catchUp.todayLesson.id}`} className={buttonVariants({ size: "lg", variant: "yellow" })}>Rejoin your class: {catchUp.todayLesson.title} <span aria-hidden="true" className="flex size-7 items-center justify-center rounded-full bg-[#A8E6B8] font-mono text-base text-primary">&gt;</span></Link>}
+              <Link href="/learn" className={buttonVariants({ size: "lg", variant: "outline" })}>Back to my course</Link>
+            </div>
+          </div>
         </div>
-      </>}
-      {state === "not_yet" && <>
-        <h1 id="caught-up-heading" className="text-2xl font-semibold">Almost there</h1>
-        <p className="text-muted-foreground">A few steps still need finishing. Go back and complete each one.</p>
-        <Link href="/learn" className={buttonVariants({ variant: "outline" })}>Back to my course</Link>
-      </>}
+      )}
+      {state === "not_yet" && (
+        <div className="rounded-[20px] border-2 border-primary bg-card p-8">
+          <h1 id="caught-up-heading" className="text-3xl font-bold">Almost there</h1>
+          <p className="mt-2 text-lg text-muted-foreground">A few steps still need finishing. Go back and complete each one.</p>
+          <Link href="/learn" className={`${buttonVariants({ variant: "outline" })} mt-5`}>Back to my course</Link>
+        </div>
+      )}
     </section>
   );
 }

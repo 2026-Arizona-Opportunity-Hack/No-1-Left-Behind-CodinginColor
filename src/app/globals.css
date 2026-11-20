@@ -40,8 +40,8 @@
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
   /* Soft tints for telling things apart. Each pairs with its dark "-ink" text colour (AA contrast). */
-  --color-help: #FDE4DF;
-  --color-help-ink: #5C1409;
+  --color-help: #FEE4E2;
+  --color-help-ink: #8E1111;
   --color-behind: #FFEBD2;
   --color-behind-ink: #4A2800;
   --color-ontrack: #D6F2DE;
@@ -50,15 +50,16 @@
   --color-sky-ink: #0B2E4A;
   --color-lilac: #ECE5FA;
   --color-lilac-ink: #2E1A5C;
-  --color-sun: #FFF1C2;
-  --color-sun-ink: #4A3800;
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --color-sun: #CDEBD5;
+  --color-sun-ink: #0B3D1E;
+  /* Plain rectangles with small rounded corners (not pills). */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 20px;
+  --radius-4xl: 24px;
 }
 
 :root {
@@ -77,7 +78,7 @@
   --muted-foreground: #3D5C49;
   --accent: #FFD75E;
   --accent-foreground: #0B3D1E;
-  --destructive: #B42318;
+  --destructive: #CF1F14;
   --border: #C4D8CA;
   --input: #7FA08B;
   --ring: #047D13;
@@ -139,7 +140,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-size: 17px;
+    font-size: 18px;
     line-height: 1.45;
   }
   a {
@@ -164,4 +165,16 @@
   html {
     @apply font-sans;
   }
+}
+/* Every form control is white with dark text and a clear 2px edge, so nothing turns dark or washed out. */
+select, textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]) {
+  background-color: #fff;
+  color: #0B3D1E;
+  color-scheme: light;
+}
+select {
+  min-height: 44px;
+  border: 2px solid #0B3D1E;
+  border-radius: 12px;
+  padding-inline: 12px;
 }

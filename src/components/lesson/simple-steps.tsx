@@ -22,7 +22,7 @@ export function SlideStep({ activity }: StepProps<"slide">) {
       <p className="text-lg leading-8">{s.body}</p>
       {s.image_url && <img src={s.image_url} alt={s.heading} className="rounded-lg border" />}
       {s.code && <CodeBlock code={s.code} label="Example code" />}
-      {s.output && (<><p className="text-sm font-medium">It prints:</p><CodeBlock code={s.output} label="What it prints" /></>)}
+      {s.output && (<><p className="text-base font-medium">It prints:</p><CodeBlock code={s.output} label="What it prints" /></>)}
     </div>
   );
 }
@@ -53,7 +53,7 @@ export function ChoiceStep({ activity, onDone, elapsed }: StepProps<"choice">) {
       <fieldset className="space-y-3">
         <legend className="mb-3 w-full"><QuestionText text={activity.step.prompt} /></legend>
         {activity.step.options.map((opt, i) => (
-          <label key={i} className="flex min-h-16 cursor-pointer items-center gap-4 rounded-[20px] border-2 border-border bg-card px-6 text-lg has-checked:border-[3px] has-checked:border-primary has-checked:font-semibold has-focus-visible:outline-2">
+          <label key={i} className="flex min-h-16 cursor-pointer items-center gap-4 rounded-2xl border-2 border-border bg-card px-6 text-lg has-checked:border-[3px] has-checked:border-primary has-checked:font-semibold has-focus-visible:outline-2">
             <input type="radio" name={activity.id} value={i} checked={choice === i} disabled={locked}
               onChange={() => setChoice(i)} className="size-5" />
             <span className={/[()=:\[\]]/.test(opt) ? "font-mono" : ""}>{opt}</span>
@@ -91,7 +91,7 @@ export function FillBlankStep({ activity, onDone, elapsed }: StepProps<"fill_bla
   return (
     <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); submit(answer); }}>
       <p className="text-lg font-medium">{activity.step.prompt}</p>
-      <div className="rounded-[18px] bg-[#0F2E1C] px-5 py-4 font-mono text-[17px] leading-8 text-[#E6F4EA]">
+      <div className="rounded-xl bg-[#0F2E1C] px-5 py-4 font-mono text-[17px] leading-8 text-[#E6F4EA]">
         <span className="whitespace-pre-wrap">{before}</span>
         <input aria-label="Fill in the blank" value={answer} onChange={(e) => setAnswer(e.target.value)} disabled={locked}
           spellCheck={false} autoCapitalize="off"

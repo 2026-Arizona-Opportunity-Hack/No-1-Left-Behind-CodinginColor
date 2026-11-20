@@ -22,9 +22,9 @@ export function TestEditor({ moduleId, unitTitle, kind, questions }: { moduleId:
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <Link href={`/admin/curriculum/${moduleId}`} className="inline-block text-base text-foreground no-underline"><span aria-hidden="true" className="font-mono font-extrabold text-[#0DB031]">&lt;</span> {unitTitle}</Link>
+      <Link href={`/admin/curriculum/${moduleId}`} className="inline-flex min-h-11 items-center gap-2 text-xl font-medium text-foreground no-underline"><span aria-hidden="true" className="font-mono font-extrabold text-[#0DB031]">&lt;</span> {unitTitle}</Link>
       <div>
-        <h1 className="text-4xl font-bold tracking-tight">{kind === "pre" ? "Pre-test" : "Post-test"}: {unitTitle}</h1>
+        <h1 className="text-4xl font-bold tracking-tight sm:text-[52px]">{kind === "pre" ? "Pre-test" : "Post-test"}: {unitTitle}</h1>
         <p className="text-muted-foreground">
           {kind === "pre" ? "Students take this before the unit." : "Students take this after the unit."} Use the same topics in both tests
           but different questions, so learning gain per topic is fair.
@@ -32,7 +32,7 @@ export function TestEditor({ moduleId, unitTitle, kind, questions }: { moduleId:
       </div>
       <ol className="space-y-4">
         {drafts.map((q, i) => (
-          <li key={i} className="space-y-3 rounded-2xl bg-card p-4">
+          <li key={i} className="space-y-3 rounded-xl bg-card p-4 border border-border">
             <div className="flex items-center justify-between"><p className="font-medium">Question {i + 1}</p>
               <Button size="sm" variant="ghost" onClick={() => setDrafts(drafts.filter((_, j) => j !== i))} aria-label={`Remove question ${i + 1}`}>Remove</Button></div>
             <div className="space-y-1"><Label htmlFor={`t-${i}`}>Topic</Label>
@@ -40,7 +40,7 @@ export function TestEditor({ moduleId, unitTitle, kind, questions }: { moduleId:
             <div className="space-y-1"><Label htmlFor={`p-${i}`}>Question</Label>
               <Textarea id={`p-${i}`} value={q.prompt} onChange={(e) => update(i, { prompt: e.target.value })} /></div>
             <div className="space-y-1"><Label htmlFor={`o-${i}`}>Answer options (one per line)</Label>
-              <Textarea id={`o-${i}`} value={q.options} onChange={(e) => update(i, { options: e.target.value })} className="font-mono text-[15px]" /></div>
+              <Textarea id={`o-${i}`} value={q.options} onChange={(e) => update(i, { options: e.target.value })} className="font-mono text-base" /></div>
             <div className="space-y-1"><Label htmlFor={`a-${i}`}>Correct answer</Label>
               <select id={`a-${i}`} value={q.answer} onChange={(e) => update(i, { answer: Number(e.target.value) })} className="h-10 w-full rounded-md border bg-background px-2">
                 {opts(q).map((o, j) => <option key={j} value={j}>{o}</option>)}

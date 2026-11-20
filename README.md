@@ -97,6 +97,28 @@ npm run dev                  # http://localhost:3000
 
 Checks: `npm test` (unit tests), `npm run lint`, `npm run build`.
 
+## Try every screen on your computer (local test database)
+
+To click through every role without touching the live database or needing its secret key, run a throwaway
+Supabase in Docker (Docker Desktop must be running):
+
+```bash
+npx supabase start                  # first run downloads a few images
+node scripts/local-setup.mjs        # makes the test logins, loads demo data, points .env.local at the local database
+npm run dev                         # http://localhost:3000
+```
+
+| Role | Where | Login |
+|---|---|---|
+| CIC admin | `/login` | `admin@launchpad.test` / `admin1` |
+| Teacher | `/login` | `teacher@launchpad.test` / `teacher1` |
+| Reviewer (view only) | `/login` | `reviewer@launchpad.test` / `review1` |
+| Mentor (custom role) | `/login` | `mentor@launchpad.test` / `mentor1` |
+| Student | `/join` | class `MARY-P3`, code `7KQ2MX` |
+
+`scripts/local-ui-seed.sql` adds extra demo rows (an on-track class, a hidden unit, a draft lesson with AI steps).
+It is for local testing only. Your previous `.env.local` is saved as `.env.local.live`.
+
 ## Database (Supabase)
 
 The tables and access rules live in [`supabase/migrations/`](supabase/migrations/); demo data in

@@ -32,12 +32,12 @@ async function CatchUp({ params }: Props) {
   return (
     <>
       <StudentHeader student={student} />
-      <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-6 sm:px-12">
+      <main className="mx-auto w-full max-w-[1104px] flex-1 px-5 sm:px-6 py-6">
         {core ? (
           <CatchUpView lesson={core} recap={recap} missedOn={missedOn ? weekdayName(missedOn.date) : null}
             todayLesson={today && today.id !== lessonId ? today : null} />
         ) : (
-          <div className="mx-auto max-w-md space-y-3 rounded-3xl bg-card p-8 text-center">
+          <div className="mx-auto max-w-md space-y-3 rounded-[20px] bg-card p-8 text-center border border-border">
             <h1 className="text-3xl font-bold tracking-tight">This catch-up isn&apos;t open</h1>
             <Link href="/learn" className="font-medium underline underline-offset-4">Back to my course</Link>
           </div>

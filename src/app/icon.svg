@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="CIC Launchpad">
+  <rect width="64" height="64" rx="14" fill="#0B3D1E"/>
+  <polyline points="27,19 14,32 27,45" fill="none" stroke="#0DB031" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <polyline points="37,19 50,32 37,45" fill="none" stroke="#A8E6B8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
