@@ -136,7 +136,9 @@ time someone joins, so people trying the app never share or spoil each other's l
 automatically the first time the demo codes are used, and every published unit is added to it. (`supabase/demo-class.sql`
 does the same by hand if you ever want to set it up before then.) To put a demo student such as Jaylen back at the very
 start, run `supabase/reset-student-progress.sql` in the Supabase SQL editor.
-Guests only ever exist in the DEMO class. They are deleted after 3 days (with their progress), and the demo stops
+Each guest starts part-way through the course, at one of four starting points picked at random (for example with a
+final quiz to take, or Loops half-done, or a worksheet to do), so a short visit shows most of the app. The starting
+points are defined in `src/lib/demo-start.ts`. Guests only ever exist in the DEMO class. They are deleted after 3 days (with their progress), and the demo stops
 making new guests at 300 so nobody can fill the database. Real classes are never touched.
 
 | Role | Can see and do |

@@ -22,6 +22,11 @@ export function guestName(): string {
   return `Guest-${String(n).padStart(4, "0")}`;
 }
 
+/** True for a demo guest's name ("Guest-4821"), used to show the short demo note on the course page. */
+export function isGuestName(name: string): boolean {
+  return /^Guest-\d{4}$/.test(name);
+}
+
 /** Guests created before this moment are old enough to delete. */
 export function guestCutoff(now: Date = new Date()): string {
   return new Date(now.getTime() - GUEST_LIFETIME_DAYS * 24 * 60 * 60 * 1000).toISOString();

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { StudentHeader } from "@/components/student-header";
+import { isGuestName } from "@/lib/demo-guest";
 import { CourseUnit } from "@/components/lesson/course-unit";
 import { weekdayName } from "@/lib/school-date";
 import { getMissedLessons } from "@/server/catch-up";
@@ -41,7 +42,9 @@ async function CourseMapPage() {
     ? { kicker: "Start with the pre-test", title: pre.m.title, sub: "A few questions, not graded", href: `/learn/test/${pre.m.id}/pre`, cta: "Start the pre-test" }
     : map.next
       ? { kicker: map.next.resume ? "Continue where you left off" : "Start here", title: map.next.title, sub: nextUnit?.title ?? "", href: `/learn/${map.next.lessonId}`, cta: map.next.resume ? "Keep going" : "Start" }
-      : null;
+      : post
+        ? { kicker: "Finish the unit", title: `${post.m.title}: final quiz`, sub: "See how much you grew", href: `/learn/test/${post.m.id}/post`, cta: "Take the final quiz" }
+        : null;
   return (
     <>
       <StudentHeader student={student} />
@@ -75,6 +78,9 @@ async function CourseMapPage() {
           </div>
         </section>
 
+        {isGuestName(student.displayName) && (
+          <p className="mb-4 rounded-[20px] bg-secondary px-5 py-3.5 text-lg"><span aria-hidden="true" className="font-mono font-bold">&lt;/&gt;</span> <b>You&apos;re trying the demo.</b> We started you part-way through the course so you can see more. Your progress is private to you and is deleted after a few days.</p>
+        )}
         {missed.map((m) => (
           <div key={m.lessonId} role="status" className="mb-4 flex flex-wrap items-center gap-5 rounded-2xl border-2 border-behind-ink bg-behind px-7 py-6 text-behind-ink">
             <span aria-hidden="true" className="flex size-16 flex-none items-center justify-center rounded-xl bg-behind-ink font-mono text-3xl font-bold text-behind">&#9719;</span>
