@@ -6,7 +6,7 @@
 
 [![Live app](https://img.shields.io/badge/live-cic--launchpad.vercel.app-0B3D1E?style=flat-square)](https://cic-launchpad.vercel.app) ![Free](https://img.shields.io/badge/free-no%20student%20sign--up-0DB031?style=flat-square) ![Accessibility](https://img.shields.io/badge/accessibility-WCAG%202.2%20AA-047D13?style=flat-square) ![License](https://img.shields.io/badge/license-MIT-3D5C49?style=flat-square)
 
-**[Try it](#try-it-in-a-minute)** &nbsp;·&nbsp; **[What it does](#what-it-does)** &nbsp;·&nbsp; **[How it works](#how-it-works)** &nbsp;·&nbsp; **[Screenshots](#screenshots)** &nbsp;·&nbsp; **[Run it yourself](#run-it-yourself)** &nbsp;·&nbsp; **[Team](#team)**
+**[Try it](#try-it-in-a-minute)** &nbsp;·&nbsp; **[What it does](#what-it-does)** &nbsp;·&nbsp; **[How it works](#how-it-works)** &nbsp;·&nbsp; **[Screenshots](#screenshots)** &nbsp;·&nbsp; **[Team](#team)**
 
 </div>
 
@@ -120,34 +120,6 @@ We aim for **WCAG 2.2 AA** and check pages with axe and Lighthouse. Everything w
 
 <br>
 
-## Run it yourself
-
-You need Node.js 22 or newer and a free [Supabase](https://supabase.com) project.
-
-```bash
-git clone https://github.com/2026-Arizona-Opportunity-Hack/No-1-Left-Behind-CodinginColor.git
-cd No-1-Left-Behind-CodinginColor
-cp .env.example .env.local   # then fill in the values; the comments in the file say where each one comes from
-npm install
-npm run dev                  # http://localhost:3000
-```
-
-The tables and demo data are in [`supabase/`](supabase/). Never commit `.env.local`.
-
-**No Supabase project? Use a throwaway local one.** With Docker Desktop running:
-
-```bash
-npx supabase start               # the first run downloads a few images
-node scripts/local-setup.mjs     # loads demo data and prints test logins in your terminal
-npm run dev
-```
-
-The test logins are random, only work on your own computer, and change every time you run the script. The student join page works with the demo codes above.
-
-Checks: `npm test` (unit tests), `npm run lint`, `npm run build`.
-
-<br>
-
 ## Documentation
 
 CIC's brief, the product spec and the build plan are in [`docs/`](docs/).
@@ -161,8 +133,6 @@ CIC's brief, the product spec and the build plan are in [`docs/`](docs/).
 - Shrey Bishnoi ([@shrey-Bish](https://github.com/shrey-Bish)): student experience, teacher and admin screens, deployment
 - Maulik Kalpesh Jadav ([@maulik-jadav](https://github.com/maulik-jadav)): curriculum authoring and class setup logic
 - Dhanush Koyi ([@dkoyi](https://github.com/dkoyi)): teacher dashboard rules, learning gain, the new design
-- Poulami: design, documentation, demo
-- Greg
 
 With thanks to our Opportunity Hack mentors. Questions: [#npo-coding-in-color](https://opportunity-hack.slack.com/app_redirect?channel=npo-coding-in-color) on the OHack Slack.
 
