@@ -132,8 +132,10 @@ supabase db query --remote -f supabase/seed.sql   # optional: demo course, 2 cla
 ```
 
 **Demo guest login.** Class code `DEMO` and personal code `TRYIT` make a brand-new guest student with empty progress each
-time someone joins, so people trying the app never share or spoil each other's lessons. Run `supabase/demo-class.sql`
-once to create the DEMO class (it only adds rows, and you can re-run it after publishing a new unit to add that unit).
+time someone joins, so people trying the app never share or spoil each other's lessons. The DEMO class is created
+automatically the first time the demo codes are used, and every published unit is added to it. (`supabase/demo-class.sql`
+does the same by hand if you ever want to set it up before then.) To put a demo student such as Jaylen back at the very
+start, run `supabase/reset-student-progress.sql` in the Supabase SQL editor.
 Guests only ever exist in the DEMO class. They are deleted after 3 days (with their progress), and the demo stops
 making new guests at 300 so nobody can fill the database. Real classes are never touched.
 

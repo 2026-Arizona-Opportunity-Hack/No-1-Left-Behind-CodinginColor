@@ -16,15 +16,19 @@ export async function joinClass(_prev: JoinState, formData: FormData): Promise<J
 
   const db = createAdminClient();
 
-  // The shared demo codes make a fresh guest with their own empty progress. If the DEMO class doesn't exist
-  // the normal check below runs and shows the usual error.
+  // The shared demo codes make a fresh guest with their own empty progress (the DEMO class is created on first use).
   if (isDemoLogin(classCode, personalCode)) {
     const guest = await createDemoGuest(db);
     if (guest.ok) {
       await startStudentSession(guest.studentId, guest.classId);
       redirect("/learn");
     }
-    if (guest.reason === "busy") return { error: "The demo is full right now. Please try again in a few minutes.", classCode };
+    return {
+      error: guest.reason === "busy"
+        ? "The demo is full right now. Please try again in a few minutes."
+        : "We couldn't start the demo just now. Please try again, or ask for a class card.",
+      classCode,
+    };
   }
 
   const { data: cls } = await db.from("classes").select("id").eq("class_code", classCode).maybeSingle();

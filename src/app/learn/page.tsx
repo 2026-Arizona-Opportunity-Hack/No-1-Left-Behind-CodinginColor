@@ -20,7 +20,11 @@ export default function LearnPage() {
 
 async function CourseMapPage() {
   const student = await requireStudent();
-  const [map, missed] = await Promise.all([getCourseMap(student), getMissedLessons(student)]);
+  const [map, allMissed] = await Promise.all([getCourseMap(student), getMissedLessons(student)]);
+  // Only offer a catch-up for lessons the student can open. Until a unit's pre-test is done its lessons are locked,
+  // and a catch-up for a locked lesson would be a dead end.
+  const openLessons = new Set(map.modules.filter((m) => m.materialUnlocked).flatMap((m) => m.lessons.map((l) => l.id)));
+  const missed = allMissed.filter((m) => openLessons.has(m.lessonId));
   const tests = Object.fromEntries(map.modules.map((m) => [m.id, { pre: m.preTest, post: m.postTest }]));
   const lessons = map.modules.flatMap((m) => m.lessons);
   const done = lessons.filter((l) => l.status === "completed").length;
