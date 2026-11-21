@@ -40,6 +40,7 @@ if (!alreadySeeded) {
   sql(readFileSync("supabase/seed.sql", "utf8"));
 }
 sql(readFileSync("scripts/local-ui-seed.sql", "utf8"));
+sql(readFileSync("supabase/demo-class.sql", "utf8"));
 for (const u of USERS) sql(`update public.profiles set role='${u.role}' where id=(select id from auth.users where email='${u.email}');`);
 console.log("Roles set and demo data loaded.");
 

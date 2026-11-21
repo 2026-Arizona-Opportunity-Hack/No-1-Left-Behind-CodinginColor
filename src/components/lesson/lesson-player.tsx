@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { completeViewStep, logHint } from "@/app/learn/[lessonId]/actions";
-import { BandNote, CompletionBand } from "@/components/completion-band";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ACTIVITY_LABEL, ACTIVITY_TINT } from "@/lib/activity-labels";
 import { PythonRunner } from "@/lib/python/runner";
@@ -59,19 +58,16 @@ export function LessonPlayer({ lesson, catchUp }: { lesson: PlayerLesson; catchU
 
   if ((finished || !current) && catchUp) return <CaughtUp lessonTitle={lesson.title} catchUp={catchUp} />;
   if (finished || !current) {
-    const bonusLeft = steps.filter((a) => !a.isCore && !done.has(a.id));
-    const required = steps.filter((a) => a.isCore);
-    const requiredDone = required.filter((a) => done.has(a.id)).length;
     return (
-      <section aria-labelledby="done-heading" className="mx-auto w-full max-w-[760px] space-y-6 py-6 sm:py-10">
-        <CompletionBand headingId="done-heading" label="Lesson complete" title={lesson.title}
-          big={`${requiredDone}/${required.length}`} bigLabel="required steps done"
-          sub={lesson.nextLesson ? `Great work. Your teacher can see your progress. Next up: ${lesson.nextLesson.title}.` : "Great work. Your teacher can see your progress. Check My course for your next quiz."}
-          notes={<><BandNote>{lesson.unitTitle}</BandNote>{bonusLeft.length > 0 && <BandNote>{bonusLeft.length} optional bonus step{bonusLeft.length === 1 ? "" : "s"} left</BandNote>}</>} />
-        <div className="flex flex-wrap gap-3">
+      <section aria-labelledby="done-heading" className="mx-auto flex w-full max-w-[760px] flex-col items-center py-8 text-center sm:py-16">
+        <div aria-hidden="true" className="flex items-center gap-4 font-mono text-7xl leading-none font-bold text-[#0DB031] sm:gap-6 sm:text-9xl">
+          &lt;<span className="flex size-20 items-center justify-center rounded-full bg-primary text-5xl text-primary-foreground sm:size-28 sm:text-6xl">✓</span>&gt;
+        </div>
+        <h1 id="done-heading" className="mt-8 text-4xl leading-tight font-bold tracking-tight [overflow-wrap:anywhere] sm:text-[52px]">You finished {lesson.title}</h1>
+        <p className="mt-3 text-xl text-muted-foreground">{done.size} of {steps.length} steps done{steps.some((a) => !a.isCore && !done.has(a.id)) ? " (the bonus steps are optional)" : ""}.</p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
           {lesson.nextLesson && <Link href={`/learn/${lesson.nextLesson.id}`} className={buttonVariants({ size: "lg" })}>Next: {lesson.nextLesson.title} <span aria-hidden="true" className="flex size-7 items-center justify-center rounded-full bg-[#A8E6B8] font-mono text-base text-primary">&gt;</span></Link>}
           <Link href="/learn" className={buttonVariants({ size: "lg", variant: "outline" })}>Back to my course</Link>
-          {bonusLeft.length > 0 && <Button size="lg" variant="outline" onClick={() => { setFinished(false); goTo(steps.findIndex((a) => !a.isCore && !done.has(a.id))); }}>Try the bonus step</Button>}
         </div>
       </section>
     );
@@ -158,12 +154,17 @@ function CaughtUp({ lessonTitle, catchUp }: { lessonTitle: string; catchUp: Catc
     <section aria-labelledby="caught-up-heading" aria-live="polite" className="mx-auto w-full max-w-[760px] py-6 sm:py-10">
       {state === "saving" && <p role="status">Saving…</p>}
       {state === "done" && (
-        <div className="space-y-6">
-          <CompletionBand headingId="caught-up-heading" label="Catch-up complete" title={`You're caught up on ${lessonTitle}`}
-            sub="You finished the recap and the core exercises. Your teacher can see it." notes={<BandNote>Back on track with the class</BandNote>} />
-          <div className="flex flex-wrap gap-3">
-            {catchUp.todayLesson && <Link href={`/learn/${catchUp.todayLesson.id}`} className={buttonVariants({ size: "lg" })}>Rejoin your class: {catchUp.todayLesson.title} <span aria-hidden="true" className="flex size-7 items-center justify-center rounded-full bg-[#A8E6B8] font-mono text-base text-primary">&gt;</span></Link>}
-            <Link href="/learn" className={buttonVariants({ size: "lg", variant: "outline" })}>Back to my course</Link>
+        <div className="relative overflow-hidden rounded-3xl bg-primary px-6 py-10 text-center text-white sm:px-9">
+          <span aria-hidden="true" className="pointer-events-none absolute -top-28 -right-10 font-mono text-[380px] leading-none font-bold text-[#0F4527] select-none">&gt;</span>
+          <div className="relative flex flex-col items-center">
+            <span className="inline-flex min-h-8 items-center rounded-[10px] border-2 border-primary bg-white px-3 text-base font-bold text-primary">✓ Catch-up complete</span>
+            <p aria-hidden="true" className="mt-5 font-mono text-6xl leading-none font-bold text-[#0DB031]">&gt;&gt;&gt;</p>
+            <h1 id="caught-up-heading" className="mt-4 text-4xl leading-tight font-bold tracking-tight sm:text-[52px]">You&apos;re caught up!</h1>
+            <p className="mt-3 max-w-xl text-xl text-[#E0F1E5]">You finished the recap and the core exercises for {lessonTitle}. Your teacher can see it.</p>
+            <div className="mt-7 flex flex-wrap justify-center gap-3">
+              {catchUp.todayLesson && <Link href={`/learn/${catchUp.todayLesson.id}`} className={buttonVariants({ size: "lg", variant: "yellow" })}>Rejoin your class: {catchUp.todayLesson.title} <span aria-hidden="true" className="flex size-7 items-center justify-center rounded-full bg-[#A8E6B8] font-mono text-base text-primary">&gt;</span></Link>}
+              <Link href="/learn" className={buttonVariants({ size: "lg", variant: "outline" })}>Back to my course</Link>
+            </div>
           </div>
         </div>
       )}

@@ -2,7 +2,9 @@
 
 import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { isDemoLogin } from "@/lib/demo-guest";
 import { hashJoinCode, normalizeClassCode, normalizeJoinCode } from "@/lib/join-codes";
+import { createDemoGuest } from "@/server/demo-guest";
 import { endStudentSession, startStudentSession } from "@/server/student-session";
 
 export type JoinState = { error?: string; classCode?: string };
@@ -13,6 +15,18 @@ export async function joinClass(_prev: JoinState, formData: FormData): Promise<J
   if (!classCode || !personalCode) return { error: "Enter both codes from your card.", classCode };
 
   const db = createAdminClient();
+
+  // The shared demo codes make a fresh guest with their own empty progress. If the DEMO class doesn't exist
+  // the normal check below runs and shows the usual error.
+  if (isDemoLogin(classCode, personalCode)) {
+    const guest = await createDemoGuest(db);
+    if (guest.ok) {
+      await startStudentSession(guest.studentId, guest.classId);
+      redirect("/learn");
+    }
+    if (guest.reason === "busy") return { error: "The demo is full right now. Please try again in a few minutes.", classCode };
+  }
+
   const { data: cls } = await db.from("classes").select("id").eq("class_code", classCode).maybeSingle();
   const student = cls
     ? (await db.from("students").select("id")

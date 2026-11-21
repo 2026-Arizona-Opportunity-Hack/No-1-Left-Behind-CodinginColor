@@ -1,5 +1,5 @@
 import { signOut } from "@/app/login/actions";
-import Link from "next/link";
+import { HomeLink } from "@/components/home-link";
 import { Logo } from "@/components/logo";
 import { StaffNav } from "@/components/staff-nav";
 import { staffHome, staffNavigation } from "@/lib/permissions";
@@ -20,7 +20,7 @@ export function StaffHeader({ staff }: { staff: Staff }) {
             <span className="hidden md:inline">{staff.displayName}</span>
           )}
           {/* Admins already have a Home tab; everyone else gets a clear way back to their first page. */}
-          {staff.role !== "admin" && <Link href={staffHome(staff)} className="inline-flex h-11 items-center rounded-xl border-2 border-primary bg-card px-[18px] text-base font-bold text-foreground no-underline hover:bg-secondary">Home</Link>}
+          {staff.role !== "admin" && <HomeLink href={staffHome(staff)} className="inline-flex h-11 items-center rounded-xl border-2 border-primary bg-card px-[18px] text-base font-bold text-foreground no-underline hover:bg-secondary" />}
           <form action={signOut}>
             <button type="submit" className="h-11 cursor-pointer rounded-[10px] border-2 border-primary bg-primary px-[18px] text-base font-bold text-primary-foreground hover:border-[#047D13] hover:bg-[#047D13]">Sign out</button>
           </form>

@@ -35,6 +35,7 @@ export default function JoinPage({ searchParams }: Props) {
           <p className="mt-6 text-center text-base text-muted-foreground">
             Lost your card? Ask your teacher to print a new one. Teacher or CIC staff? <Link href="/login">Sign in here</Link>.
           </p>
+          <p className="mt-4 rounded-xl bg-secondary p-4 text-center text-base"><span aria-hidden="true" className="font-mono font-bold">&gt;_</span> <b>Just trying it out?</b> Use class code <b className="font-mono">DEMO</b> and personal code <b className="font-mono">TRYIT</b>. You get your own copy to play with.</p>
         </div>
       </main>
     </div>

@@ -11,7 +11,7 @@ stuck** in real time; and **CIC measures learning gain** per class and topic for
 | | |
 |---|---|
 | **Live app** | https://cic-launchpad.vercel.app |
-| **Try it as a student** | Open https://cic-launchpad.vercel.app/join?class=MARY-P3 and type the demo code **7KQ2MX** |
+| **Try it as a student** | Open https://cic-launchpad.vercel.app/join and use class code **DEMO** with personal code **TRYIT**. Every visitor gets their own fresh copy, so nobody shares progress. (The older demo card, class `MARY-P3` with code `7KQ2MX`, is one shared student.) |
 | **Built for** | [Coding in Color · Problem 1: Curriculum & Student Progress Platform](https://www.ohack.dev/project/d09466fadf1b11f18e63deadc507a848) |
 | **Built at** | [Opportunity Hack · ASU Fall Hackathon 2026](https://www.ohack.dev/hack/fall-2026) by team [No 1 Left Behind](https://www.ohack.dev/hack/fall-2026/team/3f13cefee07a11f1884cdeadb145c312) · MIT license |
 
@@ -130,6 +130,12 @@ supabase link --project-ref <your-project-ref>   # leave the password blank
 supabase db push                                  # tables + access rules
 supabase db query --remote -f supabase/seed.sql   # optional: demo course, 2 classes, 24 made-up students
 ```
+
+**Demo guest login.** Class code `DEMO` and personal code `TRYIT` make a brand-new guest student with empty progress each
+time someone joins, so people trying the app never share or spoil each other's lessons. Run `supabase/demo-class.sql`
+once to create the DEMO class (it only adds rows, and you can re-run it after publishing a new unit to add that unit).
+Guests only ever exist in the DEMO class. They are deleted after 3 days (with their progress), and the demo stops
+making new guests at 300 so nobody can fill the database. Real classes are never touched.
 
 | Role | Can see and do |
 |---|---|
