@@ -48,7 +48,7 @@ export default async function LiveClassroom({ params, searchParams }: Props) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center gap-x-8 gap-y-2">
-        <Link href="/teach" className="flex min-h-11 flex-1 items-center text-xl font-medium text-foreground no-underline"><span aria-hidden="true" className="font-mono font-extrabold text-[#0DB031]">&lt;</span> My classes</Link>
+        <Link href="/teach" className="flex min-h-11 flex-1 items-center gap-2 text-xl font-medium text-foreground no-underline"><span aria-hidden="true" className="font-mono font-extrabold text-[#0DB031]">&lt;</span> My classes</Link>
         <span className="flex items-center gap-2 text-base"><i aria-hidden="true" className="size-2.5 rounded-full bg-[#0DB031]" /><AutoRefresh /></span>
         <CopyLinkButton classCode={cls.class_code} />
       </div>

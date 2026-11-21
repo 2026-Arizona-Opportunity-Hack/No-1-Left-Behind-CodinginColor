@@ -1,352 +1,179 @@
-# CIC Launchpad
+<div align="center">
 
-**Interactive coding lessons for [Coding in Color](https://www.codingincolor.net), so no student is left behind.**
+<img src=".github/readme/banner.png" width="100%" alt="CIC Launchpad: learn to code at your own pace. A code editor shows a Python if statement, the output You can drive, and 2 of 3 checks passed.">
 
-Coding in Color (CIC) teaches computer science to Arizona high schoolers whose schools don't offer it. Its lessons
-live in slide decks and printed worksheets, so a partner-school teacher needs real training to run them, nobody knows
-which module a student is on, and a student who misses a week falls behind. CIC Launchpad puts that curriculum on a
-link: **students learn self-paced** with quizzes, worksheets and Python that runs in the browser; **teachers see who's
-stuck** in real time; and **CIC measures learning gain** per class and topic for grant reports.
+<br>
 
-| | |
-|---|---|
-| **Live app** | https://cic-launchpad.vercel.app |
-| **Try it as a student** | Open https://cic-launchpad.vercel.app/join and use class code **DEMO** with personal code **TRYIT**. Every visitor gets their own fresh copy, so nobody shares progress. (The older demo card, class `MARY-P3` with code `7KQ2MX`, is one shared student.) |
-| **Built for** | [Coding in Color · Problem 1: Curriculum & Student Progress Platform](https://www.ohack.dev/project/d09466fadf1b11f18e63deadc507a848) |
-| **Built at** | [Opportunity Hack · ASU Fall Hackathon 2026](https://www.ohack.dev/hack/fall-2026) by team [No 1 Left Behind](https://www.ohack.dev/hack/fall-2026/team/3f13cefee07a11f1884cdeadb145c312) · MIT license |
+[![Live app](https://img.shields.io/badge/live-cic--launchpad.vercel.app-0B3D1E?style=flat-square)](https://cic-launchpad.vercel.app) ![Free](https://img.shields.io/badge/free-no%20student%20sign--up-0DB031?style=flat-square) ![Accessibility](https://img.shields.io/badge/accessibility-WCAG%202.2%20AA-047D13?style=flat-square) ![License](https://img.shields.io/badge/license-MIT-3D5C49?style=flat-square)
+
+**[Try it](#try-it-in-a-minute)** &nbsp;·&nbsp; **[What it does](#what-it-does)** &nbsp;·&nbsp; **[How it works](#how-it-works)** &nbsp;·&nbsp; **[Screenshots](#screenshots)** &nbsp;·&nbsp; **[Run it yourself](#run-it-yourself)** &nbsp;·&nbsp; **[Team](#team)**
+
+</div>
+
+<br>
+
+## Try it in a minute
+
+> [!TIP]
+> Open **[cic-launchpad.vercel.app](https://cic-launchpad.vercel.app)**, choose **I'm a student: join my class**, and enter class code **`DEMO`** with personal code **`TRYIT`**.
+>
+> You start part-way through the course with your own private copy, so a quiz, a lesson with code, a worksheet and a catch-up are only a few clicks away. Your progress is yours alone and is deleted after a few days.
+
+<br>
+
+<div align="center"><img src=".github/readme/divider.svg" width="70%" alt=""></div>
+
+## Why it exists
+
+[Coding in Color](https://www.codingincolor.net) (CIC) teaches computer science to Arizona high schoolers whose schools don't offer it. Its lessons live in slide decks and printed worksheets, so a partner-school teacher needs real training to run them, nobody knows which module a student is on, and a student who misses a week falls behind.
+
+**CIC Launchpad puts that curriculum on a link.** Students learn at their own pace. Teachers see who is stuck while it is happening. CIC measures how much students grew, by topic, for its reports.
+
+<br>
+
+## What it does
+
+<div align="center"><img src=".github/readme/roles.png" width="100%" alt="Three cards. Students: join with a class code, no email or password; lessons, quizzes and Python that runs in the browser; see growth from the warm-up to the final quiz. Teachers: set up a class in under 10 minutes; a live list of who needs help, who is behind and who has not started; give a catch-up with one click. CIC staff: make a lesson from slides or a YouTube video; AI drafts it and a person checks every step; learning gain by topic, class and student."></div>
+
+<br>
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+**Python that runs in the browser**<br>
+Students write and run real code next to each lesson, with checks that say exactly what passed ("2 of 3 checks passed") and hints one at a time. Nothing is installed and nothing is sent to a server.
+
+**A quiz before and after every unit**<br>
+A warm-up quiz shows what a student already knows. The final quiz shows how much they grew, topic by topic.
+
+**Catch-up without shame**<br>
+A student who misses a lesson gets a short recap and just the practice they need, in about 15 minutes, then rejoins the class.
+
+</td>
+<td width="50%" valign="top">
+
+**A live classroom for teachers**<br>
+One plain sentence ("1 student needs help. 2 are behind. 8 are doing fine."), then every student in order of who needs a hand first, with the reason in words.
+
+**Lessons from slides or a video**<br>
+CIC staff upload a PowerPoint or paste a YouTube link. AI drafts the questions and a teacher guide; nothing reaches students until a person has checked it.
+
+**Built to be read by everyone**<br>
+Big text, clear focus outlines, full keyboard use, and state shown with a word and a symbol, never colour alone.
+
+</td>
+</tr>
+</table>
+
+<br>
+
+<div align="center"><img src=".github/readme/divider.svg" width="70%" alt=""></div>
+
+## How it works
+
+<div align="center"><img src=".github/readme/flow.png" width="100%" alt="How it works in five steps. 1: CIC staff add a lesson by uploading slides or pasting a YouTube link. 2: AI drafts it and a person checks every step. 3: The teacher sets up the class with a roster, units, a schedule and printed join cards. 4: Students learn with a warm-up quiz, lessons with code and a final quiz. 5: Everyone sees the growth, with a live help list and learning gain by topic."></div>
+
+<br>
+
+## Screenshots
+
+<div align="center">
+
+<img src=".github/readme/course.jpg" width="860" alt="The student course page: a dark hero with progress blocks and a Continue card, catch-up cards, and three unit cards that are done, in progress and locked."><br>
+<sub><b>My course.</b> Progress at a glance, a clear next step, and catch-ups that are never shaming.</sub>
+
+<br><br>
+
+<img src=".github/readme/lesson-code.jpg" width="860" alt="A coding exercise with an editor, Run and Check buttons, expected output next to the student's output, and a gentle 2 of 3 checks passed message."><br>
+<sub><b>A coding exercise.</b> Run it, check it, and see exactly what to fix.</sub>
+
+<br><br>
+
+<img src=".github/readme/classroom.jpg" width="860" alt="The teacher's live classroom for Period 5: 1 student needs help, 3 are behind, 8 are doing fine, with a row for each student and a reason in words."><br>
+<sub><b>The live classroom.</b> Who needs a hand first, and why.</sub>
+
+<br><br>
+
+<img src=".github/readme/quiz-result.jpg" width="49%" alt="A final quiz result: 100 percent, up from 67 percent on the warm-up quiz, with a before and after bar for the topic.">
+<img src=".github/readme/admin.jpg" width="49%" alt="The CIC staff home page: counts of units, classes and students, a needs-attention panel, and cards to build lessons and see results."><br>
+<sub><b>Growth you can see</b> (left) and <b>the CIC staff home</b> (right).</sub>
+
+</div>
 
 All names and codes in the demo data are made up.
 
-## What each person can do
+<br>
 
-**Students** (ages 14–18, Chromebooks and phones). No email, no password, no account.
-- Join with a **class code + personal code** from a printed card, or the class link (`/join?class=CODE`).
-- Follow a **course map**: units unlock in order; "Continue where you left off" or "Start here".
-- Work through lessons step by step: slides, video, quick checks, predict-the-output, fix-the-bug, fill-in-the-blank,
-  put-the-lines-in-order, **coding exercises with Python that runs in the browser** ("2 of 3 checks passed"),
-  **digital worksheets** they submit, and an exit question. Hints one at a time.
-- Take a **pre-test** and **post-test** per unit and see their growth by topic.
-- A no-login Python playground is at `/try`.
+<div align="center"><img src=".github/readme/divider.svg" width="70%" alt=""></div>
 
-**Teachers** (often with no CS background).
-- **Set up a class in under 10 minutes** (`/teach/new`): name it, upload a roster CSV (duplicate names show as
-  "Alex R." / "Alex M."), pick units, set the schedule, **print join cards** and copy the class link.
-- **Live classroom**: every student's lesson and step, % done, **time on task**, last active, and clear
-  **Needs help · Behind · Not started** lists with the reason in plain words ("3 wrong tries on step 4").
-  Attendance, topic bars ("38% stuck on loops"), refreshes every 20 seconds.
-- **Student page**: their work step by step, latest code, worksheet answers; **start a late joiner** at the right
-  unit, **unlock a unit early**, or skip a lesson (recorded as skipped, never as completed).
-- **Results**: learning gain for their classes.
+## Built for young people
 
-**CIC staff** (admins).
-- **Edit the curriculum without engineering** (`/admin/curriculum`): units, lessons from CIC's template
-  (intro → quick check → worksheet or coding exercise → exit question), every step type as a simple form,
-  teaching guides, hints, warm-up and final quizzes, Show to students / Hide from students.
-- **Make a lesson from PowerPoint slides or a YouTube video** (`/admin/curriculum/import`). Upload a `.pptx`
-  (Google Slides: File → Download → .pptx) and the slides become the first steps, word for word; or paste a YouTube
-  link (a `t=` start time drafts from that point). AI then drafts a quick check, a coding exercise, a last question
-  and a teacher guide, each marked "Made by AI: please check". Try it with `docs/sample-while-loops.pptx`.
-- **Results** (`/results`): "+37 points on Loops" style headlines with how many students it's based on,
-  gain by topic, class and student, missing-test warnings, **CSV download**.
-- **API keys** for CIC's own dashboard (see [Read API](#read-api-for-cics-dashboard)).
-
-**External reviewers** (district staff, K-12 teachers): a read-only view of the published curriculum and
-teaching guides (`/review`), clearly marked "View only".
-
-## Privacy and security
-
-- **Students are minors, so we store only name, school and class.** Roster uploads drop every other column.
-  No student email, password or account.
-- **Personal join codes are stored only as hashes**; the plain code is shown once, on the printed card.
-  A student session is a signed, httpOnly cookie that lasts one school day.
-- **Least privilege, enforced by the database** (Supabase Row Level Security), not only by the pages:
-  teachers can only see their own classes, reviewers only published curriculum, signed-out visitors nothing.
-  Admin-only actions are checked in the page, the server action and the database.
-- **Quiz and test answers never reach the browser**: they're checked on the server. Each test can be taken once.
-- **Student Python runs in the student's browser** (a sandboxed worker, stopped after 5 seconds), never on our server.
-- **The read API returns totals and averages only, never student names or ids**, and needs a key that is stored as a hash.
-- **AI never sees student data** (see [AI drafting](#ai-drafting)), and a human must review every AI draft before
-  students see it; the database refuses to publish unreviewed AI content.
-- Secrets live in environment variables only (`.env.example` lists them); a commit hook blocks keys from git.
+- **Students are under 18, so we keep as little as possible:** a name, a school and a class. No student emails, no passwords, no accounts.
+- **Student code runs in the student's own browser**, not on a server.
+- **AI only helps draft lessons.** It never sees anything about students, and a person approves every AI draft before students see it.
+- **Everyone sees only what their role needs.** Staff, teachers and students each have their own space.
 
 ## Accessibility
 
-Lighthouse accessibility: **100** on the home, join, sign-in, playground, course map and lesson pages.
-Everything works with a keyboard (visible focus, the lesson moves focus to each new step, "put the lines in order"
-uses buttons instead of drag-and-drop). Status is never shown by color alone: every state has an icon and a word.
-Every input has a label, errors are announced to screen readers, and text meets WCAG AA contrast.
+We aim for **WCAG 2.2 AA** and check pages with axe and Lighthouse. Everything works with a keyboard, every field has a label, errors are announced to screen readers, text meets contrast guidelines, and the interface is light enough for older school laptops (no animation, small icons, two fonts).
 
-## Run it on your computer
+<br>
 
-You need Node.js 22+ and a free [Supabase](https://supabase.com) project.
+## Run it yourself
+
+You need Node.js 22 or newer and a free [Supabase](https://supabase.com) project.
 
 ```bash
 git clone https://github.com/2026-Arizona-Opportunity-Hack/No-1-Left-Behind-CodinginColor.git
 cd No-1-Left-Behind-CodinginColor
-cp .env.example .env.local   # fill in the values below; never commit this file
+cp .env.example .env.local   # then fill in the values; the comments in the file say where each one comes from
 npm install
 npm run dev                  # http://localhost:3000
 ```
 
-| Variable | Where to get it |
-|---|---|
-| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase → Project Settings → API Keys (public by design) |
-| `SUPABASE_SECRET_KEY` | Same page, **Secret keys**. Server only; never share it |
-| `SESSION_SECRET` | Any long random text: `openssl rand -hex 32` |
-| `AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL` | Optional, for AI drafting. Leave `AI_API_KEY` empty to turn AI off |
+The tables and demo data are in [`supabase/`](supabase/). Never commit `.env.local`.
+
+**No Supabase project? Use a throwaway local one.** With Docker Desktop running:
+
+```bash
+npx supabase start               # the first run downloads a few images
+node scripts/local-setup.mjs     # loads demo data and prints test logins in your terminal
+npm run dev
+```
+
+The test logins are random, only work on your own computer, and change every time you run the script. The student join page works with the demo codes above.
 
 Checks: `npm test` (unit tests), `npm run lint`, `npm run build`.
 
-## Try every screen on your computer (local test database)
+<br>
 
-To click through every role without touching the live database or needing its secret key, run a throwaway
-Supabase in Docker (Docker Desktop must be running):
+## Documentation
 
-```bash
-npx supabase start                  # first run downloads a few images
-node scripts/local-setup.mjs        # makes the test logins, loads demo data, points .env.local at the local database
-npm run dev                         # http://localhost:3000
-```
+CIC's brief, the product spec and the build plan are in [`docs/`](docs/).
 
-| Role | Where | Login |
-|---|---|---|
-| CIC admin | `/login` | `admin@launchpad.test` / `admin1` |
-| Teacher | `/login` | `teacher@launchpad.test` / `teacher1` |
-| Reviewer (view only) | `/login` | `reviewer@launchpad.test` / `review1` |
-| Mentor (custom role) | `/login` | `mentor@launchpad.test` / `mentor1` |
-| Student | `/join` | class `MARY-P3`, code `7KQ2MX` |
+<br>
 
-`scripts/local-ui-seed.sql` adds extra demo rows (an on-track class, a hidden unit, a draft lesson with AI steps).
-It is for local testing only. Your previous `.env.local` is saved as `.env.local.live`.
+## Team
 
-## Database (Supabase)
-
-The tables and access rules live in [`supabase/migrations/`](supabase/migrations/); demo data in
-[`supabase/seed.sql`](supabase/seed.sql).
-
-```bash
-supabase login
-supabase link --project-ref <your-project-ref>   # leave the password blank
-supabase db push                                  # tables + access rules
-supabase db query --remote -f supabase/seed.sql   # optional: demo course, 2 classes, 24 made-up students
-```
-
-**Demo guest login.** Class code `DEMO` and personal code `TRYIT` make a brand-new guest student with empty progress each
-time someone joins, so people trying the app never share or spoil each other's lessons. The DEMO class is created
-automatically the first time the demo codes are used, and every published unit is added to it. (`supabase/demo-class.sql`
-does the same by hand if you ever want to set it up before then.) To put a demo student such as Jaylen back at the very
-start, run `supabase/reset-student-progress.sql` in the Supabase SQL editor.
-Each guest starts part-way through the course, at one of four starting points picked at random (for example with a
-final quiz to take, or Loops half-done, or a worksheet to do), so a short visit shows most of the app. The starting
-points are defined in `src/lib/demo-start.ts`. Guests only ever exist in the DEMO class. They are deleted after 3 days (with their progress), and the demo stops
-making new guests at 300 so nobody can fill the database. Real classes are never touched.
-
-| Role | Can see and do |
-|---|---|
-| CIC admin | Everything: curriculum, all classes, results, API keys |
-| Instructor | Published curriculum; only their own classes, students, attendance and progress |
-| External reviewer | Published curriculum and teaching guides, read-only |
-| Student | Only their own lessons and progress, through the app's server |
-| Anyone not signed in | Nothing |
-
-**Adding staff.** In Supabase → Authentication → Users → *Add user* (tick *Auto Confirm*). Turn off public sign-ups
-(Authentication → Sign In / Providers) so only people you add can sign in. New accounts start as read-only
-reviewers. To change a role, run in the SQL editor:
-
-```sql
-update profiles set role = 'admin'      -- or 'instructor' / 'reviewer'
-where id = (select id from auth.users where email = 'person@example.org');
-```
-
-The demo seed gives both demo classes to `teacher@launchpad.test` if that account exists.
-
-## Read API (for CIC's dashboard)
-
-A small, read-only JSON API so CIC's own dashboard can pull class completion and learning gain
-**without a login**. Every request needs an API key. **The API never returns student names or ids**:
-only counts and percentages.
-
-**Create a key.** A CIC admin opens *Admin → API keys*, names the key (for example "CIC dashboard") and clicks
-Create. The key (`cic_` + 32 letters and numbers) is shown **once**; copy it then. Only a hash is stored, so a
-lost key can't be recovered, only revoked and replaced. Revoking takes effect immediately.
-
-**Use it.** Send the key in the `x-api-key` header. Responses are JSON and are never cached.
-
-```bash
-export CIC_API_KEY=cic_...           # your key
-export CIC_URL=https://cic-launchpad.vercel.app
-```
-
-| Endpoint | What it returns |
-|---|---|
-| `GET /api/v1/classes` | Every class: student count and completion % |
-| `GET /api/v1/classes/{id}/summary` | One class: completion, active students, behind count, learning gain |
-| `GET /api/v1/learning-gain?classId=&moduleId=&concept=` | Learning gain (all filters optional) |
-| `GET /api/v1/concepts/mastery?classId=` | Per concept: % mastered and % struggling (`classId` required) |
-
-Example responses below show the shape; the numbers are illustrative.
-
-```bash
-curl -H "x-api-key: $CIC_API_KEY" "$CIC_URL/api/v1/classes"
-```
-```json
-[{ "id": "c0000000-0000-0000-0000-000000000003", "name": "Period 3", "school": "Maryvale High", "students": 12, "completion_pct": 41 }]
-```
-
-```bash
-curl -H "x-api-key: $CIC_API_KEY" "$CIC_URL/api/v1/classes/c0000000-0000-0000-0000-000000000003/summary"
-```
-```json
-{ "id": "c0000000-0000-0000-0000-000000000003", "name": "Period 3", "school": "Maryvale High", "students": 12,
-  "completion_pct": 41, "active_last_7_days": 12, "behind_count": 2,
-  "learning_gain": { "avg_pre_pct": 42.5, "avg_post_pct": 74.1, "avg_gain": 31.6, "n": 9, "missing_pre": 0, "missing_post": 3 } }
-```
-
-```bash
-curl -H "x-api-key: $CIC_API_KEY" "$CIC_URL/api/v1/learning-gain?classId=c0000000-0000-0000-0000-000000000003"
-```
-```json
-{ "avg_pre_pct": 42.5, "avg_post_pct": 74.1, "avg_gain": 31.6, "n": 9, "missing_pre": 0, "missing_post": 3,
-  "by_concept": [{ "concept_tag": "loops", "avg_pre_pct": 38, "avg_post_pct": 80, "avg_gain": 42, "n": 9 }] }
-```
-Learning gain is post-test % minus pre-test %, in percentage points. Only students who took **both** tests
-are averaged (`n`); `missing_pre` / `missing_post` count students with only one test. When nobody has both, the
-averages are `null`. Add `&concept=loops` to get just that concept (no `by_concept`).
-
-```bash
-curl -H "x-api-key: $CIC_API_KEY" "$CIC_URL/api/v1/concepts/mastery?classId=c0000000-0000-0000-0000-000000000003"
-```
-```json
-[{ "concept_tag": "loops", "percent_mastered": 38, "percent_struggling": 38, "n": 8 }]
-```
-
-**Errors** are `{ "error": "..." }` in plain words: `401` missing, wrong or revoked key; `400` a bad or missing
-parameter; `404` no class with that id; `500` the service isn't available.
-
-## Deploy
-
-The app runs on Vercel's free plan. Every merge to `main` deploys to production through
-[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml), using the Vercel CLI
-(Vercel's GitHub app can't connect to organization-owned repos on the free plan).
-
-To set it up on a new Vercel account:
-1. `npm i -g vercel`, then `vercel login` and `vercel link` in this folder.
-2. Copy `orgId` and `projectId` from `.vercel/project.json` into repo variables
-   `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` (GitHub → Settings → Secrets and variables → Actions → Variables).
-3. Create a token at vercel.com/account/tokens and save it as the repo secret `VERCEL_TOKEN`.
-4. Add the environment variables from the table above in Vercel → Project → Settings → Environment Variables.
-
-To deploy by hand instead: `vercel deploy --prod`.
-
-## Cost
-
-| Service | Plan | Cost |
-|---|---|---|
-| Vercel (hosting) | Hobby | $0 |
-| Supabase (database + staff sign-in) | Free: 500 MB database, 50,000 monthly active users | $0 |
-| Pyodide (Python in the browser) | Open source, served from a CDN | $0 |
-| AI drafting (optional) | Any OpenAI-compatible provider; a lesson draft costs cents | ~$0–5/month |
-
-Well under OHack's **$20/month** limit. Supabase's free plan pauses a project after a week with no activity;
-upgrade to Pro ($25/month) or keep it active once CIC uses it daily.
-
-## AI drafting
-
-AI is optional and only drafts *curriculum* from slide text, video captions or exercise text: **never student
-names, codes or answers**. Every AI-drafted step is marked "Made by AI: please check", and nothing AI-drafted can be
-published until a person reviews and saves it. Slide decks are read in the browser: only the words on the slides and
-the speaker notes reach the server (no images), so large decks upload fine. Set `AI_BASE_URL`, `AI_API_KEY` and `AI_MODEL` for any
-OpenAI-compatible provider. During the hackathon we used the OHack gateway (`https://ai.ohack.dev/v1`,
-model `gpt-oss-120b`), whose keys stop working on **Sun Nov 15, 6 PM AZ**; after that, CIC sets its own key.
-Without a key, AI features switch off and manual authoring works as normal.
-
-## For developers
-
-- `src/app`: pages. `(staff)/` = teacher, admin and reviewer screens; `learn/` and `join/` = student screens; `api/v1/` = read API
-- `src/server`: server-only logic (`auth`, `student-session`, `lesson-player`, `dashboard`, `classes`, `curriculum`, `results`)
-- `src/lib`: pure helpers with unit tests (course map unlocking, student status rules, learning gain, roster CSV, join codes, Python runner)
-- `supabase/`: migrations (tables + access rules), seed, SQL tests
-- `docs/`: CIC's brief, product spec, P0 checklist, build plan, [developer notes](docs/developer-notes.md), [sample roster](docs/sample-roster.csv)
-
-## Team: No 1 Left Behind
+**No 1 Left Behind**, built at the [Opportunity Hack ASU Fall Hackathon 2026](https://www.ohack.dev/hack/fall-2026) for [Coding in Color](https://www.ohack.dev/project/d09466fadf1b11f18e63deadc507a848).
 
 - Shrey Bishnoi ([@shrey-Bish](https://github.com/shrey-Bish)): student experience, teacher and admin screens, deployment
 - Maulik Kalpesh Jadav ([@maulik-jadav](https://github.com/maulik-jadav)): curriculum authoring and class setup logic
-- Dhanush Koyi ([@dkoyi](https://github.com/dkoyi)): teacher dashboard rules, learning gain, read API
+- Dhanush Koyi ([@dkoyi](https://github.com/dkoyi)): teacher dashboard rules, learning gain, the new design
 - Poulami: design, documentation, demo
 - Greg
 
-Built with mentors from Opportunity Hack. Questions: [#npo-coding-in-color](https://opportunity-hack.slack.com/app_redirect?channel=npo-coding-in-color) on the OHack Slack.
+With thanks to our Opportunity Hack mentors. Questions: [#npo-coding-in-color](https://opportunity-hack.slack.com/app_redirect?channel=npo-coding-in-color) on the OHack Slack.
 
-### Mentor feedback: staff access and a complete learning path
+<br>
 
-CIC administrators can open **Staff access** (`/admin/roles`) to add a role such
-as Mentor, choose its permissions, rename it, assign existing staff accounts, or
-delete it while moving its members to another role. Changes apply to the next
-server request; both action checks and database RLS enforce them. Curriculum
-editing includes reading and publishing. Class/results access stays scoped to a
-staff member's own classes unless they are an administrator. Managing staff access
-can grant administrator access; grant that permission only to access managers.
-The administrator role and last administrator are protected. Students keep their
-separate personal-code sign-in and never inherit staff permissions. Staff accounts
-are still created through the existing Supabase Auth onboarding process, then
-assigned a role here.
+<div align="center">
 
-**Add curriculum from slides or video** can create a new unit directly, or add a
-lesson to an existing one. With AI configured, the same source-based generation
-creates the learning steps plus three to five basic pre-test questions and three
-to five different post-test questions covering matching topics. The full supported
-deck (up to 60 text-bearing slides) becomes material; the upload limit is 20 MB.
-YouTube captions are read when available; otherwise paste the transcript. Only
-curriculum source text goes to the AI. Invalid AI output saves nothing, and database
-saves are transactional. Without AI, staff can still create a manual draft, but
-must author the quiz pair themselves. There are no fabricated automatic quizzes.
+<img src="src/app/icon.svg" width="56" alt="CIC Launchpad logo: two angle brackets">
 
-Review and save the AI steps and both quizzes, publish the lessons, then publish
-the unit. The database refuses to publish a unit without a reviewed nonempty quiz
-pair. Imports into existing units preserve their existing tests. Used assessments
-cannot be replaced, and units with assignments or student history must be hidden
-instead of deleted, to preserve progress and results. Unused units can be deleted.
-Curriculum saves invalidate the student, teacher, reviewer and editor views.
+**CIC Launchpad.** Small steps, so no one is left behind.
 
-Students see every **assigned, published** unit in their class's assigned order,
-including the titles of locked materials. Every unit shows **pre-test → course
-materials → post-test**. The pre-test opens materials; finishing the materials
-opens the post-test; completing the post-test unlocks the next unit. Teacher start
-points and unlock overrides remain supported. Completed quizzes link to the
-student's own saved score; answer keys remain on the server. The known demo units
-now all have curated pre/post pairs. New classes need published module assignments
-before their students see material.
+[MIT license](LICENSE)
 
-Rollout requires these two migrations, in order, **before deploying the new UI**:
-
-1. `20261115170812_configurable_roles.sql`
-2. `20261115171150_curriculum_assessment_import.sql`
-
-They have only been applied to disposable local test databases. Shrey/the database
-owner must apply them to the shared Supabase project, following the team's handoff.
-Keep `SUPABASE_SECRET_KEY`, `SESSION_SECRET`, and AI settings in ignored
-`.env.local`/hosting secrets. The local public URL and publishable key alone cannot
-run the student session or exercise the external AI service.
-
-Validation: `npm test` runs unit and component tests;
-`TEST_DATABASE_URL=postgresql://... npm test` also runs the rollback-only SQL
-integration tests, including role creation/revocation, atomic imports, publish
-review, student-history protection, and class isolation. Use a disposable database
-only. Both a fresh migration/seed and an upgrade over the previous demo schema were
-tested; the upgrade preserved student, activity, response and progress counts.
-Screenshots in `docs/screenshots/` show the real components rendered with synthetic
-fixtures and production CSS for layout review; they are not a live authenticated
-Supabase rehearsal.
-
-### Deployment readiness
-
-The production workflow checks the required role and assessment/import schema
-using only the public Supabase configuration pulled by Vercel. If it is missing
-or unreachable, the workflow holds the build/deploy steps and leaves the current
-live site unchanged. The job summary names the missing capabilities. The database
-owner must apply `20261115170812_configurable_roles.sql` and
-`20261115171150_curriculum_assessment_import.sql`, then rerun **Deploy to Vercel**.
-No migration is applied by CI. The anonymous checks deliberately expect permission
-denial for staff-only RPCs; they never perform an authorised mutation.
-Run the guard's tests with `node --test scripts/check-deployment-schema.test.mjs`.
+</div>
