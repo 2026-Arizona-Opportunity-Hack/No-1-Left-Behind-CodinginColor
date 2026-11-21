@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRef, useState, useTransition } from "react";
+import { BandNote, CompletionBand } from "@/components/completion-band";
 import { Button, buttonVariants } from "@/components/ui/button";
 import type { StudentTest, TopicScore } from "@/server/student-tests";
 import { finishTest } from "./actions";
@@ -28,20 +29,9 @@ export function TestTaker({ moduleId, test }: { moduleId: string; test: StudentT
     const preAvg = withPre.length ? Math.round(withPre.reduce((t, x) => t + (x.pre_pct ?? 0), 0) / withPre.length) : null;
     return (
       <section aria-labelledby="done-h" className="mx-auto w-full max-w-[760px] space-y-6">
-        <div className="relative overflow-hidden rounded-3xl bg-primary px-6 py-9 text-center text-white sm:px-9">
-          <span aria-hidden="true" className="pointer-events-none absolute -top-28 -right-10 font-mono text-[380px] leading-none font-bold text-[#0F4527] select-none">&gt;</span>
-          <div className="relative">
-            <span className="inline-flex min-h-8 items-center rounded-[10px] border-2 border-primary bg-white px-3 text-base font-bold text-primary">{name} complete</span>
-            <h1 id="done-h" className="mt-3.5 mb-1 text-4xl font-bold">{test.unitTitle}</h1>
-            <p className="mt-2.5 text-[88px] leading-none font-bold tabular-nums">{avg}%</p>
-            <p className="mt-1 text-xl text-[#E0F1E5]">{test.kind === "pre"
-              ? "Thanks! This shows what you already know, so we can see how much you learn."
-              : "Your result is saved. Here is how much you grew in this unit."}</p>
-            {test.kind === "post" && preAvg !== null && (
-              <p className="mt-5"><span className="inline-flex min-h-8 items-center rounded-[10px] bg-[#D6F2DE] px-3 text-base font-bold text-primary">{avg >= preAvg ? "▲ Up" : "▼ Down"} from {preAvg}% on your warm-up quiz</span></p>
-            )}
-          </div>
-        </div>
+        <CompletionBand headingId="done-h" label={`${name} complete`} title={test.unitTitle} big={`${avg}%`} bigLabel="your score"
+          sub={test.kind === "pre" ? "Thanks! This shows what you already know, so we can see how much you learn." : "Your result is saved. Here is how much you grew in this unit."}
+          notes={test.kind === "post" && preAvg !== null ? <BandNote>{avg >= preAvg ? "▲ Up" : "▼ Down"} from {preAvg}% on your warm-up quiz</BandNote> : undefined} />
         <h2 className="text-[28px] font-bold">Your growth by topic</h2>
         <div className="rounded-[20px] border border-border bg-card p-6">
           <ul className="m-0 list-none space-y-5 p-0">

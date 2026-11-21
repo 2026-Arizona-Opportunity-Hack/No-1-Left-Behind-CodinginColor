@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { CompletionBand } from "@/components/completion-band";
 import { StudentHeader } from "@/components/student-header";
 import { getCompletedTest, getStudentTest } from "@/server/student-tests";
 import { requireStudent } from "@/server/student-session";
@@ -29,15 +30,7 @@ async function Test({ params }: Props) {
       <main className="mx-auto w-full max-w-[1104px] flex-1 px-5 py-6 sm:px-6">
         {test ? <TestTaker moduleId={moduleId} test={test} /> : completed ? (
           <section aria-labelledby="done-h" className="mx-auto w-full max-w-[760px] space-y-6">
-            <div className="relative overflow-hidden rounded-3xl bg-primary px-6 py-9 text-center text-white sm:px-9">
-              <span aria-hidden="true" className="pointer-events-none absolute -top-28 -right-10 font-mono text-[380px] leading-none font-bold text-[#0F4527] select-none">&gt;</span>
-              <div className="relative">
-                <span className="inline-flex min-h-8 items-center rounded-[10px] border-2 border-primary bg-white px-3 text-base font-bold text-primary">{kind === "pre" ? "Pre-test" : "Post-test"} complete</span>
-                <h1 id="done-h" className="mt-3.5 text-4xl font-bold">{completed.unitTitle}</h1>
-                <p className="mt-2.5 text-[88px] leading-none font-bold tabular-nums">{completed.pct}%</p>
-                <p className="mt-1 text-xl text-[#E0F1E5]">{completed.correct} of {completed.total} correct. Your result is saved.</p>
-              </div>
-            </div>
+            <CompletionBand headingId="done-h" label={`${kind === "pre" ? "Warm-up quiz" : "Final quiz"} complete`} title={completed.unitTitle} big={`${completed.pct}%`} bigLabel="your score" sub={`${completed.correct} of ${completed.total} correct. Your result is saved.`} />
             <Link href="/learn" className="inline-flex h-[60px] items-center gap-2.5 rounded-2xl border-2 border-primary bg-primary px-8 text-xl font-bold text-primary-foreground no-underline hover:bg-[#047D13]">Back to my course <span aria-hidden="true" className="flex size-7 items-center justify-center rounded-full bg-[#A8E6B8] font-mono text-base text-primary">&gt;</span></Link>
           </section>
         ) : (
